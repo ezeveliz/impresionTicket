@@ -8,5 +8,6 @@ if ('serviceWorker' in navigator) {
           console.error('Error al registrar el Service Worker:', error);
         });
     });
-  }
+}
   
+

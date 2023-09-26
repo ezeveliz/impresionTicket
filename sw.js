@@ -5,7 +5,7 @@ const CACHE_NAME = 'ticket-printer';
 const urlsToCache = [
   '/',
   '/index.html',
-  '/styles.css',
+  '/style.css',
   '/main.js',
   '/printer.png',
 ];
