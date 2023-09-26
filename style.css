@@ -8,16 +8,13 @@ body {
     width: 100%;
     max-width: 960px;
     margin: 0 auto;
+    text-align: center;
   
     @media screen and (max-width: 576px) {
       max-width: 100%;
     }
-  
-    @media screen and (min-width: 960px) {
-      text-align: center;
-    }
   }
-
+  
   .header {
     text-align: center;
   }
@@ -26,8 +23,12 @@ body {
     margin: 0;
     padding: 10px 0;
     font-size: 24px;
+  
+    @media screen and (max-width: 576px) {
+      font-size: 20px;
+    }
   }
-
+  
   .content {
     display: flex;
     justify-content: space-between;
@@ -37,14 +38,11 @@ body {
   input[type="file"] {
     width: 50%;
   }
-
-  @media screen and (max-width: 576px) {
-    h1 {
-      font-size: 20px;
-    }
   
+  @media screen and (max-width: 576px) {
     h2 {
       font-size: 16px;
+      width: 100%;
     }
   }
   
