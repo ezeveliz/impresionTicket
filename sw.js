@@ -1,4 +1,28 @@
+const CACHE_NAME = 'ticket-printer';
+const urlsToCache = [
+  '/',
+  'index.html',
+  'css/style.css',
+  'js/main.js',
+  'images/android-launchericon-512-512.png',
+];
 
+self.addEventListener("install", (event) => {
+  const cacheStatic = caches
+    .open(CACHE_NAME)
+    .then((cache) => cache.addAll(urlsToCache));
+
+  event.waitUntil(cacheStatic);
+});
+
+self.addEventListener('fetch', (event) => {
+  console.log("fetch!", event.request);
+  event.respondWith(
+    caches.match(event.request)
+    .then(response => response || fetch(event.request))
+    .catch(console.log)
+  );
+});
 
 /*// sw.js
 
