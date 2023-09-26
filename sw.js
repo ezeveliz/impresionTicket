@@ -1,4 +1,6 @@
-// sw.js
+
+
+/*// sw.js
 
 // Define el nombre de la caché y las URLs que se deben almacenar en la caché
 const CACHE_NAME = 'ticket-printer';
@@ -81,4 +83,4 @@ window.addEventListener('appinstalled', (event) => {
   console.log('👍', 'appinstalled', event);
   // Clear the deferredPrompt so it can be garbage collected
   window.deferredPrompt = null;
-});
+});*/
