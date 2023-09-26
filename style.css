@@ -1,51 +1,67 @@
+/* Estilos generales */
+
 body {
-    background-color: #ffffff;
     font-family: sans-serif;
+    margin: 0;
+    padding: 0;
   }
   
   .container {
-    width: 500px;
+    width: 100%;
+    max-width: 960px;
     margin: 0 auto;
   }
   
+  /* Estilos del encabezado */
+  
   .header {
-    background-color: #000000;
-    color: #ffffff;
-    padding: 10px;
+    text-align: center;
   }
+  
+  h1 {
+    margin: 0;
+    padding: 10px 0;
+    font-size: 24px;
+  }
+  
+  /* Estilos del contenido */
   
   .content {
     padding: 20px;
   }
   
-  h1 {
-    font-size: 24px;
-  }
-  
   h2 {
+    margin: 0 0 10px 0;
     font-size: 18px;
   }
   
-  p {
-    margin-bottom: 10px;
-  }
-  
-  input {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
-  }
-  
+  input,
   select {
     width: 100%;
-    padding: 10px;
     margin-bottom: 10px;
   }
   
   input[type="submit"] {
-    background-color: #000000;
-    color: #ffffff;
+    background-color: #000;
+    color: #fff;
     padding: 10px;
+    border: none;
     cursor: pointer;
+  }
+  
+  /* Estilos para adaptar el diseño a cualquier tipo de pantalla */
+  
+  @media screen and (max-width: 576px) {
+    .container {
+      max-width: 100%;
+    }
+  
+    h1 {
+      font-size: 20px;
+    }
+  
+    h2 {
+      font-size: 16px;
+    }
   }
   
