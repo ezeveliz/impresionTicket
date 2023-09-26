@@ -21,17 +21,24 @@
     <body>
         <div class="container">
             <div class="header">
-                <h1>Imprimir ticket</h1>
+                <h1 class="title">Imprimir ticket</h1>
             </div>
             <div class="content">
-                <h2>Documento</h2>
-                <p id="nombreArchivo"></p>
-                <h2>Imprimir</h2>
-                <input type="file" name="archivo">
-                <select name="impresora">
-                    <option value="Zebra">Zebra</option>
-                    <option value="Star">Star</option>
-                </select>
+                <div class="contentDocument"></div>
+                    <h2 class="documentTitle">Documento</h2>
+                    <p class="nombreArchivo">Ninguno</p>
+                </div>
+                <div class="content print">
+                    <h2 class="examTitle">Examinar</h2>
+                    <input type="file" name="archivo">
+                </div>
+                <div class="content printer">
+                    <h2 class="printerTitle">Impresora</h2>
+                    <select name="impresora">
+                        <option value="Zebra">Zebra</option>
+                        <option value="Star">Star</option>
+                    </select>
+                </div>
                 <input type="submit" value="Imprimir">
             </div>
         </div>
