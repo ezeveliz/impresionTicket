@@ -21,7 +21,7 @@ body {
   h1 {
     margin: 0;
     padding: 1rem 0;
-    font-size: 2rem;
+    font-size: 3rem;
   }
   
   .content {
@@ -46,15 +46,12 @@ body {
     padding: 1rem 2rem;
     cursor: pointer;
     font-weight: bold;
+    margin-top: 2rem;
   }
   
   @media screen and (max-width: 36rem) {
     body {
       padding: 0.5rem;
-    }
-  
-    h1 {
-      font-size: 1.5rem;
     }
   
     .documentTitle,
