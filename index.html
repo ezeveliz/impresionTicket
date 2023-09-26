@@ -1,1 +1,25 @@
-Hello world
+<html lang="es">
+    <head>
+        <meta charset="utf-8">
+        <title>Imprimir ticket</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <h1>Imprimir ticket</h1>
+            </div>
+            <div class="content">
+                <h2>Documento</h2>
+                <p id="nombreArchivo"></p>
+                <h2>Imprimir</h2>
+                <input type="file" name="archivo">
+                <select name="impresora">
+                    <option value="Zebra">Zebra</option>
+                    <option value="Star">Star</option>
+                </select>
+                <input type="submit" value="Imprimir">
+            </div>
+        </div>
+    </body>
+</html>
