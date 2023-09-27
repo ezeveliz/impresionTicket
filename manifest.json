@@ -8,6 +8,27 @@
     "background_color": "#ffffff",
     "theme_color": "#000000",
     "prefer_related_applications": true,
+    "share_target": {
+      "action": "/receive-file",
+      "method": "GET",
+      "enctype": "multipart/form-data",
+      "params": {
+        "files": [
+          {
+            "name": "file",
+            "accept": ["application/pdf"]
+          }
+        ]
+      }
+    },    
+    "file_handlers": [
+      {
+        "action": "/handle-pdf-file",
+        "accept": {
+          "mime_type": "application/pdf"
+        }
+      }
+    ],
     "icons": [
       {
         "src": "images/maskable_icon_x48.png",

@@ -21,3 +21,17 @@ class Main {
 window.addEventListener('load', () => {
   new Main();
 });
+
+// Obtener el elemento de entrada de archivo
+const fileInput = document.getElementById('fileInput');
+
+// Registrar el evento 'fileinput' para manejar la carga del archivo compartido
+fileInput.addEventListener('change', (event) => {
+  const sharedFiles = event.target.files;
+  if (sharedFiles.length > 0) {
+    const sharedFile = sharedFiles[0]; // Obtener el primer archivo compartido
+    // Haz algo con el archivo compartido, por ejemplo, muestra su nombre en la consola
+    console.log('Archivo compartido:', sharedFile.name);
+  }
+});
+
