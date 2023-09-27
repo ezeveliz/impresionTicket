@@ -9,14 +9,14 @@
     "theme_color": "#000000",
     "prefer_related_applications": true,
     "share_target": {
-      "action": "/receive-file",
+      "action": "/share-target",
       "method": "GET",
       "enctype": "multipart/form-data",
       "params": {
         "files": [
           {
-            "name": "file",
-            "accept": ["application/pdf"]
+            "name": "archivo",
+            "accept": ["*/*"]
           }
         ]
       }
