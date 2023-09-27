@@ -1,7 +1,7 @@
 const CACHE_NAME = 'ticket-printer';
 const urlsToCache = [
   '/',
-  'index.html',
+  './index.html',
   'css/style.css',
   'js/main.js',
   'images/android-launchericon-512-512.png',
