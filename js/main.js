@@ -5,7 +5,7 @@ class Main {
 
     this.registerServiceWorker();
 
-    this.getPdfOtherApp();
+    //this.getPdfOtherApp();
     
     // Registrar el evento 'change' para manejar la carga del archivo compartido
 /*    this.fileInput.addEventListener('change', (event) => {
