@@ -5,7 +5,7 @@ class Main {
 
     this.registerServiceWorker();
 
-    //this.getPdfOtherApp();
+    //gitthis.getPdfOtherApp();
     
     // Registrar el evento 'change' para manejar la carga del archivo compartido
 /*    this.fileInput.addEventListener('change', (event) => {
@@ -107,6 +107,11 @@ function sendFile(fileUrl){
 }
 
 
+function writeToSelectedPrinter(dataToWrite)
+{
+	selected_device.send(dataToWrite, undefined, errorCallback);
+}
+
 /*********************************************** */
 window.addEventListener('load', () => {
   new Main();
@@ -152,7 +157,7 @@ function imprimir() {
     }
     fileInput = document.getElementById('fileInput');
     const selectedFile = fileInput.files[0];
-    sendFile(selectedFile)
+    sendFile(selectedFile);
 /*    const reader = new FileReader();
 
     reader.onload = function(event) {
