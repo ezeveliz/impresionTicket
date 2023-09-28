@@ -7,7 +7,8 @@
         <meta name="theme-color" content="#000000"/>
         <link rel="stylesheet" href="css/style.css">
         <link rel="manifest" href="./manifest.json">
-        <script src="js/main.js"></script>
+        <script type="text/javascript" src="js/main.js"></script>
+        <script type="text/javascript" src="./BrowserPrint-3.1.250.min.js"></script>
         <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     </head>
     <body>
@@ -23,16 +24,15 @@
                 <div class="content print">
                     <h2 class="examTitle">Examinar</h2>
                     <input type="file" name="archivo" id="fileInput">
-
                 </div>
                 <div class="content printer">
                     <h2 class="printerTitle">Impresora</h2>
-                    <select name="impresora">
+                    <select name="impresora" id="printerSelect">
                         <option value="Zebra">Zebra</option>
                         <option value="Star">Star</option>
                     </select>
                 </div>
-                <input type="submit" value="Imprimir">
+                <input type="submit" value="Imprimir" onclick="imprimir()">
             </div>
         </div>
     </body>
