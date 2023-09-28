@@ -18,10 +18,12 @@ class Main {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('/sw.js')
         .then(registration => {
-          console.log('Service Worker registrado con éxito:', registration);
+          alert('Service Worker registrado con éxito:', registration);
+          //console.log('Service Worker registrado con éxito:', registration);
         })
         .catch(error => {
-          console.error('Error al registrar el Service Worker:', error);
+          alert('Error al registrar el Service Worker:', error);
+          //console.error('Error al registrar el Service Worker:', error);
         });
       });
     }
@@ -33,6 +35,7 @@ class Main {
       if (sharedFiles.length > 0) {
         const sharedFile = sharedFiles[0]; // Obtener el primer archivo compartido
         // Haz algo con el archivo compartido, por ejemplo, muestra su nombre en la consola
+        //alert()
         console.log('Archivo compartido:', sharedFile.name);
       }
     });
@@ -59,14 +62,17 @@ async function conectarAutomaticamente() {
 
     // Asigna el dispositivo previamente conectado a selected_device
     selected_device = dispositivoPreviamenteConectado;
+    alert("Conexión exitosa con el dispositivo previamente conectado:", selected_device.name);
     console.log("Conexión exitosa con el dispositivo previamente conectado:", selected_device.name);
   } catch (error) {
+    alert("Error al conectar con el dispositivo previamente conectado:", error);
     console.error("Error al conectar con el dispositivo previamente conectado:", error);
   }
 }
 
 //Impresora Zebra
 function imprimir() {
+  conectarAutomaticamente();
   // Obtener el valor seleccionado en el elemento select
   var selectedPrinter = document.getElementById("printerSelect").value;
   // Realizar acciones según la opción seleccionada
@@ -78,6 +84,7 @@ function imprimir() {
 
     // Realizar la impresión utilizando la conexión Bluetooth previamente establecida
     if (this.fileInput.value === '') {
+      alert('Ningún archivo seleccionado');
       console.log('Ningún archivo seleccionado');
       return;
     }
@@ -93,11 +100,13 @@ function imprimir() {
       var comandosZPL = "^XA^FO200,200^A0N36,36^FD" + pdfText + "^FS^XZ";
       selected_device.send(comandosZPL, undefined, errorCallback);
 
+      alert("Imprimiendo en una impresora Zebra...");
       console.log("Imprimiendo en una impresora Zebra...");
     };
     reader.readAsBinaryString(selectedFile);
   } else if (selectedPrinter === "Star") {
       if (this.fileInput.value === '') {
+        alert('Ningún archivo seleccionado');
         console.log('Ningún archivo seleccionado');
         return;
       }
@@ -107,9 +116,11 @@ function imprimir() {
         const binaryString = event.target.result;
         const pdfText = window.btoa(binaryString);
         // Haz lo que necesites con pdfText, por ejemplo, mostrarlo en la consola
+        alert('Contenido del PDF en base64:', pdfText);
         console.log('Contenido del PDF en base64:', pdfText);
       };
       reader.readAsBinaryString(selectedFile);
+      alert("Imprimiendo en una impresora Star...");
       console.log("Imprimiendo en una impresora Star...");
   } else {
       alert("Selecciona una impresora válida (Zebra o Star).");
