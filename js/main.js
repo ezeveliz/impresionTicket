@@ -8,9 +8,9 @@ class Main {
     this.getPdfOtherApp();
     
     // Registrar el evento 'change' para manejar la carga del archivo compartido
-    this.fileInput.addEventListener('change', (event) => {
+/*    this.fileInput.addEventListener('change', (event) => {
       this.getPdf();
-    });
+    });*/
   }
 
   registerServiceWorker() {
@@ -28,8 +28,10 @@ class Main {
       });
     }
   }
+  
+  
 
-  getPdfOtherApp(){
+  /*getPdfOtherApp(){
     fileInput.addEventListener('change', (event) => {
       const sharedFiles = event.target.files;
       if (sharedFiles.length > 0) {
@@ -39,17 +41,79 @@ class Main {
         console.log('Archivo compartido:', sharedFile.name);
       }
     });
-  }
+  }*/
 
 }
 
+/**************ZEBRA ******************/
+var selected_device;
+var devices = [];
+function setupZebra()
+{
+	//Get the default device from the application as a first step. Discovery takes longer to complete.
+	BrowserPrint.getDefaultDevice("printer", function(device)
+			{
+		
+				//Add device to list of devices and to html select element
+				selected_device = device;
+				devices.push(device);
+				var html_select = document.getElementById("selected_device");
+				var option = document.createElement("option");
+				option.text = device.name;
+				html_select.add(option);
+				
+				//Discover any other devices available to the application
+				BrowserPrint.getLocalDevices(function(device_list){
+					for(var i = 0; i < device_list.length; i++)
+					{
+						//Add device to list of devices and to html select element
+						var device = device_list[i];
+						if(!selected_device || device.uid != selected_device.uid)
+						{
+							devices.push(device);
+							var option = document.createElement("option");
+							option.text = device.name;
+							option.value = device.uid;
+							html_select.add(option);
+						}
+					}
+					
+				}, function(){alert("Error getting local devices")},"printer");
+				
+			}, function(error){
+				alert(error);
+			})
+}
+
+function onDeviceSelected(selected)
+{
+	for(var i = 0; i < devices.length; ++i){
+		if(selected.value == devices[i].uid)
+		{
+			selected_device = devices[i];
+			return;
+		}
+	}
+}
+
+var errorCallback = function(errorMessage){
+	alert("Error: " + errorMessage);	
+}
+
+function sendFile(fileUrl){
+  url = window.location.href.substring(0, window.location.href.lastIndexOf("/"));
+  url = url + "/" + fileUrl;
+  selected_device.sendFile(url, undefined, errorCallback)
+}
+
+
+/*********************************************** */
 window.addEventListener('load', () => {
   new Main();
+  setupZebra()
 });
 
-var selected_device = null;
-
-async function conectarAutomaticamente() {
+/*async function conectarAutomaticamente() {
   try {
     // Especifica la dirección MAC u otro identificador único del dispositivo previamente conectado
     const dispositivoPreviamenteConectado = await navigator.bluetooth.requestDevice({
@@ -68,10 +132,47 @@ async function conectarAutomaticamente() {
     alert("Error al conectar con el dispositivo previamente conectado:", error);
     console.error("Error al conectar con el dispositivo previamente conectado:", error);
   }
-}
+}*/
 
-//Impresora Zebra
 function imprimir() {
+  // Obtener el valor seleccionado en el elemento select
+  var selectedPrinter = document.getElementById("printerSelect").value;
+  // Realizar acciones según la opción seleccionada
+  if (selectedPrinter === "Zebra") {
+    if (!selected_device) {
+      alert("No se ha establecido una conexión con una impresora Zebra.");
+      return;
+    }
+
+    // Realizar la impresión utilizando la conexión Bluetooth previamente establecida
+    if (this.fileInput.value === '') {
+      alert('Ningún archivo seleccionado');
+      console.log('Ningún archivo seleccionado');
+      return;
+    }
+    fileInput = document.getElementById('fileInput');
+    const selectedFile = fileInput.files[0];
+    sendFile(selectedFile)
+/*    const reader = new FileReader();
+
+    reader.onload = function(event) {
+      const binaryString = event.target.result;
+      const pdfText = window.btoa(binaryString);
+
+      // Enviar los comandos ZPL con el contenido del PDF a la impresora Zebra
+      var comandosZPL = "^XA^FO200,200^A0N36,36^FD" + pdfText + "^FS^XZ";
+      selected_device.send(comandosZPL, undefined, errorCallback);
+
+      alert("Imprimiendo en una impresora Zebra...");
+      console.log("Imprimiendo en una impresora Zebra...");
+    };
+    reader.readAsBinaryString(selectedFile);*/
+  }else {
+      alert("Selecciona una impresora válida (Zebra o Star).");
+  }
+}
+//Impresora Zebra
+/*function imprimir() {
   conectarAutomaticamente();
   // Obtener el valor seleccionado en el elemento select
   var selectedPrinter = document.getElementById("printerSelect").value;
@@ -125,6 +226,6 @@ function imprimir() {
   } else {
       alert("Selecciona una impresora válida (Zebra o Star).");
   }
-}
+}*/
 
-conectarAutomaticamente();
+//conectarAutomaticamente();
