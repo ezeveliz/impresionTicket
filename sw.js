@@ -42,13 +42,7 @@ self.addEventListener('fetch', (event) => {
 
 // Instalación del Service Worker
 self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => {
-        console.log('Caché abierta');
-        return cache.addAll(urlsToCache);
-      })
-  );
+  skipWaiting();
 });
 
 // Activación del Service Worker
