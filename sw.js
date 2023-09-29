@@ -47,31 +47,12 @@ self.addEventListener('install', (event) => {
 
 // Activación del Service Worker
 self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys()
-      .then((cacheNames) => {
-        return Promise.all(
-          cacheNames.map((cacheName) => {
-            if (cacheName !== CACHE_NAME) {
-              console.log('Borrando caché antigua:', cacheName);
-              return caches.delete(cacheName);
-            }
-          })
-        );
-      })
-  );
+  clients.claim();
 });
 
 // Intercepta las solicitudes y responde desde la caché si está disponible
 self.addEventListener('fetch', (event) => {
-  if (event.request.method !== 'POST'){
-    event.respondWith(
-      caches.match(event.request)
-        .then((response) => {
-          return response || fetch(event.request);
-        })
-    );
-  }
+  if (event.request.method !== 'POST') return
   else{
     event.respondWith(Response.redirect('./'));
   
