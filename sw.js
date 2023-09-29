@@ -70,10 +70,28 @@ self.addEventListener('activate', (event) => {
 
 // Intercepta las solicitudes y responde desde la caché si está disponible
 self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    caches.match(event.request)
-      .then((response) => {
-        return response || fetch(event.request);
-      })
-  );
+  if (event.request.method !== 'POST'){
+    event.respondWith(
+      caches.match(event.request)
+        .then((response) => {
+          return response || fetch(event.request);
+        })
+    );
+  }
+  else{
+    event.respondWith(Response.redirect('./'));
+  
+    event.waitUntil(async function () {
+      const data = await event.request.formData();
+      const client = await self.clients.get(event.resultingClientId);
+      const file = data.get('file');
+      client.postMessage({ file });
+    }());
+  }
+});
+
+addEventListener('fetch', (event) => {
+  if (event.request.method !== 'POST') return;
+  
+
 });
