@@ -266,7 +266,3 @@ navigator.serviceWorker.onmessage = (event) => {
   const file = event.data.file;
   displayFile(file);
 };
-
-document.querySelector('input[type=file]').onchange = (event) => {
-  displayFile(event.target.files[0]);
-};
