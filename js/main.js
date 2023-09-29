@@ -1,7 +1,6 @@
 function registerServiceWorker() {
   alert("ejecutando")
   if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
       navigator.serviceWorker.register('/sw.js')
       .then(registration => {
         alert('Service Worker registrado con éxito:', registration);
@@ -11,9 +10,9 @@ function registerServiceWorker() {
         alert('Error al registrar el Service Worker:', error);
         //console.error('Error al registrar el Service Worker:', error);
       });
-    });
   }
 }
+
 /**************ZEBRA ******************/
 var selected_device;
 var devices = [];
