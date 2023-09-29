@@ -217,28 +217,23 @@ function displayImage(file) {
 }
 
 function displayPdf(file){
+  alert("Primer alert")
   var iframe = document.createElement('iframe');
   document.body.appendChild(iframe);
   iframe.contentWindow.document.open();
   iframe.contentWindow.document.write(file);
   iframe.contentWindow.document.close();
+  alert("segundo alert")
 
 
   var iframe2 = document.createElement('iframe');
   document.body.appendChild(iframe2);
   iframe2.src=file
+  alert("tercer alert")
+
 }
 
-function displayFile(file) {
-  const ul = document.createElement('ul');
-  document.body.append(ul);
-
-  for (const prop of ['name', 'size', 'type']) {
-    const li = document.createElement('li');
-    li.textContent = `${prop} = ${file[prop]}`;
-    ul.append(li);
-  }
-  
+function displayFile(file) {  
   displayPdf(file);
 }
 
