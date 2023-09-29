@@ -23,16 +23,7 @@
           }
         ]
       }
-    },   
-   
-    "file_handlers": [
-      {
-        "action": "/handle-pdf-file",
-        "accept": {
-          "mime_type": "application/pdf"
-        }
-      }
-    ],
+    },
     "icons": [
       {
         "src": "images/maskable_icon_x48.png",
