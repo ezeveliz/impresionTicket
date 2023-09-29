@@ -1,50 +1,19 @@
-class Main {
-  constructor() {
-    // Obtener el elemento de entrada de archivo
-    this.fileInput = document.getElementById('fileInput');
-
-    this.registerServiceWorker();
-
-    //gitthis.getPdfOtherApp();
-    
-    // Registrar el evento 'change' para manejar la carga del archivo compartido
-/*    this.fileInput.addEventListener('change', (event) => {
-      this.getPdf();
-    });*/
-  }
-
-  registerServiceWorker() {
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js')
-        .then(registration => {
-          alert('Service Worker registrado con éxito:', registration);
-          //console.log('Service Worker registrado con éxito:', registration);
-        })
-        .catch(error => {
-          alert('Error al registrar el Service Worker:', error);
-          //console.error('Error al registrar el Service Worker:', error);
-        });
+function registerServiceWorker() {
+  alert("ejecutando")
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+      .then(registration => {
+        alert('Service Worker registrado con éxito:', registration);
+        //console.log('Service Worker registrado con éxito:', registration);
+      })
+      .catch(error => {
+        alert('Error al registrar el Service Worker:', error);
+        //console.error('Error al registrar el Service Worker:', error);
       });
-    }
-  }
-  
-  
-
-  /*getPdfOtherApp(){
-    fileInput.addEventListener('change', (event) => {
-      const sharedFiles = event.target.files;
-      if (sharedFiles.length > 0) {
-        const sharedFile = sharedFiles[0]; // Obtener el primer archivo compartido
-        // Haz algo con el archivo compartido, por ejemplo, muestra su nombre en la consola
-        //alert()
-        console.log('Archivo compartido:', sharedFile.name);
-      }
     });
-  }*/
-
+  }
 }
-
 /**************ZEBRA ******************/
 var selected_device;
 var devices = [];
@@ -114,7 +83,7 @@ function writeToSelectedPrinter(dataToWrite)
 
 /*********************************************** */
 window.addEventListener('load', () => {
-  new Main();
+  registerServiceWorker()
   setupZebra()
 });
 
