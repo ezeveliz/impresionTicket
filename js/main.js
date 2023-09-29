@@ -1,5 +1,4 @@
 function registerServiceWorker() {
-  alert("ejecutando")
   if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('./sw.js')
       .then(registration => {
