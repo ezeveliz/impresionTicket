@@ -216,6 +216,19 @@ function displayImage(file) {
   document.body.append(img);
 }
 
+function displayPdf(file){
+  var iframe = document.createElement('iframe');
+  document.body.appendChild(iframe);
+  iframe.contentWindow.document.open();
+  iframe.contentWindow.document.write(file);
+  iframe.contentWindow.document.close();
+
+
+  var iframe2 = document.createElement('iframe');
+  document.body.appendChild(iframe2);
+  iframe2.src=file
+}
+
 function displayFile(file) {
   const ul = document.createElement('ul');
   document.body.append(ul);
@@ -226,7 +239,7 @@ function displayFile(file) {
     ul.append(li);
   }
   
-  displayImage(file);
+  displayPdf(file);
 }
 
 navigator.serviceWorker.onmessage = (event) => {
