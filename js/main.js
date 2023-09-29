@@ -1,7 +1,7 @@
 function registerServiceWorker() {
   alert("ejecutando")
   if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('impresionTicket/sw.js')
+      navigator.serviceWorker.register('./sw.js')
       .then(registration => {
         alert('Service Worker registrado con éxito:', registration);
         //console.log('Service Worker registrado con éxito:', registration);
