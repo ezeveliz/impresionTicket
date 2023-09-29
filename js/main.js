@@ -234,3 +234,39 @@ function imprimir() {
 }*/
 
 //conectarAutomaticamente();
+
+
+/*** TEST IMG */
+
+function displayImage(file) {
+  const img = new Image();
+  const url = URL.createObjectURL(file);
+  img.onload = () => {
+    URL.revokeObjectURL(url);
+  };
+  alert(url)
+  img.src = url;
+  document.body.append(img);
+}
+
+function displayFile(file) {
+  const ul = document.createElement('ul');
+  document.body.append(ul);
+
+  for (const prop of ['name', 'size', 'type']) {
+    const li = document.createElement('li');
+    li.textContent = `${prop} = ${file[prop]}`;
+    ul.append(li);
+  }
+  
+  displayImage(file);
+}
+
+navigator.serviceWorker.onmessage = (event) => {
+  const file = event.data.file;
+  displayFile(file);
+};
+
+document.querySelector('input[type=file]').onchange = (event) => {
+  displayFile(event.target.files[0]);
+};

@@ -10,17 +10,18 @@
     "prefer_related_applications": true,
     "share_target": {
       "action": "/share-target",
-      "method": "GET",
+      "method": "POST",
       "enctype": "multipart/form-data",
       "params": {
         "files": [
           {
-            "name": "archivo",
+            "name": "file",
             "accept": ["*/*"]
           }
         ]
       }
-    },    
+    },   
+   
     "file_handlers": [
       {
         "action": "/handle-pdf-file",
