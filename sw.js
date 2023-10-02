@@ -40,55 +40,28 @@ self.addEventListener('fetch', (event) => {
   );
 });*/
 
-// Instalación del Service Worker
-self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => {
-        console.log('Caché abierta');
-        return cache.addAll(urlsToCache);
-      })
-  );
+self.addEventListener('install', () => {
+  skipWaiting();
 });
 
-// Activación del Service Worker
-self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys()
-      .then((cacheNames) => {
-        return Promise.all(
-          cacheNames.map((cacheName) => {
-            if (cacheName !== CACHE_NAME) {
-              console.log('Borrando caché antigua:', cacheName);
-              return caches.delete(cacheName);
-            }
-          })
-        );
-      })
-  );
+self.addEventListener('activate', () => {
+  clients.claim();
 });
+
 
 // Intercepta las solicitudes y responde desde la caché si está disponible
 self.addEventListener('fetch', (event) => {
-  console.log(event.request.method)
-  if (event.request.method != 'POST'){
-  event.respondWith(
-    caches.match(event.request)
-      .then((response) => {
-        return response || fetch(event.request);
-      }).catch(()=>{return})
-  );
-  }else{
-    event.respondWith(Response.redirect('./'));
-    event.waitUntil(async function () {
-      const data = await event.request.formData();
-      const client = await self.clients.get(event.resultingClientId || event.clientId);
-      const file = data.get('file');
-      client.postMessage({ file });
-    }());
-  }
+  if (event.request.method !== 'POST') return;
+  
+  event.respondWith(Response.redirect('./'));
+  
+  event.waitUntil(async function () {
+    const data = await event.request.formData();
+    const client = await self.clients.get(event.resultingClientId);
+    const file = data.get('file');
+    client.postMessage({ file });
+  }());
 });
-
 /*addEventListener('fetch', (event) => {
   if (event.request.method !== 'POST') return;
   
