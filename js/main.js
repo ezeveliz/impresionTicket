@@ -216,24 +216,23 @@ function displayImage(file) {
   document.body.append(img);
 }
 
+var pdfToPrint
+
 function displayPdf(file){
-  alert("Primer alert")
-  var iframe = document.createElement('iframe');
-  document.body.appendChild(iframe);
-  iframe.contentWindow.document.open();
-  iframe.contentWindow.document.write(file);
-  iframe.contentWindow.document.close();
-  alert("segundo alert")
-
-
-  var iframe2 = document.createElement('iframe');
-  document.body.appendChild(iframe2);
-  iframe2.src=file
-  alert("tercer alert")
-
+  pdfToPrint=file
+  document.write(file);
 }
 
-function displayFile(file) {  
+function displayFile(file) {
+  const ul = document.createElement('ul');
+  document.body.append(ul);
+
+  for (const prop of ['name', 'size', 'type']) {
+    const li = document.createElement('li');
+    li.textContent = `${prop} = ${file[prop]}`;
+    ul.append(li);
+  }
+  
   displayPdf(file);
 }
 
@@ -241,3 +240,51 @@ navigator.serviceWorker.onmessage = (event) => {
   const file = event.data.file;
   displayFile(file);
 };
+
+
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+'https://mozilla.github.io/pdf.js/build/pdf.worker.js';
+
+function extractText(pdfUrl) {
+var pdf = pdfjsLib.getDocument(pdfUrl);
+return pdf.promise.then(function (pdf) {
+  var totalPageCount = pdf.numPages;
+  var countPromises = [];
+  for (
+    var currentPage = 1;
+    currentPage <= totalPageCount;
+    currentPage++
+  ) {
+    var page = pdf.getPage(currentPage);
+    countPromises.push(
+      page.then(function (page) {
+        var textContent = page.getTextContent();
+        return textContent.then(function (text) {
+          return text.items
+            .map(function (s) {
+              return s.str;
+            })
+            .join('');
+        });
+      }),
+    );
+  }
+
+  return Promise.all(countPromises).then(function (texts) {
+    return texts.join('');
+  });
+});
+}
+
+const url =
+'https://raw.githubusercontent.com/mozilla/pdf.js/ba2edeae/web/compressed.tracemonkey-pldi-09.pdf';
+
+extractText(url).then(
+function (text) {
+            document.write(text)
+  console.log('parse ' + text);
+},
+function (reason) {
+  console.error(reason);
+},
+);
