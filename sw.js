@@ -57,7 +57,11 @@ self.addEventListener('fetch', (event) => {
   
   event.waitUntil(async function () {
     const data = await event.request.formData();
-    const client = await self.clients.get(event.resultingClientId);
+    const clientId =
+        event.resultingClientId !== ""
+          ? event.resultingClientId
+          : event.clientId;
+    const client = await self.clients.get(clientId);
     const file = data.get('file');
     client.postMessage({ file });
   }());
