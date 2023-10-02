@@ -1,6 +1,6 @@
 function registerServiceWorker() {
   if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('./sw.js?version=21')
+      navigator.serviceWorker.register('./sw.js?version=22')
       .then(registration => {
         alert('Service Worker registrado con éxito:', registration);
         //console.log('Service Worker registrado con éxito:', registration);
@@ -227,7 +227,7 @@ function displayFile(file) {
 
   for (const prop of ['name', 'size', 'type']) {
     const li = document.createElement('li');
-    li.textContent = `${prop} 22 = ${file[prop]}`;
+    li.textContent = `${prop} 33 = ${file[prop]}`;
     ul.append(li);
   }
   
