@@ -220,7 +220,7 @@ function displayPdf(file){
 //  let base64=Buffer.from(file).toString('base64');
   fileBackup=file
   var ifrm = document.createElement("iframe");
-  ifrm.setAttribute("src", "data:application/pdf;base64,"+file);
+  ifrm.setAttribute("src", "data:application/pdf;base64,"+file.body);
   ifrm.style.width = "640px";
   ifrm.style.height = "480px";
   document.body.appendChild(ifrm);
