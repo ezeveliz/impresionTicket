@@ -235,6 +235,7 @@ function displayFile(file) {
 }
 
 navigator.serviceWorker.onmessage = (event) => {
+  alert("On message")
   const file = event.data.file;
   displayFile(file);
 };
