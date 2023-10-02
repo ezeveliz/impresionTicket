@@ -220,7 +220,12 @@ var pdfToPrint
 
 function displayPdf(file){
   pdfToPrint=file
+  alert("Binario")
   document.write(file);
+  alert("Base64")
+  var base=Buffer.from(file).toString('base64');
+  document.write(base)
+  alert("Fin")
 }
 
 function displayFile(file) {
@@ -242,7 +247,7 @@ navigator.serviceWorker.onmessage = (event) => {
 };
 
 
-pdfjsLib.GlobalWorkerOptions.workerSrc =
+/*pdfjsLib.GlobalWorkerOptions.workerSrc =
 'https://mozilla.github.io/pdf.js/build/pdf.worker.js';
 
 function extractText(pdfUrl) {
@@ -287,4 +292,4 @@ function (text) {
 function (reason) {
   console.error(reason);
 },
-);
+);*/
