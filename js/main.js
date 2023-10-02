@@ -277,7 +277,7 @@ function displayPdf(file) {
         if (selectedFile.type === "application/pdf") {
             // Crear un elemento <object> para mostrar el PDF
             const pdfObject = document.createElement("object");
-            pdfObject.setAttribute("data", URL.createObjectURL(selectedFile));
+            pdfObject.setAttribute("data", selectedFile);
             pdfObject.setAttribute("type", "application/pdf");
             pdfObject.setAttribute("width", "100%");
             pdfObject.setAttribute("height", "100%");
