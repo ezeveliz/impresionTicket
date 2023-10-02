@@ -80,10 +80,10 @@ function writeToSelectedPrinter(dataToWrite)
 }
 
 /*********************************************** */
-window.addEventListener('load', () => {
+/*window.addEventListener('load', () => {
   registerServiceWorker()
   setupZebra()
-});
+});*/
 
 /*async function conectarAutomaticamente() {
   try {
