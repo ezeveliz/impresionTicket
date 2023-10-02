@@ -214,8 +214,10 @@ function displayImage(file) {
   img.src = url;
   document.body.append(img);
 }
+
 var fileBackup
-function displayPdf(file){
+
+/*function displayPdf(file){
   //document.write(file)
 //  let base64=Buffer.from(file).toString('base64');
   fileBackup=file
@@ -224,6 +226,26 @@ function displayPdf(file){
   ifrm.style.width = "640px";
   ifrm.style.height = "480px";
   document.body.appendChild(ifrm);
+}*/
+
+function displayPdf(file) {
+  // Verificar si el archivo es de tipo PDF
+  if (file.type === 'application/pdf') {
+    // Crear un objeto Blob a partir de los datos del archivo
+    const blob = new Blob([file], { type: 'application/pdf' });
+    
+    // Crear una URL de objeto para el Blob
+    const pdfUrl = URL.createObjectURL(blob);
+
+    // Crear un iframe y establecer la fuente como la URL del objeto
+    const ifrm = document.createElement('iframe');
+    ifrm.setAttribute('src', pdfUrl);
+    ifrm.style.width = '640px';
+    ifrm.style.height = '480px';
+    document.body.appendChild(ifrm);
+  } else {
+    console.error('El archivo no es de tipo PDF');
+  }
 }
 
 function displayFile(file) {
@@ -238,6 +260,7 @@ function displayFile(file) {
   
   displayPdf(file);
 }
+
 navigator.serviceWorker.addEventListener("message", (event) => {
   alert("On message")
   const file = event.data.file;
