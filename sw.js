@@ -71,7 +71,7 @@ self.addEventListener('activate', (event) => {
 // Intercepta las solicitudes y responde desde la caché si está disponible
 self.addEventListener('fetch', (event) => {
   console.log(event.request.method)
-  if (event.request.method !== 'POST'){
+  if (event.request.method != 'POST'){
   event.respondWith(
     caches.match(event.request)
       .then((response) => {
