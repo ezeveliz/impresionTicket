@@ -233,7 +233,7 @@ function displayFile(file) {
 
   for (const prop of ['name', 'size', 'type']) {
     const li = document.createElement('li');
-    li.textContent = `${prop} 33 = ${file[prop]}`;
+    li.textContent = `${prop} 44 = ${file[prop]}`;
     ul.append(li);
   }
   
