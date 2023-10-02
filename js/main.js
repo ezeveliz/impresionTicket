@@ -251,7 +251,7 @@ var fileBackup
 }*/
 
 //Versión carga parcialmente no muestra el PDF
-/*function displayPdf(file) {
+function displayPdf(file) {
   // Verificar si el archivo es de tipo PDF
   if (file.type === 'application/pdf') {
     const pdfUrl = URL.createObjectURL(file);
@@ -265,9 +265,9 @@ var fileBackup
   } else {
     console.error('El archivo no es de tipo PDF');
   }
-}*/
+}
 
-function displayPdf(file) {
+/*function displayPdf(file) {
     const fileInput = file;
     const pdfContainer = document.getElementById("pdfContainer");
     if (fileInput.files.length > 0) {
@@ -289,7 +289,7 @@ function displayPdf(file) {
             alert("Por favor, seleccione un archivo PDF.");
         }
     }
-}
+}*/
 
 function displayFile(file) {
   const ul = document.createElement('ul');
