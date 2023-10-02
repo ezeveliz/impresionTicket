@@ -250,8 +250,8 @@ var fileBackup
   }
 }*/
 
-//Versión en prueba
-function displayPdf(file) {
+//Versión carga parcialmente no muestra el PDF
+/*function displayPdf(file) {
   // Verificar si el archivo es de tipo PDF
   if (file.type === 'application/pdf') {
     const pdfUrl = URL.createObjectURL(file);
@@ -265,6 +265,30 @@ function displayPdf(file) {
   } else {
     console.error('El archivo no es de tipo PDF');
   }
+}*/
+
+function displayPdf(file) {
+    const fileInput = file;
+    const pdfContainer = document.getElementById("pdfContainer");
+    if (fileInput.files.length > 0) {
+        const selectedFile = fileInput.files[0];
+        
+        // Verificar si el archivo es de tipo PDF
+        if (selectedFile.type === "application/pdf") {
+            // Crear un elemento <object> para mostrar el PDF
+            const pdfObject = document.createElement("object");
+            pdfObject.setAttribute("data", URL.createObjectURL(selectedFile));
+            pdfObject.setAttribute("type", "application/pdf");
+            pdfObject.setAttribute("width", "100%");
+            pdfObject.setAttribute("height", "100%");
+
+            // Agregar el elemento <object> al contenedor
+            pdfContainer.innerHTML = "";
+            pdfContainer.appendChild(pdfObject);
+        } else {
+            alert("Por favor, seleccione un archivo PDF.");
+        }
+    }
 }
 
 function displayFile(file) {
