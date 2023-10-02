@@ -231,18 +231,18 @@ var fileBackup
 function displayPdf(file) {
   // Verificar si el archivo es de tipo PDF
   if (file.type === 'application/pdf') {
-    // Crear un objeto Blob a partir de los datos del archivo
-    const blob = new Blob([file], { type: 'application/pdf' });
-    
-    // Crear una URL de objeto para el Blob
-    const pdfUrl = URL.createObjectURL(blob);
-
-    // Crear un iframe y establecer la fuente como la URL del objeto
-    const ifrm = document.createElement('iframe');
-    ifrm.setAttribute('src', pdfUrl);
-    ifrm.style.width = '640px';
-    ifrm.style.height = '480px';
-    document.body.appendChild(ifrm);
+    const reader = new FileReader();
+    reader.onload = function(event) {
+      const base64Data = event.target.result.split(',')[1]; // Obtener los datos en base64
+      const blob = new Blob([atob(base64Data)], { type: 'application/pdf' });
+      const pdfUrl = URL.createObjectURL(blob);
+      const ifrm = document.createElement('iframe');
+      ifrm.setAttribute('src', pdfUrl);
+      ifrm.style.width = '640px';
+      ifrm.style.height = '480px';
+      document.body.appendChild(ifrm);
+    };
+    reader.readAsDataURL(file);
   } else {
     console.error('El archivo no es de tipo PDF');
   }
