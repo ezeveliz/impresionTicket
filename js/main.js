@@ -217,7 +217,8 @@ function displayImage(file) {
 }
 
 function displayPdf(file){
-  document.write(file)
+  //document.write(file)
+  alert("PDF cargado")
 }
 
 function displayFile(file) {
