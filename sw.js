@@ -86,7 +86,7 @@ self.addEventListener('fetch', (event) => {
       const data = await event.request.formData();
       const client = await self.clients.get(event.resultingClientId || event.clientId);
       const file = data.get('file');
-      alert("Funcion 2")
+      alert("Funcion 3")
       client.postMessage({ file });
     }());
   }
