@@ -219,12 +219,12 @@ function displayImage(file) {
 function displayPdf(file){
   //document.write(file)
   alert("PDF cargado")
-  let base64=Buffer.from(file).toString('base64');
+/*  let base64=Buffer.from(file).toString('base64');
   var ifrm = document.createElement("iframe");
   ifrm.setAttribute("src", "data:application/pdf;base64,"+base64);
   ifrm.style.width = "640px";
   ifrm.style.height = "480px";
-  document.body.appendChild(ifrm);
+  document.body.appendChild(ifrm);*/
 }
 
 function displayFile(file) {
