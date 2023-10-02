@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="pdf.js"></script>
+    <script>
+async function print(uri) {
+    // get link PDF and create instance of pdfJsLib
+    const loadPdf = pdfjsLib.getDocument(uri);
+    // await deserialization of PDF
+    const PDFContent = await loadPdfTask;
+    // await load page
+    const page = await PDFContent.getPage(PrintOptionsEnum.PAGE);
+    // now await styles and text itens to PDF
+    const  pdf = await page.getTextContent();
+    // Verify exists itens on PDF
+    if (!pdf.items || pdf.items.length) return;
+    // get scale of print
+    const scale = pdf.items.map(item => {
+        const [, , , , , topPosition] = item.transform;
+        return topPosition;
+    }).reduce((transform, nextTransform) => 
+        Math.min(transform, nextTransform)
+    );
+    // create content for print.
+    let content = '^XA~TA000~JSN^LT0^MNW^MTT^PON^PMN^LH0,0^JMA^PR5,5~SD15^JUS^LRN^CI0^XZ^XA^MMT^PW831^LL0480^LS0';
+    
+    // loop data for add itens into content;
+    pdf.items.forEach(item => {
+        const [fontSize, , , fontWeight, initialPosition, topPosition] = item.transform;
+        content += `^FT
+                    ${800 - initialPosition},
+                    ${topPosition - scalle}
+                    ^A0I,
+                    ${fontSize},
+                    ${fontWeight}
+                    ^FB$
+                    {item.width},
+                    1,0,C^FH^FD$
+                    {(item.str.normalize('NFD').replace(/[\u0300-
+                    \u036f]/g, ''))}
+                    ^FS`;
+    })
+    // add finish content
+    content += '^PQ1,0,1,Y^XZ;';
+    // create a new XHR request
+    console.log(content)
+    }
+//Call method print
+print("/home/lucas/Downloads/zebraexample.pdf");
+    </script>
+</head>
+<body>
+    
+</body>
+</html>

@@ -54,20 +54,8 @@ self.addEventListener('fetch', (event) => {
   console.log("Fetching....")
   console.log(event.request.method)
   if (event.request.method !== 'POST') return;
-
-  event.respondWith(
-    (async () => {
-      const formData = await event.request.formData();
-      const link = formData.get("file") || "";
-      // Instead of the original URL `/save-bookmark/`, redirect
-      // the user to a URL returned by the `saveBookmark()`
-      // function, for example, `/`.
-      const responseUrl = await saveBookmark(link);
-      return Response.redirect(responseUrl, 303);
-    })(),
-  );
-})
-/*  event.respondWith(Response.redirect('./'));
+  
+  event.respondWith(Response.redirect('./'));
   
   event.waitUntil(async function () {
     const data = await event.request.formData();
@@ -76,12 +64,13 @@ self.addEventListener('fetch', (event) => {
           ? event.resultingClientId
           : event.clientId;
     console.log(clientId)
+    if (!clientId) return;
     const client = await self.clients.get(clientId);
-    
+    if(!client) return
     const file = data.get('file');
     client.postMessage({ file });
   }());
-});*/
+});
 /*addEventListener('fetch', (event) => {
   if (event.request.method !== 'POST') return;
   
