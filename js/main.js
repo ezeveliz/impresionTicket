@@ -217,6 +217,7 @@ function displayImage(file) {
 
 var fileBackup
 
+//Version falla al cargar
 /*function displayPdf(file){
   //document.write(file)
 //  let base64=Buffer.from(file).toString('base64');
@@ -228,7 +229,8 @@ var fileBackup
   document.body.appendChild(ifrm);
 }*/
 
-function displayPdf(file) {
+//Version carga parcialmente no muestra el PDF
+/*function displayPdf(file) {
   // Verificar si el archivo es de tipo PDF
   if (file.type === 'application/pdf') {
     const reader = new FileReader();
@@ -243,6 +245,23 @@ function displayPdf(file) {
       document.body.appendChild(ifrm);
     };
     reader.readAsDataURL(file);
+  } else {
+    console.error('El archivo no es de tipo PDF');
+  }
+}*/
+
+//Versión en prueba
+function displayPdf(file) {
+  // Verificar si el archivo es de tipo PDF
+  if (file.type === 'application/pdf') {
+    const pdfUrl = URL.createObjectURL(file);
+
+    // Crear un iframe y establecer la fuente como la URL del objeto
+    const ifrm = document.createElement('iframe');
+    ifrm.setAttribute('src', pdfUrl);
+    ifrm.style.width = '640px';
+    ifrm.style.height = '480px';
+    document.body.appendChild(ifrm);
   } else {
     console.error('El archivo no es de tipo PDF');
   }
