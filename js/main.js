@@ -1,6 +1,6 @@
 function registerServiceWorker() {
   if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('./sw.js?version=28')
+      navigator.serviceWorker.register('./sw.js?version=30')
       .then(registration => {
         alert('Service Worker registrado con éxito:', registration);
         //console.log('Service Worker registrado con éxito:', registration);
