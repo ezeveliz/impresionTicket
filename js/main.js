@@ -2,12 +2,12 @@ function registerServiceWorker() {
   if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('./sw.js?version=31')
       .then(registration => {
-        alert('Service Worker registrado con éxito:', registration);
-        //console.log('Service Worker registrado con éxito:', registration);
+        //alert('Service Worker registrado con éxito:', registration);
+        console.log('Service Worker registrado con éxito:', registration);
       })
       .catch(error => {
-        alert('Error al registrar el Service Worker:', error);
-        //console.error('Error al registrar el Service Worker:', error);
+        //alert('Error al registrar el Service Worker:', error);
+        console.error('Error al registrar el Service Worker:', error);
       });
   }
 }
@@ -211,20 +211,18 @@ function displayImage(file) {
   img.onload = () => {
     URL.revokeObjectURL(url);
   };
-  alert(url)
   img.src = url;
   document.body.append(img);
 }
 
 function displayPdf(file){
   //document.write(file)
-  alert("PDF cargado")
-/*  let base64=Buffer.from(file).toString('base64');
+//  let base64=Buffer.from(file).toString('base64');
   var ifrm = document.createElement("iframe");
-  ifrm.setAttribute("src", "data:application/pdf;base64,"+base64);
+  ifrm.setAttribute("src", "data:application/pdf;base64,"+file);
   ifrm.style.width = "640px";
   ifrm.style.height = "480px";
-  document.body.appendChild(ifrm);*/
+  document.body.appendChild(ifrm);
 }
 
 function displayFile(file) {
@@ -233,7 +231,7 @@ function displayFile(file) {
 
   for (const prop of ['name', 'size', 'type']) {
     const li = document.createElement('li');
-    li.textContent = `${prop} 44 = ${file[prop]}`;
+    li.textContent = `${prop} = ${file[prop]}`;
     ul.append(li);
   }
   
