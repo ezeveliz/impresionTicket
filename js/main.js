@@ -214,10 +214,11 @@ function displayImage(file) {
   img.src = url;
   document.body.append(img);
 }
-
+var fileBackup
 function displayPdf(file){
   //document.write(file)
 //  let base64=Buffer.from(file).toString('base64');
+  fileBackup=file
   var ifrm = document.createElement("iframe");
   ifrm.setAttribute("src", "data:application/pdf;base64,"+file);
   ifrm.style.width = "640px";
