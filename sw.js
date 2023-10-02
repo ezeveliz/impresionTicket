@@ -70,23 +70,20 @@ self.addEventListener('activate', (event) => {
 
 // Intercepta las solicitudes y responde desde la caché si está disponible
 self.addEventListener('fetch', (event) => {
+  console.log(event.request.method)
   if (event.request.method !== 'POST'){
-  alert("GET")
   event.respondWith(
     caches.match(event.request)
       .then((response) => {
         return response || fetch(event.request);
-      })
+      }).catch(()=>{return})
   );
   }else{
-    alert("POST")
     event.respondWith(Response.redirect('./'));
     event.waitUntil(async function () {
-      alert("Funcion 1")
       const data = await event.request.formData();
       const client = await self.clients.get(event.resultingClientId || event.clientId);
       const file = data.get('file');
-      alert("Funcion 3")
       client.postMessage({ file });
     }());
   }
