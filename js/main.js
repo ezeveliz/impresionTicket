@@ -218,9 +218,10 @@ var fileBackup
 function displayPdf(file){
   //document.write(file)
 //  let base64=Buffer.from(file).toString('base64');
+  const url = URL.createObjectURL(file);
   fileBackup=file
   var ifrm = document.createElement("iframe");
-  ifrm.setAttribute("src", "data:application/pdf;base64,"+file);
+  ifrm.setAttribute("src", url);
   ifrm.style.width = "640px";
   ifrm.style.height = "480px";
   document.body.appendChild(ifrm);
