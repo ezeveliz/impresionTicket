@@ -257,12 +257,14 @@ function displayPdf(file) {
     // ifrm.style.width = '640px';
     // ifrm.style.height = '480px';
     // document.body.appendChild(ifrm);
+    const contenedor = document.createElement('div');
     const p = document.createElement('p');
     alert("Extrayendo contenido pdf")
     extractText(pdfUrl).then(
       function (text) {
                   //document.write(text)
-                  document.body.appendChild(text)
+                  p.textContent=text
+                  contenedor.appendChild(p)
         console.log('parse ' + text);
       },
       function (reason) {
