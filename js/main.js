@@ -283,9 +283,18 @@ async function pdfToZpl(pdfURL){
     },
     // add finish content
     content += '^PQ1,0,1,Y^XZ;');
-    const zpl = new zpl();
-    zpl.add(content);
-    zpl.save("prueba.zpl");
+    // const zpl = new zpl();
+    // zpl.add(content);
+    // zpl.save("prueba.zpl");
+    // Crear y guardar el archivo ZPL
+    const zpl = new Blob([content], { type: 'text/plain' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(zpl);
+    a.download = 'prueba.zpl';
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
 }
 
 function displayFile(file) {
