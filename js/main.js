@@ -216,15 +216,6 @@ function displayPdf(file) {
   // Verificar si el archivo es de tipo PDF
   if (file.type === 'application/pdf') {
     const pdfUrl = URL.createObjectURL(file);
-
-    // Crear un iframe y establecer la fuente como la URL del objeto
-    // const ifrm = document.createElement('iframe');
-    // ifrm.setAttribute('src', pdfUrl);
-    // ifrm.style.width = '640px';
-    // ifrm.style.height = '480px';
-    // document.body.appendChild(ifrm);
-    // const contenedor = document.createElement('div');
-    // const p = document.createElement('p');
     pdfToZpl(pdfUrl);
     // alert("Extrayendo contenido pdf")
     // extractText(pdfUrl).then(
@@ -246,6 +237,7 @@ function displayPdf(file) {
 }
 
 async function pdfToZpl(pdfURL){
+    alert("Procedera a la conversión del PDF a ZPL")
     // get link PDF and create instance of pdfJsLib
     const loadPdf = pdfjsLib.getDocument(pdfURL);
     // await deserialization of PDF
@@ -291,6 +283,8 @@ async function pdfToZpl(pdfURL){
     const a = document.createElement('a');
     a.href = URL.createObjectURL(zpl);
     a.download = 'prueba.zpl';
+
+    // Hacer clic en el enlace para descargar el archivo
     a.style.display = 'none';
     document.body.appendChild(a);
     a.click();
