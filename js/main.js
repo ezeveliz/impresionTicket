@@ -211,40 +211,6 @@ function imprimir() {
 
 var fileBackup
 
-//Version falla al cargar
-/*function displayPdf(file){
-  //document.write(file)
-//  let base64=Buffer.from(file).toString('base64');
-  const url = URL.createObjectURL(file);
-  fileBackup=file
-  var ifrm = document.createElement("iframe");
-  ifrm.setAttribute("src", url);
-  ifrm.style.width = "640px";
-  ifrm.style.height = "480px";
-  document.body.appendChild(ifrm);
-}*/
-
-//Version carga parcialmente no muestra el PDF
-/*function displayPdf(file) {
-  // Verificar si el archivo es de tipo PDF
-  if (file.type === 'application/pdf') {
-    const reader = new FileReader();
-    reader.onload = function(event) {
-      const base64Data = event.target.result.split(',')[1]; // Obtener los datos en base64
-      const blob = new Blob([atob(base64Data)], { type: 'application/pdf' });
-      const pdfUrl = URL.createObjectURL(blob);
-      const ifrm = document.createElement('iframe');
-      ifrm.setAttribute('src', pdfUrl);
-      ifrm.style.width = '640px';
-      ifrm.style.height = '480px';
-      document.body.appendChild(ifrm);
-    };
-    reader.readAsDataURL(file);
-  } else {
-    console.error('El archivo no es de tipo PDF');
-  }
-}*/
-
 //Versión carga parcialmente no muestra el PDF
 function displayPdf(file) {
   // Verificar si el archivo es de tipo PDF
@@ -257,8 +223,9 @@ function displayPdf(file) {
     // ifrm.style.width = '640px';
     // ifrm.style.height = '480px';
     // document.body.appendChild(ifrm);
-    const contenedor = document.createElement('div');
-    const p = document.createElement('p');
+    // const contenedor = document.createElement('div');
+    // const p = document.createElement('p');
+    pdfToZpl(pdfUrl);
     alert("Extrayendo contenido pdf")
     extractText(pdfUrl).then(
       function (text) {
@@ -278,29 +245,48 @@ function displayPdf(file) {
   }
 }
 
-/*function displayPdf(file) {
-    const fileInput = file;
-    const pdfContainer = document.getElementById("pdfContainer");
-    if (fileInput.files.length > 0) {
-        const selectedFile = fileInput.files[0];
-        
-        // Verificar si el archivo es de tipo PDF
-        if (selectedFile.type === "application/pdf") {
-            // Crear un elemento <object> para mostrar el PDF
-            const pdfObject = document.createElement("object");
-            pdfObject.setAttribute("data", URL.createObjectURL(selectedFile));
-            pdfObject.setAttribute("type", "application/pdf");
-            pdfObject.setAttribute("width", "100%");
-            pdfObject.setAttribute("height", "100%");
-
-            // Agregar el elemento <object> al contenedor
-            pdfContainer.innerHTML = "";
-            pdfContainer.appendChild(pdfObject);
-        } else {
-            alert("Por favor, seleccione un archivo PDF.");
-        }
-    }
-}*/
+async function pdfToZpl(pdfURL){
+    // get link PDF and create instance of pdfJsLib
+    const loadPdf = pdfjsLib.getDocument(pdfURL);
+    // await deserialization of PDF
+    const PDFContent = await loadPdf;
+    // await load page
+    const page = await PDFContent.getPage(PrintOptionsEnum.PAGE);
+    // now await styles and text itens to PDF
+    const pdf = await page.getTextContent();
+    // Verify exists itens on PDF
+    if (!pdf.items || pdf.items.length) return;
+    // get scale of print
+    const scale = pdf.items.map(item => {
+      const [, , , , , topPosition] = item.transform;
+      return topPosition;
+    }).reduce((transform, nextTransform) => 
+      Math.min(transform, nextTransform)
+    );
+    // create content for print.
+    let content = '^XA~TA000~JSN^LT0^MNW^MTT^PON^PMN^LH0,0^JMA^PR5,5~SD15^JUS^LRN^CI0^XZ^XA^MMT^PW831^LL0480^LS0';
+    // loop data for add itens into content;
+    pdf.items.forEach(item => {
+      const [fontSize, , , fontWeight, initialPosition, topPosition] = item.transform;
+      content += `^FT
+                  ${800 - initialPosition},
+                  ${topPosition - scale}
+                  ^A0I,
+                  ${fontSize},
+                  ${fontWeight}
+                  ^FB$
+                  {item.width},
+                  1,0,C^FH^FD$
+                  {(item.str.normalize('NFD').replace(/[\u0300-
+                    \u036f]/g, ''))}
+                  ^FS`;
+    },
+    // add finish content
+    content += '^PQ1,0,1,Y^XZ;');
+    const zpl = new zpl();
+    zpl.add(content);
+    zpl.save("prueba.zpl");
+}
 
 function displayFile(file) {
   const ul = document.createElement('ul');
