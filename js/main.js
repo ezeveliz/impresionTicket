@@ -226,18 +226,18 @@ function displayPdf(file) {
     // const contenedor = document.createElement('div');
     // const p = document.createElement('p');
     pdfToZpl(pdfUrl);
-    alert("Extrayendo contenido pdf")
-    extractText(pdfUrl).then(
-      function (text) {
-                  document.write(text)
-                  // p.textContent=text
-                  // contenedor.appendChild(p)
-        console.log('parse ' + text);
-      },
-      function (reason) {
-        console.error(reason);
-      },
-    );
+    // alert("Extrayendo contenido pdf")
+    // extractText(pdfUrl).then(
+    //   function (text) {
+    //               document.write(text)
+    //               // p.textContent=text
+    //               // contenedor.appendChild(p)
+    //     console.log('parse ' + text);
+    //   },
+    //   function (reason) {
+    //     console.error(reason);
+    //   },
+    // );
     
   } else {
     alert('El archivo no es de tipo PDF')
