@@ -1,5 +1,5 @@
-pdfjsLib.GlobalWorkerOptions.workerSrc =
-'https://mozilla.github.io/pdf.js/build/pdf.worker.js';
+// pdfjsLib.GlobalWorkerOptions.workerSrc ='https://mozilla.github.io/pdf.js/build/pdf.worker.js';
+pdfjsLib.GlobalWorkerOptions.workerSrc ='https://github.com/mozilla/pdfjs-dist';
 
 function registerServiceWorker() {
   if ('serviceWorker' in navigator) {
