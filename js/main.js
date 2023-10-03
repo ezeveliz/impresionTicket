@@ -237,7 +237,7 @@ function displayPdf(file) {
 }
 
 function pdfToZpl(pdfURL){
-    alert("Procedera a la conversión del PDF a ZPL")
+    alert("Procedera a la conversión del PDF a ZPL");
     // get link PDF and create instance of pdfJsLib
     const loadPdf = pdfjsLib.getDocument(pdfURL);
     // await deserialization of PDF
@@ -246,6 +246,8 @@ function pdfToZpl(pdfURL){
     const page = PDFContent.getPage(PrintOptionsEnum.PAGE);
     // now await styles and text itens to PDF
     const pdf = page.getTextContent();
+
+    alert("LLEGO 1");
     // Verify exists itens on PDF
     if (!pdf.items || pdf.items.length) return;
     // get scale of print
@@ -255,6 +257,7 @@ function pdfToZpl(pdfURL){
     }).reduce((transform, nextTransform) => 
       Math.min(transform, nextTransform)
     );
+    alert("LLEGO 2");
     // create content for print.
     let content = '^XA~TA000~JSN^LT0^MNW^MTT^PON^PMN^LH0,0^JMA^PR5,5~SD15^JUS^LRN^CI0^XZ^XA^MMT^PW831^LL0480^LS0';
     // loop data for add itens into content;
@@ -275,6 +278,7 @@ function pdfToZpl(pdfURL){
     },
     // add finish content
     content += '^PQ1,0,1,Y^XZ;');
+    alert("LLEGO 3");
     // const zpl = new zpl();
     // zpl.add(content);
     // zpl.save("prueba.zpl");
@@ -283,7 +287,7 @@ function pdfToZpl(pdfURL){
     const a = document.createElement('a');
     a.href = URL.createObjectURL(zpl);
     a.download = 'prueba.zpl';
-
+    alert("LLEGO 4");
     // Hacer clic en el enlace para descargar el archivo
     a.style.display = 'none';
     document.body.appendChild(a);
