@@ -236,16 +236,16 @@ function displayPdf(file) {
   }
 }
 
-async function pdfToZpl(pdfURL){
+function pdfToZpl(pdfURL){
     alert("Procedera a la conversión del PDF a ZPL")
     // get link PDF and create instance of pdfJsLib
     const loadPdf = pdfjsLib.getDocument(pdfURL);
     // await deserialization of PDF
-    const PDFContent = await loadPdf;
+    const PDFContent = loadPdf;
     // await load page
-    const page = await PDFContent.getPage(PrintOptionsEnum.PAGE);
+    const page = PDFContent.getPage(PrintOptionsEnum.PAGE);
     // now await styles and text itens to PDF
-    const pdf = await page.getTextContent();
+    const pdf = page.getTextContent();
     // Verify exists itens on PDF
     if (!pdf.items || pdf.items.length) return;
     // get scale of print
