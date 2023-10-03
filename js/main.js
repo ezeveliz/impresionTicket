@@ -205,17 +205,11 @@ function imprimir() {
 
 /*** TEST IMG */
 
-function displayImage(file) {
-  const img = new Image();
-  const url = URL.createObjectURL(file);
-  img.onload = () => {
-    URL.revokeObjectURL(url);
-  };
-  img.src = url;
-  document.body.append(img);
-}
+
 var fileBackup
-function displayPdf(file){
+
+//Version falla al cargar
+/*function displayPdf(file){
   //document.write(file)
 //  let base64=Buffer.from(file).toString('base64');
   const url = URL.createObjectURL(file);
@@ -225,7 +219,70 @@ function displayPdf(file){
   ifrm.style.width = "640px";
   ifrm.style.height = "480px";
   document.body.appendChild(ifrm);
+}*/
+
+//Version carga parcialmente no muestra el PDF
+/*function displayPdf(file) {
+  // Verificar si el archivo es de tipo PDF
+  if (file.type === 'application/pdf') {
+    const reader = new FileReader();
+    reader.onload = function(event) {
+      const base64Data = event.target.result.split(',')[1]; // Obtener los datos en base64
+      const blob = new Blob([atob(base64Data)], { type: 'application/pdf' });
+      const pdfUrl = URL.createObjectURL(blob);
+      const ifrm = document.createElement('iframe');
+      ifrm.setAttribute('src', pdfUrl);
+      ifrm.style.width = '640px';
+      ifrm.style.height = '480px';
+      document.body.appendChild(ifrm);
+    };
+    reader.readAsDataURL(file);
+  } else {
+    console.error('El archivo no es de tipo PDF');
+  }
+}*/
+
+//Versión carga parcialmente no muestra el PDF
+function displayPdf(file) {
+  // Verificar si el archivo es de tipo PDF
+  if (file.type === 'application/pdf') {
+    const pdfUrl = URL.createObjectURL(file);
+
+    // Crear un iframe y establecer la fuente como la URL del objeto
+    const ifrm = document.createElement('iframe');
+    ifrm.setAttribute('src', pdfUrl);
+    ifrm.style.width = '640px';
+    ifrm.style.height = '480px';
+    document.body.appendChild(ifrm);
+  } else {
+    alert('El archivo no es de tipo PDF')
+    console.error('El archivo no es de tipo PDF');
+  }
 }
+
+/*function displayPdf(file) {
+    const fileInput = file;
+    const pdfContainer = document.getElementById("pdfContainer");
+    if (fileInput.files.length > 0) {
+        const selectedFile = fileInput.files[0];
+        
+        // Verificar si el archivo es de tipo PDF
+        if (selectedFile.type === "application/pdf") {
+            // Crear un elemento <object> para mostrar el PDF
+            const pdfObject = document.createElement("object");
+            pdfObject.setAttribute("data", URL.createObjectURL(selectedFile));
+            pdfObject.setAttribute("type", "application/pdf");
+            pdfObject.setAttribute("width", "100%");
+            pdfObject.setAttribute("height", "100%");
+
+            // Agregar el elemento <object> al contenedor
+            pdfContainer.innerHTML = "";
+            pdfContainer.appendChild(pdfObject);
+        } else {
+            alert("Por favor, seleccione un archivo PDF.");
+        }
+    }
+}*/
 
 function displayFile(file) {
   const ul = document.createElement('ul');
@@ -239,6 +296,7 @@ function displayFile(file) {
   
   displayPdf(file);
 }
+
 navigator.serviceWorker.addEventListener("message", (event) => {
   alert("On message")
   const file = event.data.file;
