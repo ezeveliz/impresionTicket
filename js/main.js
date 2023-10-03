@@ -1,3 +1,6 @@
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+'https://mozilla.github.io/pdf.js/build/pdf.worker.js';
+
 function registerServiceWorker() {
   if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('./sw.js?version=31')
@@ -254,6 +257,17 @@ function displayPdf(file) {
     ifrm.style.width = '640px';
     ifrm.style.height = '480px';
     document.body.appendChild(ifrm);
+    alert("Extrayendo contenido pdf")
+    extractText(pdfUrl).then(
+      function (text) {
+                  document.write(text)
+        console.log('parse ' + text);
+      },
+      function (reason) {
+        console.error(reason);
+      },
+    );
+    
   } else {
     alert('El archivo no es de tipo PDF')
     console.error('El archivo no es de tipo PDF');
@@ -296,6 +310,39 @@ function displayFile(file) {
   
   displayPdf(file);
 }
+
+function extractText(pdfUrl) {
+  var pdf = pdfjsLib.getDocument(pdfUrl);
+  return pdf.promise.then(function (pdf) {
+    var totalPageCount = pdf.numPages;
+    var countPromises = [];
+    for (
+      var currentPage = 1;
+      currentPage <= totalPageCount;
+      currentPage++
+    ) {
+      var page = pdf.getPage(currentPage);
+      countPromises.push(
+        page.then(function (page) {
+          var textContent = page.getTextContent();
+          return textContent.then(function (text) {
+            return text.items
+              .map(function (s) {
+                return s.str;
+              })
+              .join('');
+          });
+        }),
+      );
+    }
+
+    return Promise.all(countPromises).then(function (texts) {
+      return texts.join('');
+    });
+  });
+}
+
+
 
 navigator.serviceWorker.addEventListener("message", (event) => {
   alert("On message")
