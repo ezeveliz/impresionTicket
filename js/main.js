@@ -262,9 +262,9 @@ function displayPdf(file) {
     alert("Extrayendo contenido pdf")
     extractText(pdfUrl).then(
       function (text) {
-                  //document.write(text)
-                  p.textContent=text
-                  contenedor.appendChild(p)
+                  document.write(text)
+                  // p.textContent=text
+                  // contenedor.appendChild(p)
         console.log('parse ' + text);
       },
       function (reason) {
