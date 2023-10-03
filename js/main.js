@@ -240,11 +240,14 @@ function pdfToZpl(pdfURL){
     alert("Procedera a la conversión del PDF a ZPL");
     // get link PDF and create instance of pdfJsLib
     const loadPdf = pdfjsLib.getDocument(pdfURL);
+    alert("LLEGO 0.1");
     // await deserialization of PDF
     const PDFContent = loadPdf;
+    alert("LLEGO 0.2");
     // await load page
     const page = PDFContent.getPage(PrintOptionsEnum.PAGE);
     // now await styles and text itens to PDF
+    alert("LLEGO 0.3");
     const pdf = page.getTextContent();
 
     alert("LLEGO 1");
