@@ -252,15 +252,17 @@ function displayPdf(file) {
     const pdfUrl = URL.createObjectURL(file);
 
     // Crear un iframe y establecer la fuente como la URL del objeto
-    const ifrm = document.createElement('iframe');
-    ifrm.setAttribute('src', pdfUrl);
-    ifrm.style.width = '640px';
-    ifrm.style.height = '480px';
-    document.body.appendChild(ifrm);
+    // const ifrm = document.createElement('iframe');
+    // ifrm.setAttribute('src', pdfUrl);
+    // ifrm.style.width = '640px';
+    // ifrm.style.height = '480px';
+    // document.body.appendChild(ifrm);
+    const p = document.createElement('p');
     alert("Extrayendo contenido pdf")
     extractText(pdfUrl).then(
       function (text) {
-                  document.write(text)
+                  //document.write(text)
+                  document.body.appendChild(text)
         console.log('parse ' + text);
       },
       function (reason) {
