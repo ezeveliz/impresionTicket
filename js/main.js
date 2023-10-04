@@ -262,7 +262,10 @@ async function pdfToZpl(pdfURL) {
 
     alert("LLEGO 1");
     // Verify exists itens on PDF
-    if (!pdf.items || pdf.items.length) return;
+    if (!pdf.items || pdf.items.length) {
+      alert("Saliendo de conversión");
+      return;
+    }
     alert("LLEGO 1.5");
     // get scale of print
     const scale = pdf.items.map(item => {
