@@ -250,8 +250,9 @@ async function pdfToZpl(pdfURL) {
     const PDFContent = await loadPdf.promise;
     alert("Llegó 0.2");
 
-    // await load page
-    const page = await PDFContent.getPage(PrintOptionsEnum.PAGE);
+    // Obtener la página
+    const pageNumber = 1; // Cambia el número de página según tus necesidades
+    const page = await PDFContent.getPage(pageNumber);
     alert("Llegó 0.3");
 
     // Obtener el contenido de texto
@@ -262,6 +263,7 @@ async function pdfToZpl(pdfURL) {
     alert("LLEGO 1");
     // Verify exists itens on PDF
     if (!pdf.items || pdf.items.length) return;
+    alert("LLEGO 1.5");
     // get scale of print
     const scale = pdf.items.map(item => {
       const [, , , , , topPosition] = item.transform;
