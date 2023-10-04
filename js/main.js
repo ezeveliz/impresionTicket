@@ -259,6 +259,8 @@ async function pdfToZpl(pdfURL) {
     // Obtener el contenido de texto
     const pdf = await page.getTextContent();
 
+    alert(pdf.getTextContent);
+
     alert("LLEGO 1");
     // Verify exists itens on PDF
     if (!pdf.items || pdf.items.length) return;
