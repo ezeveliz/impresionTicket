@@ -1,5 +1,6 @@
-// pdfjsLib.GlobalWorkerOptions.workerSrc ='https://mozilla.github.io/pdf.js/build/pdf.worker.js';
-pdfjsLib.GlobalWorkerOptions.workerSrc ='https://github.com/mozilla/pdfjs-dist';
+pdfjsLib.GlobalWorkerOptions.workerSrc ='https://mozilla.github.io/pdf.js/build/pdf.worker.js';
+//pdfjsLib.GlobalWorkerOptions.workerSrc ='https://github.com/mozilla/pdfjs-dist';
+//import pdfJsLib from "https://example.com/nombreDeLaLibreria.js";
 
 function registerServiceWorker() {
   if ('serviceWorker' in navigator) {
@@ -240,7 +241,7 @@ async function pdfToZpl(pdfURL) {
     alert("Procederá a la conversión del PDF a ZPL");
 
     // Obtener el PDF y crear una instancia de pdfJsLib
-    const loadPdf = await pdfjsLib.getDocument(pdfURL);
+    const loadPdf = await pdfJsLib.getDocument(pdfURL);
     alert("Llegó 0.1");
 
     // Deserializar el PDF
