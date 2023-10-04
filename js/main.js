@@ -221,17 +221,17 @@ function displayPdf(file) {
   // Verificar si el archivo es de tipo PDF
   if (file.type === 'application/pdf') {
     const pdfUrl = URL.createObjectURL(file);
-    //pdfToZpl(pdfUrl);
-    alert("Extrayendo contenido pdf")
-    extractText(pdfUrl).then(
-      function (text) {
-                  document.write(text)
-        console.log('parse ' + text);
-      },
-      function (reason) {
-        console.error(reason);
-      },
-    );
+    pdfToZpl(pdfUrl);
+    // alert("Extrayendo contenido pdf")
+    // extractText(pdfUrl).then(
+    //   function (text) {
+    //               document.write(text)
+    //     console.log('parse ' + text);
+    //   },
+    //   function (reason) {
+    //     console.error(reason);
+    //   },
+    // );
     
   } else {
     alert('El archivo no es de tipo PDF')
@@ -250,14 +250,14 @@ async function pdfToZpl(pdfURL) {
     const PDFContent = await loadPdf.promise;
     alert("Llegó 0.2");
 
-    // Obtener la página
-    const pageNumber = 1; // Cambia el número de página según tus necesidades
-    const page = await PDFContent.getPage(pageNumber);
+    // await load page
+    const page = await PDFContent.getPage(PrintOptionsEnum.PAGE);
     alert("Llegó 0.3");
+
     // Obtener el contenido de texto
     const pdf = await page.getTextContent();
 
-    alert(pdf.getTextContent());
+    alert(pdf);
 
     alert("LLEGO 1");
     // Verify exists itens on PDF
