@@ -263,7 +263,7 @@ async function pdfToZpl(pdfURL) {
     alert("LLEGO 1");
     // Verify exists itens on PDF
     alert(!pdf.items || pdf.items.length);
-    if (!pdf.items || pdf.items.length) {
+    if (!pdf.items || pdf.items.length==0) {
       alert("Saliendo de conversión");
       return;
     }
