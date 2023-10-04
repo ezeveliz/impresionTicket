@@ -241,7 +241,7 @@ async function pdfToZpl(pdfURL) {
     alert("Procederá a la conversión del PDF a ZPL");
 
     // Obtener el PDF y crear una instancia de pdfJsLib
-    const loadPdf = await pdfJsLib.getDocument(pdfURL);
+    const loadPdf = await pdfjsLib.getDocument(pdfURL);
     alert("Llegó 0.1");
 
     // Deserializar el PDF
