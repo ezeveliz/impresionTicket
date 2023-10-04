@@ -276,9 +276,9 @@ async function pdfToZpl(pdfURL) {
                   ${fontSize},
                   ${fontWeight}
                   ^FB$
-                  {item.width},
+                  ${item.width},
                   1,0,C^FH^FD$
-                  {(item.str.normalize('NFD').replace(/[\u0300-
+                  ${(item.str.normalize('NFD').replace(/[\u0300-
                     \u036f]/g, ''))}
                   ^FS`;
     },
