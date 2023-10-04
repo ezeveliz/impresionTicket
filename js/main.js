@@ -8,15 +8,15 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = '//mozilla.github.io/pdf.js/build/pdf.w
 
 function registerServiceWorker() {
   if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('./sw.js?version=31')
-      .then(registration => {
-        //alert('Service Worker registrado con éxito:', registration);
-        console.log('Service Worker registrado con éxito:', registration);
-      })
-      .catch(error => {
-        //alert('Error al registrar el Service Worker:', error);
-        console.error('Error al registrar el Service Worker:', error);
-      });
+    navigator.serviceWorker.register('./sw.js?version=31')
+    .then(registration => {
+      //alert('Service Worker registrado con éxito:', registration);
+      console.log('Service Worker registrado con éxito:', registration);
+    })
+    .catch(error => {
+      //alert('Error al registrar el Service Worker:', error);
+      console.error('Error al registrar el Service Worker:', error);
+    });
   }
 }
 
@@ -24,48 +24,38 @@ function registerServiceWorker() {
 var selected_device;
 let contenidoZebra;
 var devices = [];
-function setupZebra()
-{
-	//Get the default device from the application as a first step. Discovery takes longer to complete.
-	BrowserPrint.getDefaultDevice("printer", function(device)
-			{
-		
-				//Add device to list of devices and to html select element
-				selected_device = device;
-				devices.push(device);
-				var html_select = document.getElementById("selected_device");
-				var option = document.createElement("option");
-				option.text = device.name;
-				html_select.add(option);
-				
-				//Discover any other devices available to the application
-				BrowserPrint.getLocalDevices(function(device_list){
-					for(var i = 0; i < device_list.length; i++)
-					{
-						//Add device to list of devices and to html select element
-						var device = device_list[i];
-						if(!selected_device || device.uid != selected_device.uid)
-						{
-							devices.push(device);
-							var option = document.createElement("option");
-							option.text = device.name;
-							option.value = device.uid;
-							html_select.add(option);
-						}
-					}
-					
-				}, function(){alert("Error getting local devices")},"printer");
-				
-			}, function(error){
-				alert(error);
-			})
+function setupZebra(){
+  //Get the default device from the application as a first step. Discovery takes longer to complete.
+  BrowserPrint.getDefaultDevice("printer", function(device){
+    //Add device to list of devices and to html select element
+    selected_device = device;
+    devices.push(device);
+    var html_select = document.getElementById("selected_device");
+    var option = document.createElement("option");
+    option.text = device.name;
+    html_select.add(option);
+    //Discover any other devices available to the application
+    BrowserPrint.getLocalDevices(function(device_list){
+      for(var i = 0; i < device_list.length; i++){
+        //Add device to list of devices and to html select element
+        var device = device_list[i];
+        if(!selected_device || device.uid != selected_device.uid){
+          devices.push(device);
+          var option = document.createElement("option");
+          option.text = device.name;
+          option.value = device.uid;
+          html_select.add(option);
+        }
+      }
+    }, function(){alert("Error getting local devices")},"printer");
+  }, function(error){
+    alert(error);
+  })
 }
 
-function onDeviceSelected(selected)
-{
+function onDeviceSelected(selected){
 	for(var i = 0; i < devices.length; ++i){
-		if(selected.value == devices[i].uid)
-		{
+		if(selected.value == devices[i].uid){
 			selected_device = devices[i];
 			return;
 		}
@@ -124,7 +114,6 @@ function imprimir() {
       alert("No se ha establecido una conexión con una impresora Zebra.");
       return;
     }
-
     // Realizar la impresión utilizando la conexión Bluetooth previamente establecida
     if (this.fileInput.value === '') {
       alert('Ningún archivo seleccionado');
@@ -215,9 +204,8 @@ function imprimir() {
 /*** TEST IMG */
 
 
-var fileBackup
+var fileBackup;
 
-//Versión carga parcialmente no muestra el PDF
 function displayPdf(file) {
   // Verificar si el archivo es de tipo PDF
   if (file.type === 'application/pdf') {
@@ -298,6 +286,15 @@ async function pdfToZpl(pdfURL) {
 }
 
 function displayFile(file) {
+  const input = document.getElementById('fileInput');
+
+  // Crea un objeto FormData para asignar el archivo al input file
+  const formData = new FormData();
+  formData.append(file.name, file, file.name);
+
+  // Establece el valor del input file con el objeto FormData
+  input.files = formData.getAll(file.name);
+  
   const ul = document.createElement('ul');
   document.body.append(ul);
 
