@@ -275,11 +275,10 @@ async function pdfToZpl(pdfURL) {
                   ^A0I,
                   ${fontSize},
                   ${fontWeight}
-                  ^FB$
+                  ^FB
                   ${item.width},
-                  1,0,C^FH^FD$
-                  ${(item.str.normalize('NFD').replace(/[\u0300-
-                    \u036f]/g, ''))}
+                  1,0,C^FH^FD
+                  ${(item.str.normalize('NFD').replace(/[\u0300-\u036f]/g, ''))}
                   ^FS`;
     },
     // add finish content
