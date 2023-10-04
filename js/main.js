@@ -22,6 +22,7 @@ function registerServiceWorker() {
 
 /**************ZEBRA ******************/
 var selected_device;
+let contenidoZebra;
 var devices = [];
 function setupZebra()
 {
@@ -82,9 +83,9 @@ function sendFile(fileUrl){
 }
 
 
-function writeToSelectedPrinter(dataToWrite)
+function writeToSelectedPrinter()
 {
-	selected_device.send(dataToWrite, undefined, errorCallback);
+	selected_device.send(contenidoZebra, undefined, errorCallback);
 }
 
 /*********************************************** */
@@ -283,21 +284,17 @@ async function pdfToZpl(pdfURL) {
     },
     // add finish content
     content += '^PQ1,0,1,Y^XZ;');
-    alert("LLEGO 3");
-    // const zpl = new zpl();
-    // zpl.add(content);
-    // zpl.save("prueba.zpl");
-    // Crear y guardar el archivo ZPL
-    const zpl = new Blob([content], { type: 'text/plain' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(zpl);
-    a.download = 'prueba';
-    alert("LLEGO 4");
-    // Hacer clic en el enlace para descargar el archivo
-    a.style.display = 'none';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    contenidoZebra=content;
+    // const zpl = new Blob([content], { type: 'text/plain' });
+    // const a = document.createElement('a');
+    // a.href = URL.createObjectURL(zpl);
+    // a.download = 'prueba';
+    // alert("LLEGO 4");
+    // // Hacer clic en el enlace para descargar el archivo
+    // a.style.display = 'none';
+    // document.body.appendChild(a);
+    // a.click();
+    // document.body.removeChild(a);
 }
 
 function displayFile(file) {
