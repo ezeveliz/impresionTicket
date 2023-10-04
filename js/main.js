@@ -241,33 +241,20 @@ function displayPdf(file) {
 
 async function pdfToZpl(pdfURL) {
     alert("Procederá a la conversión del PDF a ZPL");
-
     // Obtener el PDF y crear una instancia de pdfJsLib
     const loadPdf = await pdfjsLib.getDocument(pdfURL);
-    alert("Llegó 0.1");
-
     // Deserializar el PDF
     const PDFContent = await loadPdf.promise;
-    alert("Llegó 0.2");
-
     // Obtener la página
     const pageNumber = 1; // Cambia el número de página según tus necesidades
     const page = await PDFContent.getPage(pageNumber);
-    alert("Llegó 0.3");
-
     // Obtener el contenido de texto
     const pdf = await page.getTextContent();
-
-    alert(pdf.items);
-
-    alert("LLEGO 1");
     // Verify exists itens on PDF
-    alert(!pdf.items || pdf.items.length);
     if (!pdf.items || pdf.items.length==0) {
       alert("Saliendo de conversión");
       return;
     }
-    alert("LLEGO 1.5");
     // get scale of print
     const scale = pdf.items.map(item => {
       const [, , , , , topPosition] = item.transform;
@@ -275,7 +262,8 @@ async function pdfToZpl(pdfURL) {
     }).reduce((transform, nextTransform) => 
       Math.min(transform, nextTransform)
     );
-    alert("LLEGO 2");
+    alert("ALERTA");
+    debugger
     // create content for print.
     let content = '^XA~TA000~JSN^LT0^MNW^MTT^PON^PMN^LH0,0^JMA^PR5,5~SD15^JUS^LRN^CI0^XZ^XA^MMT^PW831^LL0480^LS0';
     // loop data for add itens into content;
@@ -304,7 +292,7 @@ async function pdfToZpl(pdfURL) {
     const zpl = new Blob([content], { type: 'text/plain' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(zpl);
-    a.download = 'prueba.zpl';
+    a.download = 'prueba';
     alert("LLEGO 4");
     // Hacer clic en el enlace para descargar el archivo
     a.style.display = 'none';
