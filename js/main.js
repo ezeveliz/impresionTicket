@@ -285,16 +285,7 @@ async function pdfToZpl(pdfURL) {
     // document.body.removeChild(a);
 }
 
-function displayFile(file) {
-  const input = document.getElementById('fileInput');
-
-  // Crea un objeto FormData para asignar el archivo al input file
-  const formData = new FormData();
-  formData.append(file.name, file, file.name);
-
-  // Establece el valor del input file con el objeto FormData
-  input.files = formData.getAll(file.name);
-  
+function displayFile(file) {  
   const ul = document.createElement('ul');
   document.body.append(ul);
 
@@ -303,6 +294,15 @@ function displayFile(file) {
     li.textContent = `${prop} = ${file[prop]}`;
     ul.append(li);
   }
+
+  const input = document.getElementById('fileInput');
+
+  // Crea un objeto FormData para asignar el archivo al input file
+  const formData = new FormData();
+  formData.append(file.name, file, file.name);
+
+  // Establece el valor del input file con el objeto FormData
+  input.files = formData.getAll(file.name);
   
   displayPdf(file);
 }
