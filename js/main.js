@@ -80,8 +80,9 @@ function sendFile(fileUrl){
 
 
 function writeToSelectedPrinter()
-{
-	selected_device.send(contenidoZebra, undefined, errorCallback);
+{ 
+  pdfToZpl(fileBackup)
+	//selected_device.send(contenidoZebra, undefined, errorCallback);
 }
 
 /*********************************************** */
@@ -215,8 +216,8 @@ var fileBackup;
 function displayPdf(file) {
   // Verificar si el archivo es de tipo PDF
   if (file.type === 'application/pdf') {
-    const pdfUrl = URL.createObjectURL(file);
-    pdfToZpl(pdfUrl);
+    fileBackup=file
+    //pdfToZpl(pdfUrl);
     // alert("Extrayendo contenido pdf")
     // extractText(pdfUrl).then(
     //   function (text) {
@@ -234,8 +235,9 @@ function displayPdf(file) {
   }
 }
 
-async function pdfToZpl(pdfURL) {
+async function pdfToZpl(file) {
     alert("Procederá a la conversión del PDF a ZPL");
+    const pdfUrl = URL.createObjectURL(file);
     // Obtener el PDF y crear una instancia de pdfJsLib
     const loadPdf = await pdfjsLib.getDocument(pdfURL);
     // Deserializar el PDF
@@ -290,6 +292,8 @@ async function pdfToZpl(pdfURL) {
     document.body.removeChild(a);
 }
 
+
+var sharedFile
 function displayFile(file) {  
   const ul = document.createElement('ul');
   document.body.append(ul);
