@@ -4,6 +4,12 @@
 // Loaded via <script> tag, create shortcut to access PDF.js exports.
 var pdfjsLib = window['pdfjs-dist/build/pdf'];
 // The workerSrc property shall be specified.
+
+/**
+ * If you need the last version of pdf.worker.js you can get it from:
+ * pdfjsLib.GlobalWorkerOptions.workerSrc = '//mozilla.github.io/pdf.js/build/pdf.worker.js';
+ * 
+ */
 pdfjsLib.GlobalWorkerOptions.workerSrc = './lib/pdfWorker.js';
 
 function registerServiceWorker() {
@@ -252,12 +258,12 @@ async function pdfToZpl(pdfURL) {
       Math.min(transform, nextTransform)
     );
     // create content for print.
-    let content = '^XA~TA000~JSN^LT0^MNW^MTT^PON^PMN^LH0,0^JMA^PR5,5~SD15^JUS^LRN^CI0^XZ^XA^MMT^PW831^LL0480^LS0';
+    let content = '^XA~TA000~JSN^LT0^MNW^MTT^PON^PMN^LH0,0^JMA^PR5,5~SD15^JUS^LRN^CI0^XZ^XA^MMT^PW831^LL0480^LS0^XA';
     // loop data for add itens into content;
     pdf.items.forEach(item => {
       const [fontSize, , , fontWeight, initialPosition, topPosition] = item.transform;
       content += `^FT
-                  ${800 - initialPosition},
+                  ${405-(initialPosition<125?initialPosition+18:initialPosition)},
                   ${topPosition - scale}
                   ^A0I,
                   ${fontSize},
