@@ -251,8 +251,6 @@ async function pdfToZpl(pdfURL) {
     }).reduce((transform, nextTransform) => 
       Math.min(transform, nextTransform)
     );
-    alert("ALERTA");
-    debugger
     // create content for print.
     let content = '^XA~TA000~JSN^LT0^MNW^MTT^PON^PMN^LH0,0^JMA^PR5,5~SD15^JUS^LRN^CI0^XZ^XA^MMT^PW831^LL0480^LS0';
     // loop data for add itens into content;
@@ -277,7 +275,6 @@ async function pdfToZpl(pdfURL) {
     const a = document.createElement('a');
     a.href = URL.createObjectURL(zpl);
     a.download = 'prueba';
-    alert("LLEGO 4");
     // Hacer clic en el enlace para descargar el archivo
     a.style.display = 'none';
     document.body.appendChild(a);
