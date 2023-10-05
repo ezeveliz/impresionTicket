@@ -4,7 +4,7 @@
 // Loaded via <script> tag, create shortcut to access PDF.js exports.
 var pdfjsLib = window['pdfjs-dist/build/pdf'];
 // The workerSrc property shall be specified.
-pdfjsLib.GlobalWorkerOptions.workerSrc = '//mozilla.github.io/pdf.js/build/pdf.worker.js';
+pdfjsLib.GlobalWorkerOptions.workerSrc = './lib/pdfWorker.js';
 
 function registerServiceWorker() {
   if ('serviceWorker' in navigator) {
@@ -271,6 +271,8 @@ async function pdfToZpl(pdfURL) {
     // add finish content
     content += '^PQ1,0,1,Y^XZ;';
     contenidoZebra=content;
+    console.log("****")
+    console.log(content)
     const zpl = new Blob([content], { type: 'text/plain' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(zpl);
@@ -343,3 +345,5 @@ navigator.serviceWorker.addEventListener("message", (event) => {
   displayFile(file);
 });
 
+
+pdfToZpl("https://andresdorado13.github.io/impresionTicket/archivoPrueba.pdf")
