@@ -245,6 +245,7 @@ async function pdfToZpl(pdfURL) {
     const page = await PDFContent.getPage(pageNumber);
     // Obtener el contenido de texto
     const pdf = await page.getTextContent();
+    debugger
     // Verify exists itens on PDF
     if (!pdf.items || pdf.items.length==0) {
       alert("Saliendo de conversión");
@@ -273,7 +274,7 @@ async function pdfToZpl(pdfURL) {
                   1,0,C^FH^FD
                   ${(item.str.normalize('NFD').replace(/[\u0300-\u036f]/g, ''))}
                   ^FS`;
-    })
+    }),
     // add finish content
     content += '^PQ1,0,1,Y^XZ;';
     contenidoZebra=content;
