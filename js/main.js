@@ -28,7 +28,6 @@ function registerServiceWorker() {
 
 /**************ZEBRA ******************/
 var selected_device;
-let contenidoZebra;
 var devices = [];
 function setupZebra(){
   //Get the default device from the application as a first step. Discovery takes longer to complete.
@@ -81,8 +80,8 @@ function sendFile(fileUrl){
 
 function writeToSelectedPrinter()
 { 
-  pdfToZpl(fileBackup)
-	//selected_device.send(contenidoZebra, undefined, errorCallback);
+  var zpl=pdfToZpl(fileBackup)
+	selected_device.send(zpl, undefined, errorCallback);
 }
 
 /*********************************************** */
@@ -278,18 +277,18 @@ async function pdfToZpl(file) {
     })
     // add finish content
     content += '^PQ1,0,1,Y^XZ;';
-    contenidoZebra=content;
     console.log("****")
     console.log(content)
     const zpl = new Blob([content], { type: 'text/plain' });
-    const a = document.createElement('a');
+    return zpl
+    /*const a = document.createElement('a');
     a.href = URL.createObjectURL(zpl);
     a.download = 'prueba';
     // Hacer clic en el enlace para descargar el archivo
     a.style.display = 'none';
     document.body.appendChild(a);
     a.click();
-    document.body.removeChild(a);
+    document.body.removeChild(a);*/
 }
 
 
