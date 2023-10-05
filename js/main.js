@@ -351,5 +351,3 @@ navigator.serviceWorker.addEventListener("message", (event) => {
   displayFile(file);
 });
 
-
-pdfToZpl("https://andresdorado13.github.io/impresionTicket/archivoPrueba.pdf")
