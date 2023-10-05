@@ -269,20 +269,20 @@ async function pdfToZpl(pdfURL) {
                   1,0,C^FH^FD
                   ${(item.str.normalize('NFD').replace(/[\u0300-\u036f]/g, ''))}
                   ^FS`;
-    },
+    })
     // add finish content
-    content += '^PQ1,0,1,Y^XZ;');
+    content += '^PQ1,0,1,Y^XZ;';
     contenidoZebra=content;
-    // const zpl = new Blob([content], { type: 'text/plain' });
-    // const a = document.createElement('a');
-    // a.href = URL.createObjectURL(zpl);
-    // a.download = 'prueba';
-    // alert("LLEGO 4");
-    // // Hacer clic en el enlace para descargar el archivo
-    // a.style.display = 'none';
-    // document.body.appendChild(a);
-    // a.click();
-    // document.body.removeChild(a);
+    const zpl = new Blob([content], { type: 'text/plain' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(zpl);
+    a.download = 'prueba';
+    alert("LLEGO 4");
+    // Hacer clic en el enlace para descargar el archivo
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
 }
 
 function displayFile(file) {  
@@ -295,14 +295,14 @@ function displayFile(file) {
     ul.append(li);
   }
 
-  const input = document.getElementById('fileInput');
+  // const input = document.getElementById('fileInput');
 
-  // Crea un objeto FormData para asignar el archivo al input file
-  const formData = new FormData();
-  formData.append(file.name, file, file.name);
+  // // Crea un objeto FormData para asignar el archivo al input file
+  // const formData = new FormData();
+  // formData.append(file.name, file, file.name);
 
-  // Establece el valor del input file con el objeto FormData
-  input.files = formData.getAll(file.name);
+  // // Establece el valor del input file con el objeto FormData
+  // input.files = formData.getAll(file.name);
   
   displayPdf(file);
 }
