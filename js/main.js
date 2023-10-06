@@ -46,9 +46,6 @@ function flashText() {
 }
 
 function setupZebra(){
-  if (storedDevices) {
-    devices = JSON.parse(storedDevices);
-  }
   nuevoParrafo = document.createElement("p");
   nuevoParrafo.textContent = "Buscando dispositivos";
   document.body.appendChild(nuevoParrafo);
@@ -58,7 +55,6 @@ function setupZebra(){
     //Add device to list of devices and to html select element
     selected_device = device;
     devices.push(device);
-    localStorage.setItem('devices', JSON.stringify(devices));
     var html_select = document.getElementById("selected_device");
     var option = document.createElement("option");
     option.text = device.name;
@@ -70,17 +66,22 @@ function setupZebra(){
         var device = device_list[i];
         if(!selected_device || device.uid != selected_device.uid){
           devices.push(device);
-          localStorage.setItem('devices', JSON.stringify(devices));
           var option = document.createElement("option");
           option.text = device.name;
           option.value = device.uid;
           html_select.add(option);
         }
       }
+      localStorage.setItem('devices', JSON.stringify(devices));
       clearInterval(nIntervId);
       nIntervId = null;
       nuevoParrafo.textContent = "Dispositivos encontrados"
-    }, function(){alert("Error getting local devices")},"printer");
+    }, function(){
+      alert("Error getting local devices")
+      clearInterval(nIntervId);
+      nIntervId = null;
+      nuevoParrafo.textContent = "Error al buscar dispositivos"
+    },"printer");
   }, function(error){
     alert(error);
   })
@@ -240,28 +241,6 @@ function imprimir() {
 
 var fileBackup;
 
-function displayPdf(file) {
-  // Verificar si el archivo es de tipo PDF
-  if (file.type === 'application/pdf') {
-    fileBackup=file
-    //pdfToZpl(pdfUrl);
-    // alert("Extrayendo contenido pdf")
-    // extractText(pdfUrl).then(
-    //   function (text) {
-    //               document.write(text)
-    //     console.log('parse ' + text);
-    //   },
-    //   function (reason) {
-    //     console.error(reason);
-    //   },
-    // );
-    
-  } else {
-    alert('El archivo no es de tipo PDF')
-    console.error('El archivo no es de tipo PDF');
-  }
-}
-
 async function pdfToZpl(file) {
     alert("Procederá a la conversión del PDF a ZPL");
     const pdfUrl = URL.createObjectURL(file);
@@ -321,6 +300,45 @@ async function pdfToZpl(file) {
     document.body.removeChild(a);
 }
 
+var fileInput = document.getElementById('fileInput');
+
+function inputFileToZpl(){
+  var file = fileInput.files[0]; // Obtener el archivo seleccionado
+
+  if (file) {
+    var reader = new FileReader(); // Crear un lector de archivos
+
+    // Configurar el evento onload del lector de archivos para obtener el contenido del PDF
+    reader.onload = function (e) {
+      var pdfContent = e.target.result; // Contenido del PDF en formato base64
+
+      // Aquí puedes hacer algo con el contenido del PDF, como enviarlo a un servidor o procesarlo en el cliente
+      console.log('Contenido del PDF:', pdfContent);
+    };
+  }
+}
+
+function displayPdf(file) {
+  // Verificar si el archivo es de tipo PDF
+  if (file.type === 'application/pdf') {
+    fileBackup=file
+    //pdfToZpl(pdfUrl);
+    // alert("Extrayendo contenido pdf")
+    // extractText(pdfUrl).then(
+    //   function (text) {
+    //               document.write(text)
+    //     console.log('parse ' + text);
+    //   },
+    //   function (reason) {
+    //     console.error(reason);
+    //   },
+    // );
+    
+  } else {
+    alert('El archivo no es de tipo PDF')
+    console.error('El archivo no es de tipo PDF');
+  }
+}
 
 var sharedFile
 function displayFile(file) {  
