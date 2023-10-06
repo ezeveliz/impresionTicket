@@ -29,7 +29,21 @@ function registerServiceWorker() {
 /**************ZEBRA ******************/
 var selected_device;
 var devices = [];
+var statusParagraph = document.getElementById("status");
+
+function updateStatusText() {
+  var currentText = statusParagraph.textContent;
+  if (currentText === "Buscando dispositivos") {
+      statusParagraph.textContent = "Buscando dispositivos.";
+  } else if (currentText === "Buscando dispositivos.") {
+      statusParagraph.textContent = "Buscando dispositivos..";
+  } else if (currentText === "Buscando dispositivos..") {
+      statusParagraph.textContent = "Buscando dispositivos...";
+  }
+}
+
 function setupZebra(){
+  var statusUpdateInterval = setInterval(updateStatusText, 1000);
   //Get the default device from the application as a first step. Discovery takes longer to complete.
   BrowserPrint.getDefaultDevice("printer", function(device){
     //Add device to list of devices and to html select element
@@ -52,6 +66,8 @@ function setupZebra(){
           html_select.add(option);
         }
       }
+      clearInterval(statusUpdateInterval);
+      statusParagraph.textContent = "Dispositivos encontrados";
     }, function(){alert("Error getting local devices")},"printer");
   }, function(error){
     alert(error);
