@@ -281,7 +281,7 @@ async function pdfToZpl(file) {
     console.log("****")
     console.log(content)
     const zpl = new Blob([content], { type: 'text/plain' });
-    return zpl
+    //return zpl
     const a = document.createElement('a');
     a.href = URL.createObjectURL(zpl);
     a.download = 'prueba';
