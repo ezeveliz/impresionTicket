@@ -394,6 +394,7 @@ navigator.serviceWorker.addEventListener("message", (event) => {
   const file = event.data.file;
   var inputArchivo = document.getElementById('fileInput');
   inputArchivo.files[0]=file;
+  inputArchivo.textContent=file.name;
   displayFile(file);
 });
 
