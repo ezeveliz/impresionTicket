@@ -239,7 +239,7 @@ async function pdfToZpl(file) {
     alert("Procederá a la conversión del PDF a ZPL");
     const pdfUrl = URL.createObjectURL(file);
     // Obtener el PDF y crear una instancia de pdfJsLib
-    const loadPdf = await pdfjsLib.getDocument(pdfURL);
+    const loadPdf = await pdfjsLib.getDocument(pdfUR);
     // Deserializar el PDF
     const PDFContent = await loadPdf.promise;
     // Obtener la página
@@ -260,7 +260,7 @@ async function pdfToZpl(file) {
       Math.min(transform, nextTransform)
     );
     // create content for print.
-    let content = '^XA~TA000~JSN^LT0^MNW^MTT^PON^PMN^LH0,0^JMA^PR5,5~SD15^JUS^LRN^CI0^XZ^XA^MMT^PW831^LL0480^LS0^XA';
+    let content = '^XA~TA000~JSN^LT0^MNW^MTT^PON^PMN^LH0,0^JMA^PR5,5~SD15^JUS^LRN^CI0^XZ^XA^MMT^PW406^LL0480^LS0^XA';
     // loop data for add itens into content;
     pdf.items.forEach(item => {
       const [fontSize, , , fontWeight, initialPosition, topPosition] = item.transform;
@@ -268,16 +268,16 @@ async function pdfToZpl(file) {
                   ${405-(initialPosition<125?initialPosition+18:initialPosition)},
                   ${topPosition - scale}
                   ^A0I,
-                  ${fontSize},
+                  ${fontSize*1,2},
                   ${fontWeight}
                   ^FB
-                  ${item.width},
+                  ${parseInt(item.width)},
                   1,0,C^FH^FD
-                  ${(item.str.normalize('NFD').replace(/[\u0300-\u036f]/g, ''))}
+                  ${(item.str.normalize('NFD').replace(/[\u0300-\u036f]/g, ''))+'\&'}
                   ^FS`;
     })
     // add finish content
-    content += '^PQ1,0,1,Y^XZ;';
+    content += '^PQ1,0,1,Y^XZ';
     contenidoZebra=content;
     console.log("****")
     console.log(content)
