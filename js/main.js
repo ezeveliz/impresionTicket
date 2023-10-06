@@ -328,10 +328,7 @@ function inputFileToZpl(){
       // Agregar el texto de la página actual al arreglo
       text.push(pageText);
     }
-
-    // Mostrar el texto en un elemento div
-    const div = document.querySelector("#text");
-    div.innerHTML = text.join("\n");
+    console.log(text);
   };
   fileReader.readAsBinaryString(file.files[0]);
 }
