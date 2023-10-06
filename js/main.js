@@ -44,8 +44,9 @@ function flashText() {
         nuevoParrafo.textContent = statusTexts[0];
     } else {
         // Establecer el siguiente texto en la lista
+        if(statusTexts.length>=currentIndex){
         nuevoParrafo.textContent = statusTexts[currentIndex + 1];
-        if (currentIndex < 3){
+        }else{
           nuevoParrafo.textContent = statusTexts[0];
         }
     }
