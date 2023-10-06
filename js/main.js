@@ -35,7 +35,8 @@ var statusParagraph = document.getElementById("status");
 var statusTexts = ["Buscando dispositivos", "Buscando dispositivos.", "Buscando dispositivos..", "Buscando dispositivos..."];
 
 function flashText() {
-    var currentText = statusParagraph.textContent;
+    var currentText = statusParagraph.getTextContent();
+    alert(currentText);
     var currentIndex = statusTexts.indexOf(currentText);
     if (currentIndex === -1 || currentIndex === statusTexts.length - 1) {
         // Si el texto actual no está en la lista o es el último texto,
