@@ -300,10 +300,10 @@ async function pdfToZpl(file) {
     document.body.removeChild(a);
 }
 
+var fileInput = document.getElementById('fileInput');
 fileInput.addEventListener('change', inputFileToZpl);
 
 function inputFileToZpl(){
-  var fileInput = document.getElementById('fileInput');
   var file = fileInput.files[0]; // Obtener el archivo seleccionado
 
   if (file) {
