@@ -258,16 +258,17 @@ async function pdfToZpl(file) {
     }).reduce((transform, nextTransform) => 
       Math.min(transform, nextTransform)
     );
+    //${425-(initialPosition<125?initialPosition+18:initialPosition)},
     // create content for print.
     let content = '^XA~TA000~JSN^LT0^MNW^MTT^PON^PMN^LH0,0^JMA^PR5,5~SD15^JUS^LRN^CI0^XZ^XA^MMT^PW406^LL0480^LS0^XA';
     // loop data for add itens into content;
     pdf.items.forEach(item => {
       const [fontSize, , , fontWeight, initialPosition, topPosition] = item.transform;
       content += `^FT
-                  ${450-(initialPosition<125?initialPosition+18:initialPosition)},
+                  ${406-initialPosition},
                   ${topPosition - scale}
                   ^A0I,
-                  ${fontSize*(1.2)},
+                  ${fontSize*(1.3)},
                   ${fontWeight}
                   ^FB
                   ${parseInt(item.width)},
