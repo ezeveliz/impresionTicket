@@ -264,7 +264,7 @@ async function pdfToZpl(file) {
     pdf.items.forEach(item => {
       const [fontSize, , , fontWeight, initialPosition, topPosition] = item.transform;
       content += `^FT
-                  ${400-(initialPosition<125?initialPosition+18:initialPosition)},
+                  ${450-(initialPosition<125?initialPosition+18:initialPosition)},
                   ${topPosition - scale}
                   ^A0I,
                   ${fontSize*(1.2)},
