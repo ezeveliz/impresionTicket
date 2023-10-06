@@ -29,6 +29,7 @@ function registerServiceWorker() {
 /**************ZEBRA ******************/
 var selected_device;
 var devices = [];
+var storedDevices;
 
 let nIntervId;
 var statusTexts = ["Buscando dispositivos", "Buscando dispositivos.", "Buscando dispositivos..", "Buscando dispositivos..."];
@@ -45,9 +46,11 @@ function flashText() {
 }
 
 function setupZebra(){
+  if (storedDevices) {
+    devices = JSON.parse(storedDevices);
+  }
   nuevoParrafo = document.createElement("p");
   nuevoParrafo.textContent = "Buscando dispositivos";
-  debugger
   document.body.appendChild(nuevoParrafo);
   nIntervId = setInterval(flashText, 1000);
   //Get the default device from the application as a first step. Discovery takes longer to complete.
@@ -55,6 +58,7 @@ function setupZebra(){
     //Add device to list of devices and to html select element
     selected_device = device;
     devices.push(device);
+    localStorage.setItem('devices', JSON.stringify(devices));
     var html_select = document.getElementById("selected_device");
     var option = document.createElement("option");
     option.text = device.name;
@@ -66,6 +70,7 @@ function setupZebra(){
         var device = device_list[i];
         if(!selected_device || device.uid != selected_device.uid){
           devices.push(device);
+          localStorage.setItem('devices', JSON.stringify(devices));
           var option = document.createElement("option");
           option.text = device.name;
           option.value = device.uid;
