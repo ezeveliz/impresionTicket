@@ -267,12 +267,12 @@ async function pdfToZpl(file) {
                   ${405-(initialPosition<125?initialPosition+18:initialPosition)},
                   ${topPosition - scale}
                   ^A0I,
-                  ${fontSize*1,2},
+                  ${fontSize*(1.2)},
                   ${fontWeight}
                   ^FB
                   ${parseInt(item.width)},
                   1,0,C^FH^FD
-                  ${(item.str.normalize('NFD').replace(/[\u0300-\u036f]/g, ''))+'\&'}
+                  ${(item.str.normalize('NFD').replace(/[\u0300-\u036f]/g, ''))}
                   ^FS`;
     })
     // add finish content
