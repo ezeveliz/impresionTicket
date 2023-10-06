@@ -51,7 +51,7 @@ function flashText() {
 function setupZebra(){
   nuevoParrafo = document.createElement("p");
   nuevoParrafo.textContent = "Buscando dispositivos";
-  contenedor.appendChild(nuevoParrafo);
+  document.body.appendChild(nuevoParrafo);
   nIntervId = setInterval(flashText, 1000);
   //Get the default device from the application as a first step. Discovery takes longer to complete.
   BrowserPrint.getDefaultDevice("printer", function(device){
