@@ -31,23 +31,26 @@ var selected_device;
 var devices = [];
 
 let nIntervId;
-var statusParagraph = document.getElementById("status");
 var statusTexts = ["Buscando dispositivos", "Buscando dispositivos.", "Buscando dispositivos..", "Buscando dispositivos..."];
+var contenedor = document.getElementById("contenedor");
+var nuevoParrafo;
 
 function flashText() {
-    var currentText = statusParagraph.textContent;
+    var currentText = nuevoParrafo.textContent;
     var currentIndex = statusTexts.indexOf(currentText);
-    if (currentIndex === -1 || currentIndex === statusTexts.length - 1) {
+    if (currentIndex === -1 || currentIndex === nuevoParrafo.length - 1) {
         // Si el texto actual no está en la lista o es el último texto,
         // establecer el primer texto de la lista
-        statusParagraph.textContent = statusTexts[0];
+        nuevoParrafo.textContent = statusTexts[0];
     } else {
         // Establecer el siguiente texto en la lista
-        statusParagraph.textContent = statusTexts[currentIndex + 1];
+        nuevoParrafo.textContent = statusTexts[currentIndex + 1];
     }
 }
 
 function setupZebra(){
+  nuevoParrafo = document.createElement("p");
+  nuevoParrafo.textContent = "Buscando dispositivos";
   nIntervId = setInterval(flashText, 1000);
   //Get the default device from the application as a first step. Discovery takes longer to complete.
   BrowserPrint.getDefaultDevice("printer", function(device){
@@ -73,6 +76,7 @@ function setupZebra(){
       }
       clearInterval(nIntervId);
       nIntervId = null;
+      nuevoParrafo.textContent = "Dispositivos encontrados"
     }, function(){alert("Error getting local devices")},"printer");
   }, function(error){
     alert(error);
