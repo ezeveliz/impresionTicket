@@ -45,6 +45,9 @@ function flashText() {
     } else {
         // Establecer el siguiente texto en la lista
         nuevoParrafo.textContent = statusTexts[currentIndex + 1];
+        if (currentIndex < 3){
+          nuevoParrafo.textContent = statusTexts[0];
+        }
     }
 }
 
