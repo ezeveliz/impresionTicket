@@ -34,7 +34,7 @@ body {
   .documentTitle,
   .examTitle,
   .printerTitle,
-  input[type="submit"] {
+  input[type="button"] {
     margin-bottom: 1rem;
   }
   
