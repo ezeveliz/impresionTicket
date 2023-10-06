@@ -308,7 +308,7 @@ fileInput.addEventListener('change', function (event) {
   // Acceder al archivo seleccionado
   alert("On message")
   const file = event.data.file;
-  pdfToZpl(file);
+  fileBackup = file;
 });
 
 function inputFileToZpl(){
