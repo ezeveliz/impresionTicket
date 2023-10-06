@@ -300,23 +300,40 @@ async function pdfToZpl(file) {
     document.body.removeChild(a);
 }
 
-var fileInput = document.getElementById('fileInput');
-fileInput.addEventListener('change', inputFileToZpl);
-
 function inputFileToZpl(){
-  var file = fileInput.files[0]; // Obtener el archivo seleccionado
+  const file = document.querySelector("#fileInput");
+  const fileReader = new FileReader();
+  fileReader.onload = async () => {
+    // Comprobar si el archivo seleccionado es un archivo PDF
+    const type = file.files[0].type;
+    if (type !== "application/pdf") {
+      alert("El archivo seleccionado no es un archivo PDF.");
+      return;
+    }
 
-  if (file) {
-    var reader = new FileReader(); // Crear un lector de archivos
+    // Convertir el archivo PDF a un objeto PDF.js
+    const pdf = await pdfjsLib.getDocument(fileReader.result);
 
-    // Configurar el evento onload del lector de archivos para obtener el contenido del PDF
-    reader.onload = function (e) {
-      var pdfContent = e.target.result; // Contenido del PDF en formato base64
+    // Obtener el número de páginas
+    const pageCount = pdf.numPages;
 
-      // Aquí puedes hacer algo con el contenido del PDF, como enviarlo a un servidor o procesarlo en el cliente
-      console.log('Contenido del PDF:', pdfContent);
-    };
-  }
+    // Crear un arreglo para almacenar el texto de todas las páginas
+    const text = [];
+
+    // Iterar sobre todas las páginas
+    for (let i = 1; i <= pageCount; i++) {
+      // Extraer el texto de la página actual
+      const pageText = await pdf.getPage(i).getTextContent();
+
+      // Agregar el texto de la página actual al arreglo
+      text.push(pageText);
+    }
+
+    // Mostrar el texto en un elemento div
+    const div = document.querySelector("#text");
+    div.innerHTML = text.join("\n");
+  };
+  fileReader.readAsBinaryString(file.files[0]);
 }
 
 function displayPdf(file) {
