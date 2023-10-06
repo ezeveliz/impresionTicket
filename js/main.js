@@ -36,25 +36,18 @@ var contenedor = document.getElementById("contenedor");
 var nuevoParrafo;
 
 function flashText() {
-    var currentText = nuevoParrafo.textContent;
-    var currentIndex = statusTexts.indexOf(currentText);
-    if (currentIndex === -1 || currentIndex === nuevoParrafo.length - 1) {
-        // Si el texto actual no está en la lista o es el último texto,
-        // establecer el primer texto de la lista
-        nuevoParrafo.textContent = statusTexts[0];
-    } else {
-        // Establecer el siguiente texto en la lista
-        if(statusTexts.length>=currentIndex){
-        nuevoParrafo.textContent = statusTexts[currentIndex + 1];
-        }else{
-          nuevoParrafo.textContent = statusTexts[0];
-        }
-    }
+  var currentText = nuevoParrafo.textContent;
+  var currentIndex = statusTexts.indexOf(currentText);
+  if (currentIndex === -1 || currentIndex === statusTexts.length - 1) {
+    currentIndex = -1; // Reiniciar al primer elemento
+  }
+  nuevoParrafo.textContent = statusTexts[currentIndex + 1];
 }
 
 function setupZebra(){
   nuevoParrafo = document.createElement("p");
   nuevoParrafo.textContent = "Buscando dispositivos";
+  debugger
   document.body.appendChild(nuevoParrafo);
   nIntervId = setInterval(flashText, 1000);
   //Get the default device from the application as a first step. Discovery takes longer to complete.
