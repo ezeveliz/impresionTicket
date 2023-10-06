@@ -300,19 +300,15 @@ async function pdfToZpl(file) {
     document.body.removeChild(a);
 }
 
-// Obtener una referencia al elemento input file
-var fileInput = document.getElementById('fileInput');
+function inputFileToZpl() {
+  var fileInput = document.getElementById('fileInput');
+  var file = fileInput.files[0]; // Obtener el archivo seleccionado
 
-// Agregar un event listener para el evento 'change' cuando se selecciona un archivo
-fileInput.addEventListener('change', function (event) {
-  // Acceder al archivo seleccionado
-  alert("On message")
-  const file = event.data.file;
-  fileBackup = file;
-});
-
-function inputFileToZpl(){
-  
+  if (file) {
+    pdfToZpl(file); // Llama a la función pdfToZpl con el archivo como parámetro
+  } else {
+    console.error('Ningún archivo seleccionado');
+  }
 }
 
 function displayPdf(file) {
