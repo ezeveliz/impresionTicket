@@ -29,21 +29,26 @@ function registerServiceWorker() {
 /**************ZEBRA ******************/
 var selected_device;
 var devices = [];
-var statusParagraph = document.getElementById("status");
 
-function updateStatusText() {
-  var currentText = statusParagraph.textContent;
-  if (currentText === "Buscando dispositivos") {
-      statusParagraph.textContent = "Buscando dispositivos.";
-  } else if (currentText === "Buscando dispositivos.") {
-      statusParagraph.textContent = "Buscando dispositivos..";
-  } else if (currentText === "Buscando dispositivos..") {
-      statusParagraph.textContent = "Buscando dispositivos...";
-  }
+let nIntervId;
+var statusParagraph = document.getElementById("status");
+var statusTexts = ["Buscando dispositivos", "Buscando dispositivos.", "Buscando dispositivos..", "Buscando dispositivos..."];
+
+function flashText() {
+    var currentText = statusParagraph.textContent;
+    var currentIndex = statusTexts.indexOf(currentText);
+    if (currentIndex === -1 || currentIndex === statusTexts.length - 1) {
+        // Si el texto actual no está en la lista o es el último texto,
+        // establecer el primer texto de la lista
+        statusParagraph.textContent = statusTexts[0];
+    } else {
+        // Establecer el siguiente texto en la lista
+        statusParagraph.textContent = statusTexts[currentIndex + 1];
+    }
 }
 
 function setupZebra(){
-  var statusUpdateInterval = setInterval(updateStatusText, 1000);
+  nIntervId = setInterval(flashText, 1000);
   //Get the default device from the application as a first step. Discovery takes longer to complete.
   BrowserPrint.getDefaultDevice("printer", function(device){
     //Add device to list of devices and to html select element
@@ -66,8 +71,8 @@ function setupZebra(){
           html_select.add(option);
         }
       }
-      clearInterval(statusUpdateInterval);
-      statusParagraph.textContent = "Dispositivos encontrados";
+      clearInterval(nIntervId);
+      nIntervId = null;
     }, function(){alert("Error getting local devices")},"printer");
   }, function(error){
     alert(error);
