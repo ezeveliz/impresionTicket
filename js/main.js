@@ -300,37 +300,19 @@ async function pdfToZpl(file) {
     document.body.removeChild(a);
 }
 
+// Obtener una referencia al elemento input file
+var fileInput = document.getElementById('fileInput');
+
+// Agregar un event listener para el evento 'change' cuando se selecciona un archivo
+fileInput.addEventListener('change', function (event) {
+  // Acceder al archivo seleccionado
+  alert("On message")
+  const file = event.data.file;
+  pdfToZpl(file);
+});
+
 function inputFileToZpl(){
-  const file = document.querySelector("#fileInput");
-  const fileReader = new FileReader();
-  fileReader.onload = async () => {
-    // Comprobar si el archivo seleccionado es un archivo PDF
-    const type = file.files[0].type;
-    if (type !== "application/pdf") {
-      alert("El archivo seleccionado no es un archivo PDF.");
-      return;
-    }
-
-    // Convertir el archivo PDF a un objeto PDF.js
-    const pdf = await pdfjsLib.getDocument(fileReader.result);
-
-    // Obtener el número de páginas
-    const pageCount = pdf.numPages;
-
-    // Crear un arreglo para almacenar el texto de todas las páginas
-    const text = [];
-
-    // Iterar sobre todas las páginas
-    for (let i = 1; i <= pageCount; i++) {
-      // Extraer el texto de la página actual
-      const pageText = await pdf.getPage(i).getTextContent();
-
-      // Agregar el texto de la página actual al arreglo
-      text.push(pageText);
-    }
-    console.log(text);
-  };
-  fileReader.readAsBinaryString(file.files[0]);
+  
 }
 
 function displayPdf(file) {
