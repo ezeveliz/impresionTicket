@@ -306,7 +306,9 @@ function inputFileToZpl() {
   var file = fileInput.files[0]; // Obtener el archivo seleccionado
 
   if (file) {
-    pdfToZpl(file); // Llama a la función pdfToZpl con el archivo como parámetro
+    var zpl=pdfToZpl(file)
+    selected_device.send(zpl, undefined, errorCallback);
+  
   } else {
     console.error('Ningún archivo seleccionado');
   }
