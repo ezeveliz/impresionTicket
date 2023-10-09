@@ -109,8 +109,8 @@ function sendFile(fileUrl){
 
 async function writeToSelectedPrinter()
 { 
-  //var zpl=await pdfToZpl(fileBackup)
-	selected_device.send("^XA^FO200,200^A0N36,36^FDTest Label^FS^XZ", undefined, errorCallback);
+  var zpl=await pdfToZpl(fileBackup)
+	selected_device.send(zpl, undefined, errorCallback);
 }
 
 /*********************************************** */

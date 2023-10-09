@@ -38,6 +38,24 @@ self.addEventListener('fetch', (event) => {
     .then(response => response || fetch(event.request))
     .catch(console.log)
   );
+
+  if (event.request.method !== 'POST') return;
+  
+  event.respondWith(Response.redirect('./'));
+  
+  event.waitUntil(async function () {
+    const data = await event.request.formData();
+    const clientId =
+        event.resultingClientId !== ""
+          ? event.resultingClientId
+          : event.clientId;
+    console.log(clientId)
+    if (!clientId) return;
+    const client = await self.clients.get(clientId);
+    if(!client) return
+    const file = data.get('file');
+    client.postMessage({ file });
+  }());
 });
 
 /*self.addEventListener('install', () => {
