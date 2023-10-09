@@ -298,6 +298,7 @@ async function pdfToZpl(file) {
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
+    return content
 }
 
 function inputFileToZpl() {
