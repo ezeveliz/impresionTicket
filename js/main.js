@@ -288,16 +288,16 @@ async function pdfToZpl(file) {
     contenidoZebra=content;
     console.log("****")
     console.log(content)
-    // const zpl = new Blob([content], { type: 'text/plain' });
-    // //return zpl
-    // const a = document.createElement('a');
-    // a.href = URL.createObjectURL(zpl);
-    // a.download = 'prueba';
-    // // Hacer clic en el enlace para descargar el archivo
-    // a.style.display = 'none';
-    // document.body.appendChild(a);
-    // a.click();
-    // document.body.removeChild(a);
+    const zpl = new Blob([content], { type: 'text/plain' });
+    //return zpl
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(zpl);
+    a.download = 'prueba';
+    // Hacer clic en el enlace para descargar el archivo
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
     return content
 }
 
