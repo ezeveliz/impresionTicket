@@ -33,13 +33,14 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
   if(event.request.method === 'GET'){
-    console.log("fetch!", event.request);
+    console.log("fetch get!", event.request);
     event.respondWith(
       caches.match(event.request)
       .then(response => response || fetch(event.request))
       .catch(console.log)
     );
   }else if (event.request.method === 'POST'){
+    console.log("fetch post!", event.request);
     event.respondWith(Response.redirect('./'));
     event.waitUntil(async function () {
       const data = await event.request.formData();
