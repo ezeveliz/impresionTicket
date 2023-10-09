@@ -38,9 +38,11 @@ self.addEventListener('fetch', (event) => {
     .then(response => response || fetch(event.request))
     .catch(console.log)
   );
+});
 
+self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'POST') return;
-  
+
   event.respondWith(Response.redirect('./'));
   
   event.waitUntil(async function () {
