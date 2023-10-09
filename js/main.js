@@ -110,7 +110,7 @@ function sendFile(fileUrl){
 async function writeToSelectedPrinter()
 { 
   //var zpl=await pdfToZpl(fileBackup)
-	selected_device.send("XA^FO200,200^A0N36,36^FDTest Label^FS^XZ", undefined, errorCallback);
+	selected_device.send("^XA^FO200,200^A0N36,36^FDTest Label^FS^XZ", undefined, errorCallback);
 }
 
 /*********************************************** */
@@ -340,22 +340,11 @@ var sharedFile
 function displayFile(file) {  
   const ul = document.createElement('ul');
   document.body.append(ul);
-
   for (const prop of ['name', 'size', 'type']) {
     const li = document.createElement('li');
     li.textContent = `${prop} = ${file[prop]}`;
     ul.append(li);
-  }
-
-  // const input = document.getElementById('fileInput');
-
-  // // Crea un objeto FormData para asignar el archivo al input file
-  // const formData = new FormData();
-  // formData.append(file.name, file, file.name);
-
-  // // Establece el valor del input file con el objeto FormData
-  // input.files = formData.getAll(file.name);
-  
+  } 
   displayPdf(file);
 }
 
