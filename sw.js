@@ -3,7 +3,7 @@ const urlsToCache = [
   './index.html',
   'css/style.css',
   'js/main.js',
-  'images/android-launchericon-512-512.png',
+  'images/maskable_icon_x512.png',
 ];
 
 self.addEventListener("install", (event) => {
