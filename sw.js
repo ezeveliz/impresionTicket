@@ -16,6 +16,7 @@ self.addEventListener("install", (event) => {
 });
 
 self.addEventListener('activate', (event) => {
+  clients.claim();
   event.waitUntil(
     caches.keys()
       .then((cacheNames) => {
@@ -38,13 +39,11 @@ self.addEventListener('fetch', (event) => {
     .then(response => response || fetch(event.request))
     .catch(console.log)
   );
-});
 
-self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'POST') return;
 
   event.respondWith(Response.redirect('./'));
-  
+
   event.waitUntil(async function () {
     const data = await event.request.formData();
     const clientId =
