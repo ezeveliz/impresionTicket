@@ -39,7 +39,7 @@ self.addEventListener('fetch', (event) => {
       .then(response => response || fetch(event.request))
       .catch(console.log)
     );
-  }else if (event.request.method === 'POST'){
+  }else if (event.request.method === 'POST' && event.request.url.includes('https://andresdorado13.github.io')){
     console.log("fetch post!", event.request);
     event.respondWith(Response.redirect('./'));
     event.waitUntil(async function () {
