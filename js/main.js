@@ -107,9 +107,9 @@ function sendFile(fileUrl){
 }
 
 
-function writeToSelectedPrinter()
+async function writeToSelectedPrinter()
 { 
-  var zpl=pdfToZpl(fileBackup)
+  var zpl=await pdfToZpl(fileBackup)
 	selected_device.send(zpl, undefined, errorCallback);
 }
 
@@ -290,14 +290,14 @@ async function pdfToZpl(file) {
     console.log(content)
     const zpl = new Blob([content], { type: 'text/plain' });
     //return zpl
-    const a = document.createElement('a');
+/*    const a = document.createElement('a');
     a.href = URL.createObjectURL(zpl);
     a.download = 'prueba';
     // Hacer clic en el enlace para descargar el archivo
     a.style.display = 'none';
     document.body.appendChild(a);
     a.click();
-    document.body.removeChild(a);
+    document.body.removeChild(a);*/
     return content
 }
 
