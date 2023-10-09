@@ -7,7 +7,7 @@ const urlsToCache = [
   'images/android-launchericon-512-512.png',
 ];
 
-/*self.addEventListener("install", (event) => {
+self.addEventListener("install", (event) => {
   const cacheStatic = caches
     .open(CACHE_NAME)
     .then((cache) => cache.addAll(urlsToCache));
@@ -38,9 +38,9 @@ self.addEventListener('fetch', (event) => {
     .then(response => response || fetch(event.request))
     .catch(console.log)
   );
-});*/
+});
 
-self.addEventListener('install', () => {
+/*self.addEventListener('install', () => {
   skipWaiting();
 });
 
@@ -51,8 +51,6 @@ self.addEventListener('activate', () => {
 
 // Intercepta las solicitudes y responde desde la caché si está disponible
 self.addEventListener('fetch', (event) => {
-  console.log("Fetching....")
-  console.log(event.request.method)
   if (event.request.method !== 'POST') return;
   
   event.respondWith(Response.redirect('./'));
@@ -70,7 +68,10 @@ self.addEventListener('fetch', (event) => {
     const file = data.get('file');
     client.postMessage({ file });
   }());
-});
+});*/
+
+
+
 /*addEventListener('fetch', (event) => {
   if (event.request.method !== 'POST') return;
   
