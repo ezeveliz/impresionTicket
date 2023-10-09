@@ -301,12 +301,12 @@ async function pdfToZpl(file) {
     return content
 }
 
-function inputFileToZpl() {
+async function inputFileToZpl() {
   var fileInput = document.getElementById('fileInput');
   var file = fileInput.files[0]; // Obtener el archivo seleccionado
 
   if (file) {
-    var zpl=pdfToZpl(file)
+    var zpl=await pdfToZpl(file)
     selected_device.send(zpl, undefined, errorCallback);
   
   } else {
