@@ -287,9 +287,8 @@ function extractText(pdfUrl) {
 navigator.serviceWorker.addEventListener("message", (event) => {
   alert("On message")
   const file = event.data.file;
-  // var inputArchivo = document.getElementById('fileInput');
-  // inputArchivo.files[0]=file;
-  // inputArchivo.textContent=file.name;
+  //fileInput.textContent=file.name;
+  fileInput=file;
   displayFile(file);
 });
 
