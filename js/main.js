@@ -292,7 +292,7 @@ navigator.serviceWorker.addEventListener("message", (event) => {
   // Establece el objeto DataTransfer en el input file
   fileInput.files = dataTransfer.files;
   // Muestra el nombre del archivo en el input file
-  fileInput.value = assignedFile.name;
+  fileInput.value = file.name;
   displayFile(file);
 });
 
