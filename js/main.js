@@ -287,8 +287,12 @@ function extractText(pdfUrl) {
 navigator.serviceWorker.addEventListener("message", (event) => {
   alert("On message")
   const file = event.data.file;
-  //fileInput.textContent=file.name;
-  fileInput=file;
+  var dataTransfer = new DataTransfer();
+  dataTransfer.items.add(file);
+  // Establece el objeto DataTransfer en el input file
+  fileInput.files = dataTransfer.files;
+  // Muestra el nombre del archivo en el input file
+  fileInput.value = assignedFile.name;
   displayFile(file);
 });
 
