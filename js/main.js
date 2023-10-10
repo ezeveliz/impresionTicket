@@ -250,7 +250,6 @@ function displayFile(file) {
     li.textContent = `${prop} = ${file[prop]}`;
     ul.append(li);
   } 
-  displayPdf(file);
 }
 
 function extractText(pdfUrl) {
@@ -285,7 +284,7 @@ function extractText(pdfUrl) {
 }
 
 navigator.serviceWorker.addEventListener("message", (event) => {
-  alert("On message")
+  alert("Archivo cargado correctamente")
   const file = event.data.file;
   var dataTransfer = new DataTransfer();
   dataTransfer.items.add(file);
@@ -293,6 +292,7 @@ navigator.serviceWorker.addEventListener("message", (event) => {
   fileInput.files = dataTransfer.files;
   // Muestra el nombre del archivo en el input file
   //fileInput.value = file.name;
+  displayPdf(file);
   displayFile(file);
 });
 
