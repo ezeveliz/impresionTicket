@@ -274,6 +274,10 @@ function getPdf(callback) {
     }
     pdfFile.send(null);
   }
-
   createURL();
+}
+
+function createPrintToStar(){
+  location.href=changeHref;
+  alert(location.href);
 }
