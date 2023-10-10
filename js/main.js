@@ -105,6 +105,7 @@ window.addEventListener('load', () => {
   setupZebra()
   fileInput = document.getElementById('fileInput');
   inputFileLoad()
+  createURL()
 });
 
 function imprimir() {
@@ -214,6 +215,7 @@ function inputFileLoad() {
     var file = fileInput.files[0]; // Obtener el archivo seleccionado
     if (file) {
       displayPdf(file);
+      getPdf(createURL);
     } else {
       console.error('Ningún archivo seleccionado');
     }
@@ -227,43 +229,51 @@ navigator.serviceWorker.addEventListener("message", (event) => {
   dataTransfer.items.add(file);
   fileInput.files = dataTransfer.files;
   displayPdf(file);
+  getPdf(createURL);
   //displayFile(file);
 });
 
 //FUNCIONES PARA IMPRESORA STAR
 
 var changeHref;
-var pdfStarToPrint;
 
-function response() {
-    createURL();
-    getParameter();
-}
-
-function getParameter() {
-    document.getElementById("res").value = location.search.substring(1);
-}
+var pdfText  = "";
 
 function createURL() {
-    changeHref = 'starpassprnt://v1/print/nopreview?';
+	changeHref = 'starpassprnt://v1/print/nopreview?';
 
-    // pdf
-    changeHref = changeHref + "&pdf=" + encodeURIComponent(pdfText);
-
-    document.getElementById("send_data").value = changeHref;
+  //back
+	changeHref = changeHref + "&back=" + encodeURIComponent(window.location.href);
+			
+  // pdf
+	changeHref = changeHref + "&pdf=" + encodeURIComponent(pdfText);
+  
+  document.getElementById("send_data").value = changeHref;
 }
 
-function setUrl() {
-    switch (document.getElementById("url").value) {
-        case "none":
-            document.getElementById("url_free").value = "";
-            break;
-        case "pdf_receipt_sample":
-            document.getElementById("url_free").value = "https://www.star-m.jp/products/s_print/sdk/passprnt/sample/resource/receipt_sample.pdf";
-            break;
-        default:
-            break;
-    }
+function getPdf(callback) {
+  if (!fileInput.files[0]) {
+      pdfText = "";
+  } else {
+    var file = fileBackup;
+    var pdfFile = new XMLHttpRequest();
+    pdfFile.callback = callback;
+    pdfFile.open("GET", file, true);
+    pdfFile.responseType = "arraybuffer";
+    pdfFile.onload = function () {
+      var binary = new Uint8Array(this.response);
+      var binaryString = "";
+      for (var i=0; i<binary.byteLength; i++) {
+        binaryString += String.fromCharCode(binary[i]);
+      }
 
-    createURL();
+      // base64 encoding
+      pdfText = window.btoa(binaryString);
+
+      this.callback.apply(this, this.argument);
+    }
+    pdfFile.send(null);
+  }
+
+  createURL();
 }
