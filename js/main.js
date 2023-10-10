@@ -14,7 +14,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = './lib/pdfWorker.js';
 
 function registerServiceWorker() {
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./sw.js?version=2.25')
+    navigator.serviceWorker.register('./sw.js?version=2.26')
     .then(registration => {
       //alert('Service Worker registrado con éxito:', registration);
       console.log('Service Worker registrado con éxito:', registration);
@@ -36,6 +36,7 @@ var statusTexts = ["Buscando dispositivos", "Buscando dispositivos.", "Buscando 
 var contenedor = document.getElementById("contenedor");
 var nuevoParrafo;
 
+//Mostrar texto de carga de conexión con impresoras
 function flashText() {
   var currentText = nuevoParrafo.textContent;
   var currentIndex = statusTexts.indexOf(currentText);
@@ -45,6 +46,7 @@ function flashText() {
   nuevoParrafo.textContent = statusTexts[currentIndex + 1];
 }
 
+//Conexión de la PWA con las impresoras
 function setupZebra(){
   nuevoParrafo = document.createElement("p");
   nuevoParrafo.textContent = "Buscando dispositivos";
@@ -114,9 +116,6 @@ async function writeToSelectedPrinter()
   var zpl=await pdfToZpl(fileBackup);
   const zplArchive = new Blob([zpl], { type: 'text/plain' });
   selected_device.sendFile(zplArchive, undefined, errorCallback);
-    // //return zpl
-    // const a = document.createElement('a');
-    // a.href = URL.createObjectURL(zpl);
 }
 
 /*********************************************** */
@@ -125,125 +124,18 @@ window.addEventListener('load', () => {
   setupZebra()
 });
 
-/*async function conectarAutomaticamente() {
-  try {
-    // Especifica la dirección MAC u otro identificador único del dispositivo previamente conectado
-    const dispositivoPreviamenteConectado = await navigator.bluetooth.requestDevice({
-      filters: [{ deviceId: { exact: 'DirecciónMAC' } }], // Cambia 'DirecciónMAC' por el identificador real
-      optionalServices: ['battery_service'], // Servicios opcionales a los que te conectarás
-    });
-
-    // Conecta automáticamente al dispositivo previamente conectado
-    await dispositivoPreviamenteConectado.gatt.connect();
-
-    // Asigna el dispositivo previamente conectado a selected_device
-    selected_device = dispositivoPreviamenteConectado;
-    alert("Conexión exitosa con el dispositivo previamente conectado:", selected_device.name);
-    console.log("Conexión exitosa con el dispositivo previamente conectado:", selected_device.name);
-  } catch (error) {
-    alert("Error al conectar con el dispositivo previamente conectado:", error);
-    console.error("Error al conectar con el dispositivo previamente conectado:", error);
-  }
-}*/
-
 function imprimir() {
   // Obtener el valor seleccionado en el elemento select
   var selectedPrinter = document.getElementById("printerSelect").value;
   // Realizar acciones según la opción seleccionada
   if (selectedPrinter === "Zebra") {
-    if (!selected_device) {
-      alert("No se ha establecido una conexión con una impresora Zebra.");
-      return;
-    }
-    // Realizar la impresión utilizando la conexión Bluetooth previamente establecida
-    if (this.fileInput.value === '') {
-      alert('Ningún archivo seleccionado');
-      console.log('Ningún archivo seleccionado');
-      return;
-    }
-    fileInput = document.getElementById('fileInput');
-    const selectedFile = fileInput.files[0];
-    sendFile(selectedFile);
-/*    const reader = new FileReader();
 
-    reader.onload = function(event) {
-      const binaryString = event.target.result;
-      const pdfText = window.btoa(binaryString);
-
-      // Enviar los comandos ZPL con el contenido del PDF a la impresora Zebra
-      var comandosZPL = "^XA^FO200,200^A0N36,36^FD" + pdfText + "^FS^XZ";
-      selected_device.send(comandosZPL, undefined, errorCallback);
-
-      alert("Imprimiendo en una impresora Zebra...");
-      console.log("Imprimiendo en una impresora Zebra...");
-    };
-    reader.readAsBinaryString(selectedFile);*/
   }else {
       alert("Selecciona una impresora válida (Zebra o Star).");
   }
 }
-//Impresora Zebra
-/*function imprimir() {
-  conectarAutomaticamente();
-  // Obtener el valor seleccionado en el elemento select
-  var selectedPrinter = document.getElementById("printerSelect").value;
-  // Realizar acciones según la opción seleccionada
-  if (selectedPrinter === "Zebra") {
-    if (!selected_device) {
-      alert("No se ha establecido una conexión con una impresora Zebra.");
-      return;
-    }
-
-    // Realizar la impresión utilizando la conexión Bluetooth previamente establecida
-    if (this.fileInput.value === '') {
-      alert('Ningún archivo seleccionado');
-      console.log('Ningún archivo seleccionado');
-      return;
-    }
-
-    const selectedFile = this.fileInput.files[0];
-    const reader = new FileReader();
-
-    reader.onload = function(event) {
-      const binaryString = event.target.result;
-      const pdfText = window.btoa(binaryString);
-
-      // Enviar los comandos ZPL con el contenido del PDF a la impresora Zebra
-      var comandosZPL = "^XA^FO200,200^A0N36,36^FD" + pdfText + "^FS^XZ";
-      selected_device.send(comandosZPL, undefined, errorCallback);
-
-      alert("Imprimiendo en una impresora Zebra...");
-      console.log("Imprimiendo en una impresora Zebra...");
-    };
-    reader.readAsBinaryString(selectedFile);
-  } else if (selectedPrinter === "Star") {
-      if (this.fileInput.value === '') {
-        alert('Ningún archivo seleccionado');
-        console.log('Ningún archivo seleccionado');
-        return;
-      }
-      const selectedFile = this.fileInput.files[0];
-      const reader = new FileReader();
-      reader.onload = function(event) {
-        const binaryString = event.target.result;
-        const pdfText = window.btoa(binaryString);
-        // Haz lo que necesites con pdfText, por ejemplo, mostrarlo en la consola
-        alert('Contenido del PDF en base64:', pdfText);
-        console.log('Contenido del PDF en base64:', pdfText);
-      };
-      reader.readAsBinaryString(selectedFile);
-      alert("Imprimiendo en una impresora Star...");
-      console.log("Imprimiendo en una impresora Star...");
-  } else {
-      alert("Selecciona una impresora válida (Zebra o Star).");
-  }
-}*/
-
-//conectarAutomaticamente();
-
 
 /*** TEST IMG */
-
 
 var fileBackup;
 
@@ -307,35 +199,39 @@ async function pdfToZpl(file) {
     return content
 }
 
-async function inputFileToZpl() {
-  var fileInput = document.getElementById('fileInput');
+// Obtén el elemento input file
+var fileInput = document.getElementById('fileInput');
+
+// Agrega un event listener al input file para el evento 'change'
+fileInput.addEventListener('change', async function() {
   var file = fileInput.files[0]; // Obtener el archivo seleccionado
 
   if (file) {
-    var zpl=await pdfToZpl(file)
-    selected_device.send(zpl, undefined, errorCallback);
-  
+    displayPdf(file);
+    //var zpl = await pdfToZpl(file);
+    //selected_device.send(zpl, undefined, errorCallback);
   } else {
     console.error('Ningún archivo seleccionado');
   }
-}
+});
+
+// async function inputFileToZpl() {
+//   var fileInput = document.getElementById('fileInput');
+//   var file = fileInput.files[0]; // Obtener el archivo seleccionado
+
+//   if (file) {
+//     var zpl=await pdfToZpl(file)
+//     selected_device.send(zpl, undefined, errorCallback);
+  
+//   } else {
+//     console.error('Ningún archivo seleccionado');
+//   }
+// }
 
 function displayPdf(file) {
   // Verificar si el archivo es de tipo PDF
   if (file.type === 'application/pdf') {
     fileBackup=file
-    //pdfToZpl(pdfUrl);
-    // alert("Extrayendo contenido pdf")
-    // extractText(pdfUrl).then(
-    //   function (text) {
-    //               document.write(text)
-    //     console.log('parse ' + text);
-    //   },
-    //   function (reason) {
-    //     console.error(reason);
-    //   },
-    // );
-    
   } else {
     alert('El archivo no es de tipo PDF')
     console.error('El archivo no es de tipo PDF');
@@ -343,6 +239,7 @@ function displayPdf(file) {
 }
 
 var sharedFile
+
 function displayFile(file) {  
   const ul = document.createElement('ul');
   document.body.append(ul);
@@ -385,8 +282,6 @@ function extractText(pdfUrl) {
   });
 }
 
-
-
 navigator.serviceWorker.addEventListener("message", (event) => {
   alert("On message")
   const file = event.data.file;
@@ -396,3 +291,40 @@ navigator.serviceWorker.addEventListener("message", (event) => {
   displayFile(file);
 });
 
+//FUNCIONES PARA IMPRESORA STAR
+
+var changeHref;
+var pdfStarToPrint;
+
+function response() {
+    createURL();
+    getParameter();
+}
+
+function getParameter() {
+    document.getElementById("res").value = location.search.substring(1);
+}
+
+function createURL() {
+    changeHref = 'starpassprnt://v1/print/nopreview?';
+
+    // pdf
+    changeHref = changeHref + "&pdf=" + encodeURIComponent(pdfText);
+
+    document.getElementById("send_data").value = changeHref;
+}
+
+function setUrl() {
+    switch (document.getElementById("url").value) {
+        case "none":
+            document.getElementById("url_free").value = "";
+            break;
+        case "pdf_receipt_sample":
+            document.getElementById("url_free").value = "https://www.star-m.jp/products/s_print/sdk/passprnt/sample/resource/receipt_sample.pdf";
+            break;
+        default:
+            break;
+    }
+
+    createURL();
+}
