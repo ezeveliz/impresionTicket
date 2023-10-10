@@ -14,7 +14,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = './lib/pdfWorker.js';
 
 function registerServiceWorker() {
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./sw.js?version=2.23')
+    navigator.serviceWorker.register('./sw.js?version=2.24)
     .then(registration => {
       //alert('Service Worker registrado con éxito:', registration);
       console.log('Service Worker registrado con éxito:', registration);
@@ -110,7 +110,13 @@ function sendFile(fileUrl){
 async function writeToSelectedPrinter()
 { 
   //var zpl=await pdfToZpl(fileBackup)
-	selected_device.send("^XA^FO50,50^A0N,36,36^FDHello, ZPL^FS^XZ", undefined, errorCallback);
+	//selected_device.send("^XA^FO50,50^A0N,36,36^FDHello, ZPL^FS^XZ", undefined, errorCallback);
+  var zpl=await pdfToZpl(fileBackup);
+  const zplArchive = new Blob([zpl], { type: 'text/plain' });
+  selected_device.sendFile(zplArchive, undefined, errorCallback);
+    // //return zpl
+    // const a = document.createElement('a');
+    // a.href = URL.createObjectURL(zpl);
 }
 
 /*********************************************** */
