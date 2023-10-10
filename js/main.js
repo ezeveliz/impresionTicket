@@ -90,26 +90,6 @@ function setupZebra(){
   })
 }
 
-function onDeviceSelected(selected){
-	for(var i = 0; i < devices.length; ++i){
-		if(selected.value == devices[i].uid){
-			selected_device = devices[i];
-			return;
-		}
-	}
-}
-
-var errorCallback = function(errorMessage){
-	alert("Error: " + errorMessage);	
-}
-
-function sendFile(fileUrl){
-  url = window.location.href.substring(0, window.location.href.lastIndexOf("/"));
-  url = url + "/" + fileUrl;
-  selected_device.sendFile(url, undefined, errorCallback)
-}
-
-
 async function writeToSelectedPrinter()
 { 
   //var zpl=await pdfToZpl(fileBackup)
@@ -119,12 +99,12 @@ async function writeToSelectedPrinter()
   selected_device.sendFile(zplArchive, undefined, errorCallback);
 }
 
-/*********************************************** */
+/************************************************/
 window.addEventListener('load', () => {
   registerServiceWorker()
   setupZebra()
   fileInput = document.getElementById('fileInput');
-  inputFileToZpl()
+  inputFileLoad()
 });
 
 function imprimir() {
@@ -133,115 +113,91 @@ function imprimir() {
   // Realizar acciones según la opción seleccionada
   if (selectedPrinter === "Zebra") {
 
-  }else {
+  }else if(selectedPrinter === "Star"){
+  
+  }else{
       alert("Selecciona una impresora válida (Zebra o Star).");
   }
 }
 
-/*** TEST IMG */
-
 var fileBackup;
 
+/*FUNCION DE ZEBRA*/
+
+//Convierte el archivo pdf en un zpl para imprimir en las impresoras zebra
 async function pdfToZpl(file) {
-    alert("Procederá a la conversión del PDF a ZPL");
-    const pdfUrl = URL.createObjectURL(file);
-    // Obtener el PDF y crear una instancia de pdfJsLib
-    const loadPdf = await pdfjsLib.getDocument(pdfUrl);
-    // Deserializar el PDF
-    const PDFContent = await loadPdf.promise;
-    // Obtener la página
-    const pageNumber = 1; // Cambia el número de página según tus necesidades
-    const page = await PDFContent.getPage(pageNumber);
-    // Obtener el contenido de texto
-    const pdf = await page.getTextContent();
-    // Verify exists itens on PDF
-    if (!pdf.items || pdf.items.length==0) {
-      alert("Saliendo de conversión");
-      return;
-    }
-    // get scale of print
-    const scale = pdf.items.map(item => {
-      const [, , , , , topPosition] = item.transform;
-      return topPosition;
-    }).reduce((transform, nextTransform) => 
-      Math.min(transform, nextTransform)
-    );
-    //${425-(initialPosition<125?initialPosition+18:initialPosition)},
-    // create content for print.
-    let content = '^XA~TA000~JSN^LT0^MNW^MTT^PON^PMN^LH0,0^JMA^PR5,5~SD15^JUS^LRN^CI0^XZ^XA^MMT^PW406^LL0480^LS0^XA';
-    // loop data for add itens into content;
-    pdf.items.forEach(item => {
-      const [fontSize, , , fontWeight, initialPosition, topPosition] = item.transform;
-      content += `^FT
-                  ${390-initialPosition},
-                  ${topPosition - scale}
-                  ^A0I,
-                  ${fontSize*(1.4)},
-                  ${fontWeight}
-                  ^FB
-                  ${parseInt(item.width)},
-                  1,0,C^FH^FD
-                  ${(item.str.normalize('NFD').replace(/[\u0300-\u036f]/g, ''))}
-                  ^FS`;
-    })
-    // add finish content
-    content += '^PQ1,0,1,Y^XZ';
-    contenidoZebra=content;
-    console.log("****")
-    console.log(content)
-    const zpl = new Blob([content], { type: 'text/plain' });
-    //return zpl
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(zpl);
-    a.download = 'prueba';
-    // Hacer clic en el enlace para descargar el archivo
-    a.style.display = 'none';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    return content
+  alert("Procederá a la conversión del PDF a ZPL");
+  const pdfUrl = URL.createObjectURL(file);
+  // Obtener el PDF y crear una instancia de pdfJsLib
+  const loadPdf = await pdfjsLib.getDocument(pdfUrl);
+  // Deserializar el PDF
+  const PDFContent = await loadPdf.promise;
+  // Obtener la página
+  const pageNumber = 1; // Cambia el número de página según tus necesidades
+  const page = await PDFContent.getPage(pageNumber);
+  // Obtener el contenido de texto
+  const pdf = await page.getTextContent();
+  // Verify exists itens on PDF
+  if (!pdf.items || pdf.items.length==0) {
+    alert("Saliendo de conversión");
+    return;
+  }
+  // get scale of print
+  const scale = pdf.items.map(item => {
+    const [, , , , , topPosition] = item.transform;
+    return topPosition;
+  }).reduce((transform, nextTransform) => 
+    Math.min(transform, nextTransform)
+  );
+  //${425-(initialPosition<125?initialPosition+18:initialPosition)},
+  // create content for print.
+  let content = '^XA~TA000~JSN^LT0^MNW^MTT^PON^PMN^LH0,0^JMA^PR5,5~SD15^JUS^LRN^CI0^XZ^XA^MMT^PW406^LL0480^LS0^XA';
+  // loop data for add itens into content;
+  pdf.items.forEach(item => {
+    const [fontSize, , , fontWeight, initialPosition, topPosition] = item.transform;
+    content += `^FT
+                ${390-initialPosition},
+                ${topPosition - scale}
+                ^A0I,
+                ${fontSize*(1.4)},
+                ${fontWeight}
+                ^FB
+                ${parseInt(item.width)},
+                1,0,C^FH^FD
+                ${(item.str.normalize('NFD').replace(/[\u0300-\u036f]/g, ''))}
+                ^FS`;
+  })
+  // add finish content
+  content += '^PQ1,0,1,Y^XZ';
+  contenidoZebra=content;
+  console.log("****")
+  console.log(content)
+  // const zpl = new Blob([content], { type: 'text/plain' });
+  // //return zpl
+  // const a = document.createElement('a');
+  // a.href = URL.createObjectURL(zpl);
+  // a.download = 'prueba';
+  // // Hacer clic en el enlace para descargar el archivo
+  // a.style.display = 'none';
+  // document.body.appendChild(a);
+  // a.click();
+  // document.body.removeChild(a);
+  return content
 }
 
-// Agrega un event listener al input file para el evento 'change'
-function inputFileToZpl() {
-  fileInput.addEventListener('change', function() {
-    var file = fileInput.files[0]; // Obtener el archivo seleccionado
-
-    if (file) {
-      displayPdf(file);
-      //var zpl = await pdfToZpl(file);
-      //selected_device.send(zpl, undefined, errorCallback);
-    } else {
-      console.error('Ningún archivo seleccionado');
-    }
-  });
-}
-
-// async function inputFileToZpl() {
-//   var fileInput = document.getElementById('fileInput');
-//   var file = fileInput.files[0]; // Obtener el archivo seleccionado
-
-//   if (file) {
-//     var zpl=await pdfToZpl(file)
-//     selected_device.send(zpl, undefined, errorCallback);
-  
-//   } else {
-//     console.error('Ningún archivo seleccionado');
-//   }
-// }
-
+//El archivo se guarda en una variable global para manejar
 function displayPdf(file) {
   // Verificar si el archivo es de tipo PDF
   if (file.type === 'application/pdf') {
+    alert("Archivo cargado correctamente");
     fileBackup=file
   } else {
-    alert('El archivo no es de tipo PDF')
+    alert('El archivo no es de tipo PDF, cargue un nuevo')
     console.error('El archivo no es de tipo PDF');
   }
 }
 
-var sharedFile
-
+//Muetras la información del archivo cargado
 function displayFile(file) {  
   const ul = document.createElement('ul');
   document.body.append(ul);
@@ -252,48 +208,26 @@ function displayFile(file) {
   } 
 }
 
-function extractText(pdfUrl) {
-  var pdf = pdfjsLib.getDocument(pdfUrl);
-  return pdf.promise.then(function (pdf) {
-    var totalPageCount = pdf.numPages;
-    var countPromises = [];
-    for (
-      var currentPage = 1;
-      currentPage <= totalPageCount;
-      currentPage++
-    ) {
-      var page = pdf.getPage(currentPage);
-      countPromises.push(
-        page.then(function (page) {
-          var textContent = page.getTextContent();
-          return textContent.then(function (text) {
-            return text.items
-              .map(function (s) {
-                return s.str;
-              })
-              .join('');
-          });
-        }),
-      );
+// Agrega un event listener al input file para el evento 'change'
+function inputFileLoad() {
+  fileInput.addEventListener('change', function() {
+    var file = fileInput.files[0]; // Obtener el archivo seleccionado
+    if (file) {
+      displayPdf(file);
+    } else {
+      console.error('Ningún archivo seleccionado');
     }
-
-    return Promise.all(countPromises).then(function (texts) {
-      return texts.join('');
-    });
   });
 }
 
+//Recibe archivos compartidos fuera de la webapp
 navigator.serviceWorker.addEventListener("message", (event) => {
-  alert("Archivo cargado correctamente")
   const file = event.data.file;
   var dataTransfer = new DataTransfer();
   dataTransfer.items.add(file);
-  // Establece el objeto DataTransfer en el input file
   fileInput.files = dataTransfer.files;
-  // Muestra el nombre del archivo en el input file
-  //fileInput.value = file.name;
   displayPdf(file);
-  displayFile(file);
+  //displayFile(file);
 });
 
 //FUNCIONES PARA IMPRESORA STAR
