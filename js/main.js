@@ -199,21 +199,21 @@ async function pdfToZpl(file) {
     return content
 }
 
-// Obtén el elemento input file
-var fileInput = document.getElementById('fileInput');
+// // Obtén el elemento input file
+// var fileInput = document.getElementById('fileInput');
 
-// Agrega un event listener al input file para el evento 'change'
-fileInput.addEventListener('change', async function() {
-  var file = fileInput.files[0]; // Obtener el archivo seleccionado
+// // Agrega un event listener al input file para el evento 'change'
+// fileInput.addEventListener('change', async function() {
+//   var file = fileInput.files[0]; // Obtener el archivo seleccionado
 
-  if (file) {
-    displayPdf(file);
-    //var zpl = await pdfToZpl(file);
-    //selected_device.send(zpl, undefined, errorCallback);
-  } else {
-    console.error('Ningún archivo seleccionado');
-  }
-});
+//   if (file) {
+//     displayPdf(file);
+//     //var zpl = await pdfToZpl(file);
+//     //selected_device.send(zpl, undefined, errorCallback);
+//   } else {
+//     console.error('Ningún archivo seleccionado');
+//   }
+// });
 
 // async function inputFileToZpl() {
 //   var fileInput = document.getElementById('fileInput');
