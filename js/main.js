@@ -14,7 +14,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = './lib/pdfWorker.js';
 
 function registerServiceWorker() {
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./sw.js?version=2.27')
+    navigator.serviceWorker.register('./sw.js?version=2.28')
     .then(registration => {
       //alert('Service Worker registrado con éxito:', registration);
       console.log('Service Worker registrado con éxito:', registration);
@@ -285,9 +285,9 @@ function extractText(pdfUrl) {
 navigator.serviceWorker.addEventListener("message", (event) => {
   alert("On message")
   const file = event.data.file;
-  var inputArchivo = document.getElementById('fileInput');
-  inputArchivo.files[0]=file;
-  inputArchivo.textContent=file.name;
+  // var inputArchivo = document.getElementById('fileInput');
+  // inputArchivo.files[0]=file;
+  // inputArchivo.textContent=file.name;
   displayFile(file);
 });
 
