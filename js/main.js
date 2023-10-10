@@ -53,7 +53,6 @@ function setupZebra(){
   nuevoParrafo.textContent = "Buscando dispositivos";
   document.body.appendChild(nuevoParrafo);
   nIntervId = setInterval(flashText, 1000);
-  fileInput = document.getElementById('fileInput');
   //Get the default device from the application as a first step. Discovery takes longer to complete.
   BrowserPrint.getDefaultDevice("printer", function(device){
     //Add device to list of devices and to html select element
@@ -124,6 +123,8 @@ async function writeToSelectedPrinter()
 window.addEventListener('load', () => {
   registerServiceWorker()
   setupZebra()
+  fileInput = document.getElementById('fileInput');
+  inputFileToZpl()
 });
 
 function imprimir() {
@@ -202,17 +203,19 @@ async function pdfToZpl(file) {
 }
 
 // Agrega un event listener al input file para el evento 'change'
-fileInput.addEventListener('change', async function() {
-  var file = fileInput.files[0]; // Obtener el archivo seleccionado
+function inputFileToZpl() {
+  fileInput.addEventListener('change', function() {
+    var file = fileInput.files[0]; // Obtener el archivo seleccionado
 
-  if (file) {
-    displayPdf(file);
-    //var zpl = await pdfToZpl(file);
-    //selected_device.send(zpl, undefined, errorCallback);
-  } else {
-    console.error('Ningún archivo seleccionado');
-  }
-});
+    if (file) {
+      displayPdf(file);
+      //var zpl = await pdfToZpl(file);
+      //selected_device.send(zpl, undefined, errorCallback);
+    } else {
+      console.error('Ningún archivo seleccionado');
+    }
+  });
+}
 
 // async function inputFileToZpl() {
 //   var fileInput = document.getElementById('fileInput');
