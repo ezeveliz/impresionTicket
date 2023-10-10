@@ -14,7 +14,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = './lib/pdfWorker.js';
 
 function registerServiceWorker() {
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./sw.js?version=2.26')
+    navigator.serviceWorker.register('./sw.js?version=2.27')
     .then(registration => {
       //alert('Service Worker registrado con éxito:', registration);
       console.log('Service Worker registrado con éxito:', registration);
@@ -186,16 +186,16 @@ async function pdfToZpl(file) {
     contenidoZebra=content;
     console.log("****")
     console.log(content)
-    // const zpl = new Blob([content], { type: 'text/plain' });
-    // //return zpl
-    // const a = document.createElement('a');
-    // a.href = URL.createObjectURL(zpl);
-    // a.download = 'prueba';
-    // // Hacer clic en el enlace para descargar el archivo
-    // a.style.display = 'none';
-    // document.body.appendChild(a);
-    // a.click();
-    // document.body.removeChild(a);
+    const zpl = new Blob([content], { type: 'text/plain' });
+    //return zpl
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(zpl);
+    a.download = 'prueba';
+    // Hacer clic en el enlace para descargar el archivo
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
     return content
 }
 
