@@ -253,31 +253,28 @@ function createURL() {
 
 function getPdf(callback) {
   if (!fileInput.files[0]) {
-      pdfText = "";
+    pdfText = "";
   } else {
-    var file = fileBackup;
-    var pdfFile = new XMLHttpRequest();
-    pdfFile.callback = callback;
-    pdfFile.open("GET", file, true);
-    pdfFile.responseType = "arraybuffer";
-    pdfFile.onload = function () {
-      var binary = new Uint8Array(this.response);
-      var binaryString = "";
-      for (var i=0; i<binary.byteLength; i++) {
-        binaryString += String.fromCharCode(binary[i]);
-      }
-
-      // base64 encoding
-      pdfText = window.btoa(binaryString);
-
-      this.callback.apply(this, this.argument);
-    }
-    pdfFile.send(null);
+    var fileToLoad = fileBackup;
+    // FileReader function for read the file.
+    var fileReader = new FileReader();
+    var base64;
+    // Onload of file read the file content
+    fileReader.onload = function(fileLoadedEvent) {
+      base64 = fileLoadedEvent.target.result;
+      // Print data in console
+      console.log(base64);
+      pdfText = base64;
+      callback.apply(this, this.argument);
+    };
+    // Convert data to base64
+    fileReader.readAsDataURL(fileToLoad);
   }
   createURL();
 }
 
+
 function createPrintToStar(){
   location.href=changeHref;
-  alert(location.href);
+  //alert(location.href);
 }
