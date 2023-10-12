@@ -13,11 +13,11 @@
         <script src="./lib/pdf.js"></script>
         <script src='https://github.com/mozilla/pdfjs-dist'></script>
         <script type="text/javascript" src="./BrowserPrint-3.1.250.min.js"></script>
-        <script type="text/javascript" src="js/main.js?version=2.46"></script>
+        <script type="text/javascript" src="js/main.js?version=2.47"></script>
         <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     </head>
     <body>
-        V2.46<br/>
+        V2.47<br/>
         Selected Device: <select id="selected_device" onchange=onDeviceSelected(this);></select> <!--  <input type="button" value="Change" onclick="changeDevice();">--> <br/><br/> 
         <div class="container">
             <div class="header">
@@ -44,18 +44,6 @@
                 <textarea id="send_data" cols="25" rows="25" wrap="soft"></textarea><br>
                 
                 <input type="button" value="Imprimir star" onclick="createPrintToStar()"><br/><br/>
-
-                <div>
-                    <button id="prev">Previous</button>
-                    <button id="next">Next</button>
-                    &nbsp; &nbsp;
-                    <span>Page: <span id="page_num"></span> / <span id="page_count"></span></span>
-                  </div>
-                  
-                  <div>
-                    <canvas id="the-canvas" style="border:1px solid black"></canvas>
-                  </div>
-
             </div>
         </div>
     </body>
