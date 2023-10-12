@@ -244,8 +244,11 @@ function createURL() {
 
   //back
 	changeHref = changeHref + "&back=" + encodeURIComponent(window.location.href);
+
+  //size
+  changeHref = changeHref + "&size=" + "2w7";
 			
-  // pdf
+  //pdf
 	changeHref = changeHref + "&pdf=" + encodeURIComponent(pdfText);
   
   document.getElementById("send_data").value = changeHref;
