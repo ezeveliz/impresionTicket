@@ -260,15 +260,29 @@ function getPdf(callback) {
     var fileReader = new FileReader();
     var base64;
     // Onload of file read the file content
-    fileReader.onload = function(fileLoadedEvent) {
-      base64 = fileLoadedEvent.target.result;
-      // Print data in console
-      console.log(base64);
-      pdfText = base64;
+
+    fileReader.onload = function () {
+      var binary = new Uint8Array(this.response);
+      var binaryString = "";
+      for (var i=0; i<binary.byteLength; i++) {
+        binaryString += String.fromCharCode(binary[i]);
+      }
+      // base64 encoding
+      pdfText = window.btoa(binaryString);
+
       callback.apply(this, this.argument);
-    };
-    // Convert data to base64
-    fileReader.readAsDataURL(fileToLoad);
+    }
+    pdfFile.send(null);
+
+    // fileReader.onload = function(fileLoadedEvent) {
+    //   base64 = fileLoadedEvent.target.result;
+    //   // Print data in console
+    //   console.log(base64);
+    //   pdfText = base64;
+    //   callback.apply(this, this.argument);
+    // };
+    // // Convert data to base64
+    // fileReader.readAsDataURL(fileToLoad);
   }
   createURL();
 }
