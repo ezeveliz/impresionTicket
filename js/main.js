@@ -216,6 +216,7 @@ function inputFileLoad() {
     if (file) {
       displayPdf(file);
       getPdf(createURL);
+      load();
     } else {
       console.error('Ningún archivo seleccionado');
     }
@@ -230,6 +231,7 @@ navigator.serviceWorker.addEventListener("message", (event) => {
   fileInput.files = dataTransfer.files;
   displayPdf(file);
   getPdf(createURL);
+  load();
   //displayFile(file);
 });
 
@@ -254,6 +256,26 @@ function createURL() {
   document.getElementById("send_data").value = changeHref;
 }
 
+// function getPdf(callback) {
+//   if (!fileInput.files[0]) {
+//     pdfText = "";
+//   } else {
+//     fileBackup.arrayBuffer().then(resp => {
+					
+//       let binary = new Uint8Array(resp);
+//       var binaryString = "";
+//       for (var i=0; i<binary.byteLength; i++) {
+//         binaryString += String.fromCharCode(binary[i]);
+//       }
+
+//       // base64 encoding
+//       pdfText = window.btoa(binaryString);
+//       createURL()
+//     })
+//   }
+//   createURL();
+// }
+
 function getPdf(callback) {
   if (!fileInput.files[0]) {
     pdfText = "";
@@ -274,8 +296,9 @@ function getPdf(callback) {
   createURL();
 }
 
-
 function createPrintToStar(){
   location.href=changeHref;
-  //alert(location.href);
 }
+
+//////////////////////////////////////////////////////////////////////////////
+
