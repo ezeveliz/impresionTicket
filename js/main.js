@@ -3,6 +3,7 @@
 //import pdfJsLib from "https://example.com/nombreDeLaLibreria.js";
 // Loaded via <script> tag, create shortcut to access PDF.js exports.
 var pdfjsLib = window['pdfjs-dist/build/pdf'];
+
 // The workerSrc property shall be specified.
 
 /**
@@ -216,7 +217,7 @@ function inputFileLoad() {
     if (file) {
       displayPdf(file);
       getPdf(createURL);
-      load();
+      //load();
     } else {
       console.error('Ningún archivo seleccionado');
     }
@@ -231,7 +232,7 @@ navigator.serviceWorker.addEventListener("message", (event) => {
   fileInput.files = dataTransfer.files;
   displayPdf(file);
   getPdf(createURL);
-  load();
+  //load();
   //displayFile(file);
 });
 
@@ -243,18 +244,93 @@ var pdfText  = "";
 
 function createURL() {
 	changeHref = 'starpassprnt://v1/print/nopreview?';
-
   //back
 	changeHref = changeHref + "&back=" + encodeURIComponent(window.location.href);
-
   //size
   changeHref = changeHref + "&size=" + "2w7";
-			
   //pdf
 	changeHref = changeHref + "&pdf=" + encodeURIComponent(pdfText);
-  
   document.getElementById("send_data").value = changeHref;
 }
+
+// function getPdf(callback) {
+//   if (!fileInput.files[0]) {
+//     pdfText = "";
+//     createURL();
+//   } else {
+//     fileBackup.arrayBuffer().then(resp => {
+//       // Usar pdf.js para cargar el PDF
+//       const binary = new Uint8Array(resp);
+//       pdfjsLib.getDocument({ data: binary }).promise.then(pdf => {
+//         const numPages = pdf.numPages;
+//         const pages = [];
+
+//         // Recorrer todas las páginas y extraer su contenido
+//         for (let pageNum = 1; pageNum <= numPages; pageNum++) {
+//           pdf.getPage(pageNum).then(page => {
+//             page.getTextContent().then(textContent => {
+//               const pageText = textContent.items.map(item => item.str).join(" ");
+//               pages.push(pageText);
+
+//               if (pages.length === numPages) {
+//                 // Todas las páginas se han procesado
+//                 const combinedText = pages.join(" "); // Combinar el texto de todas las páginas
+//                 pdfText = window.btoa(combinedText);
+
+//                 createURL();
+//                 // Aquí puedes realizar acciones con el PDF completo en base64
+//                 console.log("PDF completo en base64:", pdfText);
+//               }
+//             });
+//           });
+//         }
+//       });
+//     }).catch(error => {
+//       console.error("Error al leer el archivo PDF:", error);
+//     });
+//   }
+//   // La llamada a createURL() aquí se ejecutará antes de que se complete la carga y procesamiento del PDF.
+//   // Si deseas ejecutar createURL() después del procesamiento del PDF, debes moverlo al lugar apropiado.
+// }
+
+function getPdf(callback) {
+  if (!fileInput.files[0]) {
+    pdfText = "";
+    createURL();
+  } else {
+    var binaryString = "";
+    fileBackup.arrayBuffer().then(resp => {
+      pdfjsLib.getDocument({ data: resp }).promise.then(pdf => {
+        const numPages = pdf.numPages;
+        const pagePromises = [];
+
+        for (let numPage = 1; numPage <= numPages; numPage++) {
+          pagePromises.push(pdf.getPage(numPage).then(page => {
+            return page.stream().getArrayBuffer().then(pageData => {
+              const binary = new Uint8Array(pageData);
+              for (var i = 0; i < binary.byteLength; i++) {
+                binaryString += String.fromCharCode(binary[i]);
+              }
+            });
+          })); // Faltaba un cierre de paréntesis aquí
+        }
+
+        Promise.all(pagePromises).then(() => {
+          // base64 encoding
+          pdfText = window.btoa(binaryString);
+          createURL();
+        }).catch(error => {
+          console.error("Error al procesar los datos binarios de las páginas:", error);
+        });
+      }).catch(error => {
+        console.error("Error al cargar el archivo PDF:", error);
+      });
+    });
+  }
+  // No necesitas llamar a createURL() nuevamente aquí.
+}
+
+
 
 // function getPdf(callback) {
 //   if (!fileInput.files[0]) {
@@ -276,29 +352,264 @@ function createURL() {
 //   createURL();
 // }
 
-function getPdf(callback) {
-  if (!fileInput.files[0]) {
-    pdfText = "";
-  } else {
-    fileBackup.arrayBuffer().then(resp => {
-					
-      let binary = new Uint8Array(resp);
-      var binaryString = "";
-      for (var i=0; i<binary.byteLength; i++) {
-        binaryString += String.fromCharCode(binary[i]);
-      }
-
-      // base64 encoding
-      pdfText = window.btoa(binaryString);
-      createURL()
-    })
-  }
-  createURL();
-}
-
 function createPrintToStar(){
+  //pdfMerge();
+  //unifyPdfPages();
   location.href=changeHref;
 }
 
 //////////////////////////////////////////////////////////////////////////////
 
+// var urls = [
+//   "http://mozilla.github.io/pdf.js/web/compressed.tracemonkey-pldi-09.pdf",
+//   "http://mozilla.github.io/pdf.js/web/compressed.tracemonkey-pldi-09.pdf",
+// ];
+
+// // Disable workers to avoid yet another cross-origin issue (workers need
+// // the URL of the script to be loaded, and dynamically loading a cross-origin
+// // script does not work).
+// //
+// // pdfjsLib.disableWorker = true;
+
+// // In cases when the pdf.worker.js is located at the different folder than the
+// // pdf.js's one, or the pdf.js is executed via eval(), the workerSrc property
+// // shall be specified.
+// //
+// // pdfjsLib.workerSrc = 'pdf.worker.js';
+
+// /**
+//  * @typedef {Object} PageInfo
+//  * @property {number} documentIndex
+//  * @property {number} pageNumber
+//  */
+
+// var pdfDocs = [],
+//   /**
+//    * @property {PageInfo}
+//    */
+//   current = {},
+//   totalPageCount = 0,
+//   pageNum = 1,
+//   pageRendering = false,
+//   pageNumPending = null,
+//   scale = 0.8,
+//   canvas = document.getElementById("the-canvas"),
+//   ctx = canvas.getContext("2d");
+
+// /**
+//  * Get page info from document, resize canvas accordingly, and render page.
+//  * @param num Page number.
+//  */
+// function renderPage(num) {
+//   pageRendering = true;
+//   current = getPageInfo(num);
+//   // Using promise to fetch the page
+//   fileBackup.getPage(current.pageNumber).then(function(page) {
+//     var viewport = page.getViewport({ scale: scale });
+//     canvas.height = viewport.height;
+//     canvas.width = viewport.width;
+
+//     // Render PDF page into canvas context
+//     var renderContext = {
+//       canvasContext: ctx,
+//       viewport: viewport,
+//     };
+//     var renderTask = page.render(renderContext);
+
+//     // Wait for rendering to finish
+//     renderTask.promise.then(function() {
+//       pageRendering = false;
+//       if (pageNumPending !== null) {
+//         // New page rendering is pending
+//         renderPage(pageNumPending);
+//         pageNumPending = null;
+//       }
+//     });
+//   });
+
+//   // Update page counters
+//   document.getElementById("page_num").textContent = pageNum;
+// }
+
+// /**
+//  * If another page rendering in progress, waits until the rendering is
+//  * finished. Otherwise, executes rendering immediately.
+//  */
+// function queueRenderPage(num) {
+//   if (pageRendering) {
+//     pageNumPending = num;
+//   } else {
+//     renderPage(num);
+//   }
+// }
+
+// /**
+//  * Displays previous page.
+//  */
+// function onPrevPage() {
+//   if (pageNum <= 1) {
+//     return;
+//   }
+//   pageNum--;
+//   queueRenderPage(pageNum);
+// }
+
+
+// /**
+//  * Displays next page.
+//  */
+// function onNextPage() {
+//   if (pageNum >= totalPageCount && current.documentIndex + 1 === 1) {
+//     return;
+//   }
+
+//   pageNum++;
+//   queueRenderPage(pageNum);
+// }
+
+// /**
+//  * @returns PageNumber
+//  */
+// function getPageInfo(num) {
+//   let totalPageCount = 0;  
+//   let currentCount = fileBackup;
+//   totalPageCount += currentCount;
+//   if (num <= totalPageCount) {
+//     return {
+//       documentIndex: i,
+//       pageNumber: (currentCount - (totalPageCount - num)),
+//     };
+//   }
+//   return false;
+// }
+
+// function getTotalPageCount() {
+//   var totalPageCount = 0;
+//   for (var docIdx = 0; docIdx < pdfDocs.length; docIdx++) {
+//     totalPageCount += pdfDocs[docIdx].numPages;
+//   }
+//   return totalPageCount;
+// }
+
+// var loadedCount = 0;
+
+// function load() {
+//   // Load PDFs one after another
+//   pdfjsLib.getDocument(URL.createObjectURL(fileBackup)).promise.then(function(pdfDoc_) {
+//     console.log("loaded PDF " + loadedCount);
+//     pdfDocs.push(pdfDoc_);
+//     loadedCount++;
+//     if (loadedCount !== 1) {
+//       return load();
+//     }
+
+//     console.log("Finished loading");
+//     totalPageCount = getTotalPageCount();
+//     document.getElementById("page_count").textContent = totalPageCount;
+
+//     // Initial/first page rendering
+//     renderPage(pageNum);
+//   });
+// }
+
+// async function unifyPdfPages() {
+//   const pdfFile = fileBackup;
+
+//   if (pdfFile) {
+//       const fileReader = new FileReader();
+
+//       fileReader.onload = async function () {
+//           const data = new Uint8Array(this.result);
+
+//           try {
+//               const pdfDoc = await pdfjsLib.getDocument(data).promise;
+//               const canvas = document.getElementById('mergedCanvas');
+//               const context = canvas.getContext('2d');
+              
+//               for (let pageNum = 1; pageNum <= pdfDoc.numPages; pageNum++) {
+//                   const page = await pdfDoc.getPage(pageNum);
+//                   const viewport = await page.getViewport({ scale: 1 });
+
+//                   if (pageNum === 1) {
+//                       canvas.width = viewport.width;
+//                       canvas.height = viewport.height;
+//                   } else {
+//                       canvas.height += viewport.height;
+//                   }
+
+//                   await page.render({
+//                       canvasContext: context,
+//                       viewport: viewport
+//                   }).promise;
+//               }
+
+//               const imgData = canvas.toDataURL('application/pdf', 1.0);
+
+//               // Mostrar el lienzo con la imagen resultante
+//               canvas.style.display = 'block';
+
+//               // Mostrar un enlace para descargar el PDF resultante
+//               const downloadLink = document.getElementById('downloadLink');
+//               downloadLink.href = imgData;
+//               downloadLink.style.display = 'block';
+//           } catch (error) {
+//               console.error('Error al procesar el PDF:', error);
+//           }
+//       };
+
+//       fileReader.readAsArrayBuffer(pdfFile);
+//   } else {
+//       alert('Por favor, seleccione un archivo PDF.');
+//   }
+// }
+
+// function pdfMerge() {
+//   //necessário pois para manter as promisses sincronizadas com await
+//   (async function loop() {
+      
+//           const pdfUrl = URL.createObjectURL(fileBackup);
+//           var loadingTask = await pdfjsLib.getDocument(pdfUrl);
+//           //sem isso fica dessincronizado
+//           await loadingTask.promise.then(function (pdf) {
+//               pdf.getMetadata().then(function (metaData) {
+//                   console.log("pdf (" + urls + ") version: " + metaData.info.PDFFormatVersion); //versão do pdf
+//               }).catch(function (err) {
+//                   console.log('Error getting meta data');
+//                   console.log(err);
+//               });
+//               console.log("páginas: " + pdf.numPages);
+//               let i = 0;
+//               while (i < pdf.numPages) {
+//                   var pageNumber = i;
+//                   pdf.getPage(pageNumber).then(function (page) {
+//                       var div = document.createElement("div");
+//                       var documentosDiv = document.querySelector('#' + 1);
+//                       documentosDiv.appendChild(div);
+//                       var canvas = document.createElement("canvas");
+//                       div.appendChild(canvas);
+//                       // Prepare canvas using PDF page dimensions
+//                       var viewport = page.getViewport({scale: 1, });
+//                       //var canvas = document.getElementById('the-canvas');
+//                       var context = canvas.getContext('2d');
+//                       canvas.height = viewport.height;
+//                       canvas.width = viewport.width;
+//                       // Render PDF page into canvas context
+//                       var renderContext = {
+//                           canvasContext: context,
+//                           viewport: viewport
+//                       };
+//                       var renderTask = page.render(renderContext);
+//                       renderTask.promise.then(function () {
+//                           console.log('Page rendered');
+//                       });
+//                   });
+//                   i++;
+//               }
+//               // Fetch the first page
+//           }, function (reason) {
+//               // PDF loading error
+//               console.error(reason);
+//           });
+      
+//   })();
+// }

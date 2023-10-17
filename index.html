@@ -11,13 +11,14 @@
             You can get the last version of pdf.js from the next url:
             <script src="https://mozilla.github.io/pdf.js/build/pdf.js"></script>-->
         <script src="./lib/pdf.js"></script>
+        <script type="text/javascript" src="./lib/jspdf.js"></script>
         <script src='https://github.com/mozilla/pdfjs-dist'></script>
         <script type="text/javascript" src="./BrowserPrint-3.1.250.min.js"></script>
-        <script type="text/javascript" src="js/main.js?version=2.47"></script>
+        <script type="text/javascript" src="js/main.js?version=2.48"></script>
         <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     </head>
     <body>
-        V2.47<br/>
+        V2.48<br/>
         Selected Device: <select id="selected_device" onchange=onDeviceSelected(this);></select> <!--  <input type="button" value="Change" onclick="changeDevice();">--> <br/><br/> 
         <div class="container">
             <div class="header">
@@ -44,6 +45,13 @@
                 <textarea id="send_data" cols="25" rows="25" wrap="soft"></textarea><br>
                 
                 <input type="button" value="Imprimir star" onclick="createPrintToStar()"><br/><br/>
+
+                <a id="downloadLink" style="display: none" download="merged.pdf">Descargar PDF unido</a>
+
+                <!-- Agregar un elemento canvas para mostrar el PDF unido -->
+                <canvas id="mergedCanvas" style="display: none"></canvas>
+
+                <div id="documentos-container"></div>
             </div>
         </div>
     </body>
