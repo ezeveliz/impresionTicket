@@ -216,7 +216,8 @@ function inputFileLoad() {
     var file = fileInput.files[0]; // Obtener el archivo seleccionado
     if (file) {
       displayPdf(file);
-      getPdf(createURL);
+      combinePDFPages();
+      //getPdf(createURL);
       //load();
     } else {
       console.error('Ningún archivo seleccionado');
@@ -253,85 +254,53 @@ function createURL() {
   document.getElementById("send_data").value = changeHref;
 }
 
-// function getPdf(callback) {
-//   if (!fileInput.files[0]) {
-//     pdfText = "";
-//     createURL();
-//   } else {
-//     fileBackup.arrayBuffer().then(resp => {
-//       // Usar pdf.js para cargar el PDF
-//       const binary = new Uint8Array(resp);
-//       pdfjsLib.getDocument({ data: binary }).promise.then(pdf => {
-//         const numPages = pdf.numPages;
-//         const pages = [];
+async function combineAllPDFPages() {
+  //const sourcePdfUrl = 'https://example.com/source.pdf'; // URL del PDF fuente
+  //const pdfBytes = await fetch(sourcePdfUrl).then((res) => res.arrayBuffer());
 
-//         // Recorrer todas las páginas y extraer su contenido
-//         for (let pageNum = 1; pageNum <= numPages; pageNum++) {
-//           pdf.getPage(pageNum).then(page => {
-//             page.getTextContent().then(textContent => {
-//               const pageText = textContent.items.map(item => item.str).join(" ");
-//               pages.push(pageText);
+  const pdfDoc = await PDFDocument.create();
+  const sourcePdf = await PDFDocument.load(fileBackup);
 
-//               if (pages.length === numPages) {
-//                 // Todas las páginas se han procesado
-//                 const combinedText = pages.join(" "); // Combinar el texto de todas las páginas
-//                 pdfText = window.btoa(combinedText);
+  const pagesToCombine = Array.from({ length: sourcePdf.getPageCount() }, (_, i) => i);
 
-//                 createURL();
-//                 // Aquí puedes realizar acciones con el PDF completo en base64
-//                 console.log("PDF completo en base64:", pdfText);
-//               }
-//             });
-//           });
-//         }
-//       });
-//     }).catch(error => {
-//       console.error("Error al leer el archivo PDF:", error);
-//     });
-//   }
-//   // La llamada a createURL() aquí se ejecutará antes de que se complete la carga y procesamiento del PDF.
-//   // Si deseas ejecutar createURL() después del procesamiento del PDF, debes moverlo al lugar apropiado.
-// }
+  const combinedWidth = Math.max(
+    ...pagesToCombine.map((pageIndex) => sourcePdf.getPages()[pageIndex].getWidth())
+  );
 
-function getPdf(callback) {
-  if (!fileInput.files[0]) {
-    pdfText = "";
-    createURL();
-  } else {
-    var binaryString = "";
-    fileBackup.arrayBuffer().then(resp => {
-      pdfjsLib.getDocument({ data: resp }).promise.then(pdf => {
-        const numPages = pdf.numPages;
-        const pagePromises = [];
+  const combinedHeight = pagesToCombine.reduce(
+    (totalHeight, pageIndex) => totalHeight + sourcePdf.getPages()[pageIndex].getHeight(),
+    0
+  );
 
-        for (let numPage = 1; numPage <= numPages; numPage++) {
-          pagePromises.push(pdf.getPage(numPage).then(page => {
-            return page.stream().getArrayBuffer().then(pageData => {
-              const binary = new Uint8Array(pageData);
-              for (var i = 0; i < binary.byteLength; i++) {
-                binaryString += String.fromCharCode(binary[i]);
-              }
-            });
-          })); // Faltaba un cierre de paréntesis aquí
-        }
+  const combinedPage = pdfDoc.addPage([combinedWidth, combinedHeight]);
 
-        Promise.all(pagePromises).then(() => {
-          // base64 encoding
-          pdfText = window.btoa(binaryString);
-          createURL();
-        }).catch(error => {
-          console.error("Error al procesar los datos binarios de las páginas:", error);
-        });
-      }).catch(error => {
-        console.error("Error al cargar el archivo PDF:", error);
-      });
+  let yOffset = combinedHeight;
+  for (const pageIndex of pagesToCombine) {
+    const page = sourcePdf.getPages()[pageIndex];
+    const pageHeight = page.getHeight();
+    yOffset -= pageHeight;
+
+    combinedPage.drawPage(page, {
+      x: 0,
+      y: yOffset,
+      width: page.getWidth(),
+      height: pageHeight,
     });
   }
-  // No necesitas llamar a createURL() nuevamente aquí.
+
+  const combinedPdfBytes = await pdfDoc.save();
+
+  // Crea un enlace para la descarga del PDF
+  const downloadLink = document.getElementById('downloadLink');
+  downloadLink.href = URL.createObjectURL(new Blob([combinedPdfBytes], { type: 'application/pdf' }));
+  
+  // Activa el enlace para que se inicie la descarga
+  downloadLink.style.display = 'block';
+  downloadLink.click();
 }
 
 
-
+//FUNCIONAL//////////////////////////////////////////
 // function getPdf(callback) {
 //   if (!fileInput.files[0]) {
 //     pdfText = "";

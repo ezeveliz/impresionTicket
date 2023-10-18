@@ -11,9 +11,9 @@
             You can get the last version of pdf.js from the next url:
             <script src="https://mozilla.github.io/pdf.js/build/pdf.js"></script>-->
         <script src="./lib/pdf.js"></script>
-        <script type="text/javascript" src="./lib/jspdf.js"></script>
         <script src='https://github.com/mozilla/pdfjs-dist'></script>
         <script type="text/javascript" src="./BrowserPrint-3.1.250.min.js"></script>
+        <script type="text/javascript" src="lib/pdf-lib.js"></script>
         <script type="text/javascript" src="js/main.js?version=2.48"></script>
         <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     </head>
@@ -48,10 +48,9 @@
 
                 <a id="downloadLink" style="display: none" download="merged.pdf">Descargar PDF unido</a>
 
-                <!-- Agregar un elemento canvas para mostrar el PDF unido -->
-                <canvas id="mergedCanvas" style="display: none"></canvas>
-
-                <div id="documentos-container"></div>
+                <body>
+                    <iframe id="pdf" style="width: 100%; height: 100%;"></iframe>
+                </body>
             </div>
         </div>
     </body>
