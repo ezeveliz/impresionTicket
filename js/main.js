@@ -216,7 +216,7 @@ function inputFileLoad() {
     var file = fileInput.files[0]; // Obtener el archivo seleccionado
     if (file) {
       displayPdf(file);
-      combinePDFPages();
+      combineAllPDFPages();
       //getPdf(createURL);
       //load();
     } else {
