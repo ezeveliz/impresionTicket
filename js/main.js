@@ -13,6 +13,7 @@ var pdfjsLib = window['pdfjs-dist/build/pdf'];
  */
 pdfjsLib.GlobalWorkerOptions.workerSrc = './lib/pdfWorker.js';
 
+/**********************SERVICE WORKER******************************/
 function registerServiceWorker() {
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./sw.js?version=2.28')
@@ -26,7 +27,9 @@ function registerServiceWorker() {
     });
   }
 }
+/**********************************************************************/
 
+/**************************VARIABLE GLOBALES***************************/
 var fileInput;
 var selected_device;
 var devices = [];
@@ -35,8 +38,11 @@ let nIntervId;
 var statusTexts = ["Buscando dispositivos", "Buscando dispositivos.", "Buscando dispositivos..", "Buscando dispositivos..."];
 var contenedor = document.getElementById("contenedor");
 var nuevoParrafo;
+var fileBackup;
+var changeHref;
+var pdfText = "";
 
-//Mostrar texto de carga de conexión con impresoras
+/********************FUNCIONES PARA BUSCAR IMPRESORAS*******************/
 function flashText() {
   var currentText = nuevoParrafo.textContent;
   var currentIndex = statusTexts.indexOf(currentText);
@@ -46,8 +52,7 @@ function flashText() {
   nuevoParrafo.textContent = statusTexts[currentIndex + 1];
 }
 
-//Conexión de la PWA con las impresoras
-function setupZebra(){
+function searchPrinters(){
   nuevoParrafo = document.createElement("p");
   nuevoParrafo.textContent = "Buscando dispositivos";
   document.body.appendChild(nuevoParrafo);
@@ -94,16 +99,17 @@ async function writeToSelectedPrinter(){
   const zplArchive = new Blob([zpl], { type: 'text/plain' });
   selected_device.sendFile(zplArchive, undefined, errorCallback);
 }
+/***********************************************************************/
 
-/************************************************/
 window.addEventListener('load', () => {
   registerServiceWorker()
-  setupZebra()
+  searchPrinters()
   fileInput = document.getElementById('fileInput');
   inputFileLoad()
   createURL()
 });
 
+/************FUNCION PARA IMPRIMIR SEGUN TIPO DE IMPRESORA*************/
 function imprimir() {
   // Obtener el valor seleccionado en el elemento select
   var selectedPrinter = document.getElementById("printerSelect").value;
@@ -116,12 +122,9 @@ function imprimir() {
       alert("Selecciona una impresora válida (Zebra o Star).");
   }
 }
+/**********************************************************************/
 
-var fileBackup;
-
-/*FUNCION DE ZEBRA*/
-
-//Convierte el archivo pdf en un zpl para imprimir en las impresoras zebra
+/**********************FUNCIONES PARA IMPRESORA ZEBRA******************/
 async function pdfToZpl(file) {
   alert("Procederá a la conversión del PDF a ZPL");
   const pdfUrl = URL.createObjectURL(file);
@@ -168,76 +171,11 @@ async function pdfToZpl(file) {
   contenidoZebra=content;
   console.log("****")
   console.log(content)
-  // const zpl = new Blob([content], { type: 'text/plain' });
-  // //return zpl
-  // const a = document.createElement('a');
-  // a.href = URL.createObjectURL(zpl);
-  // a.download = 'prueba';
-  // // Hacer clic en el enlace para descargar el archivo
-  // a.style.display = 'none';
-  // document.body.appendChild(a);
-  // a.click();
-  // document.body.removeChild(a);
   return content
 }
+/**********************************************************************/
 
-//El archivo se guarda en una variable global para manejar
-function displayPdf(file) {
-  // Verificar si el archivo es de tipo PDF
-  if (file.type === 'application/pdf') {
-    alert("Archivo cargado correctamente");
-    fileBackup=file
-  } else {
-    alert('El archivo no es de tipo PDF, cargue un nuevo')
-    console.error('El archivo no es de tipo PDF');
-  }
-}
-
-//Muetras la información del archivo cargado
-function displayFile(file) {  
-  const ul = document.createElement('ul');
-  document.body.append(ul);
-  for (const prop of ['name', 'size', 'type']) {
-    const li = document.createElement('li');
-    li.textContent = `${prop} = ${file[prop]}`;
-    ul.append(li);
-  } 
-}
-
-// Agrega un event listener al input file para el evento 'change'
-function inputFileLoad() {
-  fileInput.addEventListener('change', function() {
-    var file = fileInput.files[0]; // Obtener el archivo seleccionado
-    if (file) {
-      displayPdf(file);
-      combineAllPDFPages().then(archive => {
-        fileBackup=archive;
-        getPdf(createURL);
-      });
-    } else {
-      console.error('Ningún archivo seleccionado');
-    }
-  });
-}
-
-//Recibe archivos compartidos fuera de la webapp
-navigator.serviceWorker.addEventListener("message", (event) => {
-  const file = event.data.file;
-  var dataTransfer = new DataTransfer();
-  dataTransfer.items.add(file);
-  fileInput.files = dataTransfer.files;
-  displayPdf(file);
-  combineAllPDFPages().then(archive => {
-    fileBackup=archive;
-    getPdf(createURL);
-  });
-});
-
-/**************************FUNCIONES PARA IMPRESORA STAR*****************************/
-var changeHref;
-
-var pdfText  = "";
-
+/******************FUNCIONES PARA IMPRESORA STAR***********************/
 function createURL() {
 	changeHref = 'starpassprnt://v1/print/nopreview?';
   //back
@@ -272,7 +210,71 @@ function getPdf(callback) {
 function createPrintToStar(){
   location.href=changeHref;
 }
-/**************************************************************************************/
+/**********************************************************************/
+
+/*********FUNCIONES PARA INPUT FILE O FILE RECIBIDO EXTERNAMENTE*******/
+function displayPdf(file) {
+  // Verificar si el archivo es de tipo PDF
+  if (file.type === 'application/pdf') {
+    alert("Archivo cargado correctamente");
+    fileBackup=file
+  } else {
+    alert('El archivo no es de tipo PDF, cargue un nuevo')
+    console.error('El archivo no es de tipo PDF');
+  }
+}
+
+//Muetras la información del archivo cargado
+function displayFile(file) {  
+  const ul = document.createElement('ul');
+  document.body.append(ul);
+  for (const prop of ['name', 'size', 'type']) {
+    const li = document.createElement('li');
+    li.textContent = `${prop} = ${file[prop]}`;
+    ul.append(li);
+  } 
+}
+
+// Agrega un event listener al input file para el evento 'change'
+function inputFileLoad() {
+  fileInput.addEventListener('change', function() {
+    var file = fileInput.files[0]; // Obtener el archivo seleccionado
+    if (file) {
+      displayPdf(file);
+      combineAllPDFPages().then(archive => {
+        fileBackup=archive;
+        const url = window.URL.createObjectURL(fileBackup);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = "fileUnifiedBackup";
+        a.click();
+        window.URL.revokeObjectURL(url);
+        getPdf(createURL);
+      });
+    } else {
+      console.error('Ningún archivo seleccionado');
+    }
+  });
+}
+
+//Recibe archivos compartidos fuera de la webapp
+navigator.serviceWorker.addEventListener("message", (event) => {
+  const file = event.data.file;
+  var dataTransfer = new DataTransfer();
+  dataTransfer.items.add(file);
+  fileInput.files = dataTransfer.files;
+  displayPdf(file);
+  combineAllPDFPages().then(archive => {
+    fileBackup=archive;
+    const url = window.URL.createObjectURL(fileBackup);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = "fileUnifiedBackup";
+    a.click();
+    window.URL.revokeObjectURL(url);
+    getPdf(createURL);
+  });
+});
 
 async function combineAllPDFPages() {
   const pdfBytes = await fetch(URL.createObjectURL(fileBackup)).then((res) => res.arrayBuffer());
@@ -294,6 +296,7 @@ async function combineAllPDFPages() {
   const blob = new Blob([mergedPdfBytes], { type: 'application/pdf' });
   return new File([blob], "file", { type: 'application/pdf' });
 }
+/**********************************************************************/
 
 // CODIGO PARA DESCARGAR UN ARCHIVO
 // const url = window.URL.createObjectURL(fileBackup);
