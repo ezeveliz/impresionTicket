@@ -53,9 +53,12 @@ function flashText() {
 }
 
 function searchPrinters(){
-  nuevoParrafo = document.createElement("p");
+  // nuevoParrafo = document.createElement("p");
+  // nuevoParrafo.textContent = "Buscando dispositivos";
+  // document.body.appendChild(nuevoParrafo);
+  nuevoParrafo = document.getElementById("BuscandoDisp");
   nuevoParrafo.textContent = "Buscando dispositivos";
-  document.body.appendChild(nuevoParrafo);
+  //document.body.appendChild(nuevoParrafo);
   nIntervId = setInterval(flashText, 1000);
   //Get the default device from the application as a first step. Discovery takes longer to complete.
   BrowserPrint.getDefaultDevice("printer", function(device){
