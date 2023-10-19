@@ -93,12 +93,6 @@ function searchPrinters(){
     alert(error);
   })
 }
-
-async function writeToSelectedPrinter(){ 
-  var zpl=await pdfToZpl(fileBackup);
-  const zplArchive = new Blob([zpl], { type: 'text/plain' });
-  selected_device.sendFile(zplArchive, undefined, errorCallback);
-}
 /***********************************************************************/
 
 window.addEventListener('load', () => {
@@ -114,19 +108,38 @@ function imprimir() {
   // Obtener el valor seleccionado en el elemento select
   var selectedPrinter = document.getElementById("printerSelect").value;
   // Realizar acciones según la opción seleccionada
-  if (selectedPrinter === "Zebra") {
-
-  }else if(selectedPrinter === "Star"){
-  
+  if(fileBackup && fileBackup.size > 0){
+    if (selectedPrinter === "Zebra") {
+      try{
+        alert("Imprimiendo en impresora zebra...");
+        imprimirZebra();
+      }catch(error){
+        alert("¡Falla al imprimir! Revise la impresora y el tipo de impresora al que se encuentra conectado");
+      }
+    }else if(selectedPrinter === "Star"){
+      try{
+        alert("Imprimiendo en impresora star...");
+        imprimirStar();
+      }catch(error){
+        alert("¡Falla al imprimir! Revise la impresora y el tipo de impresora al que se encuentra conectado");
+      }
+    }else{
+        alert("Selecciona una impresora válida (Zebra o Star).");
+    }
   }else{
-      alert("Selecciona una impresora válida (Zebra o Star).");
+    alert("No hay un archivo cargado para imprimir");
   }
 }
 /**********************************************************************/
 
 /**********************FUNCIONES PARA IMPRESORA ZEBRA******************/
+async function imprimirZebra(){ 
+  var zpl=await pdfToZpl(fileBackup);
+  const zplArchive = new Blob([zpl], { type: 'text/plain' });
+  selected_device.sendFile(zplArchive, undefined, errorCallback);
+}
+
 async function pdfToZpl(file) {
-  alert("Procederá a la conversión del PDF a ZPL");
   const pdfUrl = URL.createObjectURL(file);
   // Obtener el PDF y crear una instancia de pdfJsLib
   const loadPdf = await pdfjsLib.getDocument(pdfUrl);
@@ -184,7 +197,9 @@ function createURL() {
   changeHref = changeHref + "&size=" + "2w7";
   //pdf
 	changeHref = changeHref + "&pdf=" + encodeURIComponent(pdfText);
-  document.getElementById("send_data").value = changeHref;
+  //document.getElementById("send_data").value = changeHref;
+  console.log("****")
+  console.log(changeHref)
 }
 
 function getPdf(callback) {
@@ -207,7 +222,7 @@ function getPdf(callback) {
   createURL();
 }
 
-function createPrintToStar(){
+function imprimirStar(){
   location.href=changeHref;
 }
 /**********************************************************************/
@@ -224,17 +239,6 @@ function displayPdf(file) {
   }
 }
 
-//Muetras la información del archivo cargado
-function displayFile(file) {  
-  const ul = document.createElement('ul');
-  document.body.append(ul);
-  for (const prop of ['name', 'size', 'type']) {
-    const li = document.createElement('li');
-    li.textContent = `${prop} = ${file[prop]}`;
-    ul.append(li);
-  } 
-}
-
 // Agrega un event listener al input file para el evento 'change'
 function inputFileLoad() {
   fileInput.addEventListener('change', function() {
@@ -243,12 +247,6 @@ function inputFileLoad() {
       displayPdf(file);
       combineAllPDFPages().then(archive => {
         fileBackup=archive;
-        const url = window.URL.createObjectURL(fileBackup);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = "fileUnifiedBackup";
-        a.click();
-        window.URL.revokeObjectURL(url);
         getPdf(createURL);
       });
     } else {
@@ -266,12 +264,6 @@ navigator.serviceWorker.addEventListener("message", (event) => {
   displayPdf(file);
   combineAllPDFPages().then(archive => {
     fileBackup=archive;
-    const url = window.URL.createObjectURL(fileBackup);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = "fileUnifiedBackup";
-    a.click();
-    window.URL.revokeObjectURL(url);
     getPdf(createURL);
   });
 });

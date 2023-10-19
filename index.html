@@ -14,23 +14,21 @@
         <script src='https://github.com/mozilla/pdfjs-dist'></script>
         <script type="text/javascript" src="./BrowserPrint-3.1.250.min.js"></script>
         <script type="text/javascript" src="lib/pdf-lib.js"></script>
-        <script type="text/javascript" src="js/main.js?version=2.51"></script>
+        <script type="text/javascript" src="js/main.js?version=2.52"></script>
         <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     </head>
     <body>
-        V2.51<br/>
-        Selected Device: <select id="selected_device" onchange=onDeviceSelected(this);></select> <!--  <input type="button" value="Change" onclick="changeDevice();">--> <br/><br/> 
+        V2.52<br/>
         <div class="container">
             <div class="header">
                 <h1 class="title">Imprimir ticket</h1>
             </div>
+            <div class="header">
+                Dispositivos: <select id="selected_device" onchange=onDeviceSelected(this);></select>
+            </div>
             <div class="content">
-                <div class="contentDocument"></div>
-                    <h2 class="documentTitle">Documento</h2>
-                    <p class="nombreArchivo">Ninguno</p>
-                </div>
                 <div class="content print">
-                    <h2 class="examTitle">Examinar</h2>
+                    <h2 class="examTitle">Examinar documento</h2>
                     <input type="file" name="archivo" id="fileInput">
                 </div>
                 <div class="content printer">
@@ -40,11 +38,7 @@
                         <option value="Star">Star</option>
                     </select>
                 </div>
-                <input type="button" value="Imprimir zebra" onclick="writeToSelectedPrinter()">
-                
-                <textarea id="send_data" cols="25" rows="25" wrap="soft"></textarea><br>
-                
-                <input type="button" value="Imprimir star" onclick="createPrintToStar()"><br/><br/>
+                <input type="button" value="Imprimir" onclick="imprimir()">
             </div>
         </div>
     </body>
