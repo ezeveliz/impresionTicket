@@ -39,6 +39,7 @@ var statusTexts = ["Buscando dispositivos", "Buscando dispositivos.", "Buscando 
 var contenedor = document.getElementById("contenedor");
 var nuevoParrafo;
 var fileBackup;
+var fileBackupZpl;
 var changeHref;
 var pdfText = "";
 
@@ -180,7 +181,7 @@ async function pdfToZpl(file) {
     Math.min(transform, nextTransform)
   );
   // create content for print.
-  let content = '^XA~TA000~JSN^LT0^MNW^MTT^PON^PMN^LH0,0^JMA^PR5,5~SD15^JUS^LRN^CI0^XZ^XA^MMT^PW400^LL0480^LS0^XA';
+  let content = '^XA~TA000~JSN^LT0^MNW^MTT^PON^PMN^LH0,0^JMA^PR5,5~SD15^JUS^LRN^CI0^XZ^XA^MMT^PW400^LL1000^LS0^XA';
   // loop data for add itens into content;
   //topPosition - scale
   //En initial position entre mas grande sea el numero constante, mas alineado a la izquierda estara, en otro caso, mas pequeño a la derecha
