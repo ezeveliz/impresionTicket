@@ -136,10 +136,18 @@ function imprimir() {
 /**********************************************************************/
 
 /**********************FUNCIONES PARA IMPRESORA ZEBRA******************/
+var finishCallback = function(){
+	alert("Proceso finalizado");	
+}
+
+var errorCallback = function(errorMessage){
+	alert("Error: " + errorMessage);	
+}
+
 async function imprimirZebra(){ 
   var zpl=await pdfToZpl(fileBackup);
   const zplArchive = new Blob([zpl], { type: 'text/plain' });
-  selected_device.sendFile(zplArchive, undefined, errorCallback);
+  selected_device.sendFile(zplArchive, finishCallback, errorCallback);
 }
 
 async function pdfToZpl(file) {
