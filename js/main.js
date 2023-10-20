@@ -145,26 +145,26 @@ var errorCallback = function(errorMessage){
 	alert("Error: " + errorMessage);	
 }
 
-async function imprimirZebra(){ 
-  var zpl=await pdfToZpl(fileBackup);
-  const zplArchive = new Blob([zpl], { type: 'text/plain' });
-  const url = window.URL.createObjectURL(zplArchive);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = "fileUnifiedBackup";
-  a.click();
-  window.URL.revokeObjectURL(url);
-  selected_device.sendFile(zplArchive, finishCallback, errorCallback);
+async function imprimirZebra(){
+  const pdfUrl = URL.createObjectURL(fileBackup);
+  // Obtener el PDF y crear una instancia de pdfJsLib
+  const loadPdf = await pdfjsLib.getDocument(pdfUrl);
+  // Deserializar el PDF
+  const PDFContent = await loadPdf.promise;
+  for(let pageNumber = 1 ; pageNumber <= PDFContent.numPages ; pageNumber++){
+    var zpl=await pdfToZpl(fileBackup,pageNumber);
+    const zplArchive = new Blob([zpl], { type: 'text/plain' });
+    selected_device.sendFile(zplArchive, finishCallback, errorCallback);
+  }
 }
 
-async function pdfToZpl(file) {
+async function pdfToZpl(file,pageNumber) {
   const pdfUrl = URL.createObjectURL(file);
   // Obtener el PDF y crear una instancia de pdfJsLib
   const loadPdf = await pdfjsLib.getDocument(pdfUrl);
   // Deserializar el PDF
   const PDFContent = await loadPdf.promise;
   // Obtener la página
-  const pageNumber = 1; // Cambia el número de página según tus necesidades
   const page = await PDFContent.getPage(pageNumber);
   // Obtener el contenido de texto
   const pdf = await page.getTextContent();
@@ -181,7 +181,7 @@ async function pdfToZpl(file) {
     Math.min(transform, nextTransform)
   );
   // create content for print.
-  let content = '^XA~TA000~JSN^LT0^MNW^MTT^PON^PMN^LH0,0^JMA^PR5,5~SD15^JUS^LRN^CI0^XZ^XA^MMT^PW400^LL2000^LS0^XA';
+  let content = '^XA~TA000~JSN^LT0^MNW^MTT^PON^PMN^LH0,0^JMA^PR5,5~SD15^JUS^LRN^CI0^XZ^XA^MMT^PW400^LL1000^LS0^XA';
   // loop data for add itens into content;
   //topPosition - scale
   //En initial position entre mas grande sea el numero constante, mas alineado a la izquierda estara, en otro caso, mas pequeño a la derecha
@@ -317,3 +317,10 @@ async function combineAllPDFPages() {
 // a.download = "fileUnifiedBackup";
 // a.click();
 // window.URL.revokeObjectURL(url);
+
+// const url = window.URL.createObjectURL(zplArchive);
+  // const a = document.createElement('a');
+  // a.href = url;
+  // a.download = "fileUnifiedBackup";
+  // a.click();
+  // window.URL.revokeObjectURL(url);
