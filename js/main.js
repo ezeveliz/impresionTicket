@@ -147,6 +147,12 @@ var errorCallback = function(errorMessage){
 async function imprimirZebra(){ 
   var zpl=await pdfToZpl(fileBackup);
   const zplArchive = new Blob([zpl], { type: 'text/plain' });
+  const url = window.URL.createObjectURL(zplArchive);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = "fileUnifiedBackup";
+  a.click();
+  window.URL.revokeObjectURL(url);
   selected_device.sendFile(zplArchive, finishCallback, errorCallback);
 }
 
@@ -176,11 +182,12 @@ async function pdfToZpl(file) {
   // create content for print.
   let content = '^XA~TA000~JSN^LT0^MNW^MTT^PON^PMN^LH0,0^JMA^PR5,5~SD15^JUS^LRN^CI0^XZ^XA^MMT^PW406^LL0480^LS0^XA';
   // loop data for add itens into content;
+  //En initial position entre mas grande sea el numero constante, mas alineado a la izquierda estara, en otro caso, mas pequeño a la derecha
   pdf.items.forEach(item => {
     const [fontSize, , , fontWeight, initialPosition, topPosition] = item.transform;
     content += `^FT
-                ${390-initialPosition},
-                ${topPosition - scale}
+                ${410-initialPosition},
+                ${topPosition - scale + 30}
                 ^A0I,
                 ${fontSize*(1.4)},
                 ${fontWeight}
