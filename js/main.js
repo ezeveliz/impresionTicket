@@ -65,9 +65,6 @@ function onDeviceSelected(selected)
 }
 
 function searchPrinters(){
-  // nuevoParrafo = document.createElement("p");
-  // nuevoParrafo.textContent = "Buscando dispositivos";
-  // document.body.appendChild(nuevoParrafo);
   nuevoParrafo = document.getElementById("BuscandoDisp");
   nuevoParrafo.textContent = "Buscando dispositivos";
   //document.body.appendChild(nuevoParrafo);
@@ -165,12 +162,12 @@ async function imprimirZebra(){
   for(let pageNumber = 1 ; pageNumber <= PDFContent.numPages ; pageNumber++){
     var zpl=await pdfToZpl(fileBackupZpl,pageNumber);
     const zplArchive = new Blob([zpl], { type: 'text/plain' });
-    const url = window.URL.createObjectURL(zplArchive);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = "fileUnifiedBackup";
-    a.click();
-    window.URL.revokeObjectURL(url);
+    // const url = window.URL.createObjectURL(zplArchive);
+    // const a = document.createElement('a');
+    // a.href = url;
+    // a.download = "fileUnifiedBackup";
+    // a.click();
+    // window.URL.revokeObjectURL(url);
     selected_device.sendFile(zplArchive, finishCallback, errorCallback);
   }
 }
@@ -198,7 +195,7 @@ async function pdfToZpl(file,pageNumber) {
     Math.min(transform, nextTransform)
   );
   // create content for print.
-  let content = '^XA~TA000~JSN^LT0^MNW^MTT^PON^PMN^LH0,0^JMA^PR5,5~SD15^JUS^LRN^CI0^XZ^XA^MMT^PW400^LL0480^LS0^XA';
+  let content = '^XA~TA000~JSN^LT0^MNW^MTT^PON^PMN^LH0,0^JMA^PR5,5~SD15^JUS^LRN^CI0^XZ^XA^MMT^PW400^LL0480^LS0';
   // loop data for add itens into content;
   //topPosition - scale
   //En initial position entre mas grande sea el numero constante, mas alineado a la izquierda estara, en otro caso, mas pequeño a la derecha
