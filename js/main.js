@@ -53,6 +53,17 @@ function flashText() {
   nuevoParrafo.textContent = statusTexts[currentIndex + 1];
 }
 
+function onDeviceSelected(selected)
+{
+	for(var i = 0; i < devices.length; ++i){
+		if(selected.value == devices[i].uid)
+		{
+			selected_device = devices[i];
+			return;
+		}
+	}
+}
+
 function searchPrinters(){
   // nuevoParrafo = document.createElement("p");
   // nuevoParrafo.textContent = "Buscando dispositivos";
