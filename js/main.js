@@ -154,13 +154,13 @@ var errorCallback = function(errorMessage){
 }
 
 async function imprimirZebra(){
-  const pdfUrl = URL.createObjectURL(fileBackupZpl);
+  const pdfUrl = URL.createObjectURL(fileBackup);
   // Obtener el PDF y crear una instancia de pdfJsLib
   const loadPdf = await pdfjsLib.getDocument(pdfUrl);
   // Deserializar el PDF
   const PDFContent = await loadPdf.promise;
   for(let pageNumber = 1 ; pageNumber <= PDFContent.numPages ; pageNumber++){
-    var zpl=await pdfToZpl(fileBackupZpl,pageNumber);
+    var zpl=await pdfToZpl(fileBackup,pageNumber);
     const zplArchive = new Blob([zpl], { type: 'text/plain' });
     // const url = window.URL.createObjectURL(zplArchive);
     // const a = document.createElement('a');
@@ -203,7 +203,7 @@ async function pdfToZpl(file,pageNumber) {
     const [fontSize, , , fontWeight, initialPosition, topPosition] = item.transform;
     content += `^FT
                 ${390-initialPosition},
-                ${topPosition - scale}
+                ${topPosition-scale-170}
                 ^A0I,
                 ${fontSize*(1.4)},
                 ${fontWeight}
@@ -219,6 +219,10 @@ async function pdfToZpl(file,pageNumber) {
   console.log("****")
   console.log(content)
   return content
+}
+
+async function pdfToCpcl(){
+
 }
 /**********************************************************************/
 
