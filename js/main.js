@@ -195,7 +195,8 @@ async function pdfToZpl(file,pageNumber) {
     Math.min(transform, nextTransform)
   );
   // create content for print.
-  let content = '^XA~TA000~JSN^LT0^MNW^MTT^PON^PMN^LH0,0^JMA^PR5,5~SD15^JUS^LRN^CI0^XZ^XA^MMT^PW400^LL0480^LS0';
+  //^XA~TA000~JSN^LT0^MNW^MTT^PON^PMN^LH0,0^JMA^PR5,5~SD15^JUS^LRN^CI0^XZ^XA^MMT^PW400^LL0480^LS0
+  let content = '^XA~TA000~JSN^LT0^MNW^MTT^PON^PMN^LH0,0^JMA^PR5,5~SD15^JUS^LRN^CI0^XZ^XA^MMT^PW400^LL2000^LH0,0^LS0';
   // loop data for add itens into content;
   //topPosition - scale
   //En initial position entre mas grande sea el numero constante, mas alineado a la izquierda estara, en otro caso, mas pequeño a la derecha
@@ -203,7 +204,7 @@ async function pdfToZpl(file,pageNumber) {
     const [fontSize, , , fontWeight, initialPosition, topPosition] = item.transform;
     content += `^FT
                 ${390-initialPosition},
-                ${topPosition-scale-170}
+                ${topPosition-scale}
                 ^A0I,
                 ${fontSize*(1.4)},
                 ${fontWeight}
