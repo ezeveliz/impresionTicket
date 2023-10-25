@@ -154,6 +154,78 @@ var errorCallback = function(errorMessage){
 	alert("Error: " + errorMessage);	
 }
 
+// async function imprimirZebra(){
+//   const pdfUrl = URL.createObjectURL(fileBackupZpl);
+//   // Obtener el PDF y crear una instancia de pdfJsLib
+//   const loadPdf = await pdfjsLib.getDocument(pdfUrl);
+//   // Deserializar el PDF
+//   const PDFContent = await loadPdf.promise;
+//   //for(let pageNumber = 1 ; pageNumber <= PDFContent.numPages ; pageNumber++){
+//     var zpl=await pdfToZpl(fileBackupZpl);
+//     const zplArchive = new Blob([zpl], { type: 'text/plain' });
+//     // const url = window.URL.createObjectURL(zplArchive);
+//     // const a = document.createElement('a');
+//     // a.href = url;
+//     // a.download = "fileUnifiedBackup";
+//     // a.click();
+//     // window.URL.revokeObjectURL(url);
+//     selected_device.sendFile(zplArchive, finishCallback, errorCallback);
+//   //}
+// }
+
+// async function pdfToZpl(file) {
+//   const pdfUrl = URL.createObjectURL(file);
+//   // Obtener el PDF y crear una instancia de pdfJsLib
+//   const loadPdf = await pdfjsLib.getDocument(pdfUrl);
+//   // Deserializar el PDF
+//   const PDFContent = await loadPdf.promise;
+//   // create content for print.
+//   //^XA~TA000~JSN^LT0^MNW^MTT^PON^PMN^LH0,0^JMA^PR5,5~SD15^JUS^LRN^CI0^XZ^XA^MMT^PW400^LL0480^LS0
+//   let content = '^XA~TA000~JSN^LT0^MNW^MTT^PON^PMN^LH0,0^JMA^PR5,5~SD15^JUS^LRN^CI0^XZ^XA^MMT^PW400^LL0480^LH0,0^LS0';
+//   // loop data for add itens into content;
+//   //topPosition - scale
+//   //En initial position entre mas grande sea el numero constante, mas alineado a la izquierda estara, en otro caso, mas pequeño a la derecha
+//   // Obtener la página
+//   for(let pageNumber = 1 ; pageNumber <= PDFContent.numPages ; pageNumber++){
+//     const page = await PDFContent.getPage(pageNumber);
+//     // Obtener el contenido de texto
+//     const pdf = await page.getTextContent();
+//     // Verify exists itens on PDF
+//     if (!pdf.items || pdf.items.length==0) {
+//       alert("Saliendo de conversión");
+//       return;
+//     }
+//     // get scale of print
+//     const scale = pdf.items.map(item => {
+//       const [, , , , , topPosition] = item.transform;
+//       return topPosition;
+//     }).reduce((transform, nextTransform) => 
+//       Math.min(transform, nextTransform)
+//     );
+//     pdf.items.forEach(item => {
+//       const [fontSize, , , fontWeight, initialPosition, topPosition] = item.transform;
+//       content += `^FT
+//                   ${390-initialPosition},
+//                   ${topPosition-scale}
+//                   ^A0I,
+//                   ${fontSize*(1.4)},
+//                   ${fontWeight}
+//                   ^FB
+//                   ${parseInt(item.width)},
+//                   1,0,C^FH^FD
+//                   ${(item.str.normalize('NFD').replace(/[\u0300-\u036f]/g, ''))}
+//                   ^FS`;
+//     })
+//     // add finish content
+//     content += '^PQ'+pageNumber+',0,1,Y';
+//   }
+//   content += '^XZ';
+//   contenidoZebra=content;
+//   console.log("****")
+//   console.log(content)
+//   return content
+// }
+
 async function imprimirZebra(){
   const pdfUrl = URL.createObjectURL(fileBackupZpl);
   // Obtener el PDF y crear una instancia de pdfJsLib
@@ -181,12 +253,13 @@ async function pdfToZpl(file) {
   const PDFContent = await loadPdf.promise;
   // create content for print.
   //^XA~TA000~JSN^LT0^MNW^MTT^PON^PMN^LH0,0^JMA^PR5,5~SD15^JUS^LRN^CI0^XZ^XA^MMT^PW400^LL0480^LS0
-  let content = '^XA~TA000~JSN^LT0^MNW^MTT^PON^PMN^LH0,0^JMA^PR5,5~SD15^JUS^LRN^CI0^XZ^XA^MMT^PW400^LL0480^LH0,0^LS0';
   // loop data for add itens into content;
   //topPosition - scale
   //En initial position entre mas grande sea el numero constante, mas alineado a la izquierda estara, en otro caso, mas pequeño a la derecha
   // Obtener la página
+  let content = '';
   for(let pageNumber = 1 ; pageNumber <= PDFContent.numPages ; pageNumber++){
+    content += '^XA~TA000~JSN^LT0^MNW^MTT^PON^PMN^LH0,0^JMA^PR5,5~SD15^JUS^LRN^CI0^XZ^XA^MMT^PW400^LL0480^LH0,0^LS0';
     const page = await PDFContent.getPage(pageNumber);
     // Obtener el contenido de texto
     const pdf = await page.getTextContent();
@@ -217,9 +290,9 @@ async function pdfToZpl(file) {
                   ^FS`;
     })
     // add finish content
-    content += '^PQ'+pageNumber+',0,1,Y';
+    //content += '^PQ'+pageNumber+',0,1,Y^XZ';
+    content += '^PQ1,0,1,Y^XZ';
   }
-  content += '^XZ';
   contenidoZebra=content;
   console.log("****")
   console.log(content)
