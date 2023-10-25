@@ -217,8 +217,9 @@ async function pdfToZpl(file) {
                   ^FS`;
     })
     // add finish content
-    content += '^PQ'+pageNumber+',0,1,Y^XZ';
+    content += '^PQ'+pageNumber+',0,1,Y';
   }
+  content += '^XZ';
   contenidoZebra=content;
   console.log("****")
   console.log(content)
