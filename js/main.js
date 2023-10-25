@@ -262,7 +262,7 @@ async function pdfToZpl(file) {
     if(pageNumber==1){
       content += '^XA~TA000~JSN^LT0^MNW^MTT^PON^PMN^LH0,0^JMA^PR5,5~SD15^JUS^LRN^CI0^XZ^XA^MMT^PW400^LL0408^LH0,0^LS0';
     }else{
-      content += '^XA~TA000~JSN^LT0^MNW^MTT^PON^PMN^LH0,0^JMA^PR5,5~SD15^JUS^LRN^CI0^XZ^XA^MMT^PW400^LL0408^LH0,0^LS-100';
+      content += '^XA~TA000~JSN^LT0^MNW^MTT^PON^PMN^LH0,0^JMA^PR5,5~SD15^JUS^LRN^CI0^XZ^XA^MMT^PW400^LL0100^LH0,0^LS0';
     }
     const page = await PDFContent.getPage(pageNumber);
     // Obtener el contenido de texto
