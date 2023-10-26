@@ -43,6 +43,7 @@ var fileBackupZpl;
 var changeHref;
 var pdfText = "";
 var totalNumPagesTam;
+var sPrinter;
 
 /********************FUNCIONES PARA BUSCAR IMPRESORAS*******************/
 function flashText() {
@@ -54,15 +55,28 @@ function flashText() {
   nuevoParrafo.textContent = statusTexts[currentIndex + 1];
 }
 
-function onDeviceSelected(selected)
-{
+function onDeviceSelected(selected){
 	for(var i = 0; i < devices.length; ++i){
-		if(selected.value == devices[i].uid)
-		{
+		if(selected.value == devices[i].uid){
 			selected_device = devices[i];
 			return;
 		}
 	}
+}
+
+function toggleElements(selectedPrinter) {
+  const zebraElements = document.querySelectorAll('.header select, .header p');
+  const starElements = document.querySelector('.header select, .header p');
+  const buscandoDisp = document.getElementById("BuscandoDisp");
+  if (selectedPrinter === "Zebra") {
+      zebraElements.forEach(element => element.style.display = 'block');
+      starElements.forEach(element => element.style.display = 'none');
+      buscandoDisp.style.display = 'block';
+  } else {
+      zebraElements.forEach(element => element.style.display = 'none');
+      starElements.forEach(element => element.style.display = 'block');
+      buscandoDisp.style.display = 'none';
+  }
 }
 
 function searchPrinters(){
@@ -110,6 +124,7 @@ function searchPrinters(){
 
 window.addEventListener('load', () => {
   registerServiceWorker()
+  sPrinter = document.getElementById("printerSelect").value;
   searchPrinters()
   fileInput = document.getElementById('fileInput');
   inputFileLoad()
@@ -408,59 +423,41 @@ async function combineAllPDFPages() {
   return new File([blob], "file", { type: 'application/pdf' });
 }
 /**********************************************************************/
-
-const fileToBinary = file => new Promise((resolve) => {
-  const reader = new FileReader()
-  reader.onload = function() {
-    const b64 = reader.result.split(',')[1]
-    const binary = atob(b64)
-    resolve(binary)
-  }
-  reader.readAsDataURL(file)
-})
-
-PDFJS.disableWorker = true
-
-const getDocument = (source, isURL) => {
-  if (isURL) {
-    return PDFJS.getDocument(source)
-  }
-  return PDFJS.getDocument({ data: source })
-}
-
-const getPages = async (doc) => {
-  const numPages = doc.numPages
-  const pages = []
-  for (let i = 0; i < numPages; i++) {
-    pages.push(await doc.getPage(i + 1))
-  }
-  return pages
-}
-
-const convertToText = async (source) => {
-  const doc = await getDocument(source)
-  const pages = await getPages(doc)
-  const contents = []
-
-  for (let i = 0; i < pages.length; i++) {
-    const content = await pages[i].getTextContent()
-    const text = 
-          content
-            .items
-            .reduce((acc, item) => (acc.str || acc) + item.str)
-    contents.push(text)
-  }
-  return contents
-}
-
 async function processPDF() {
-  const binary = await fileToBinary(fileBackup)
-  const contents = await convertToText(binary, false)
-  const text = contents.join('\n')
-  const download = document.getElementById('download')
-  download.classList.remove('hidden')
-  const blob = new Blob([text], { type: 'text/plain '})
-  download.href = URL.createObjectURL(blob)
+  if (fileBackup) {
+    const fileReader = new FileReader();
+    fileReader.onload = function() {
+        const arrayBuffer = this.result;
+
+        // Cargar el archivo PDF
+        pdfjsLib.getDocument(arrayBuffer).promise.then(function(pdfDoc) {
+            let text = '';
+            const numPages = pdfDoc.numPages;
+
+            for (let pageNum = 1; pageNum <= numPages; pageNum++) {
+                pdfDoc.getPage(pageNum).then(function(page) {
+                    page.getTextContent().then(function(textContent) {
+                        textContent.items.forEach(function (textItem) {
+                            text += textItem.str + ' ';
+                        });
+                        text += '\n';
+                        if (pageNum === numPages) {
+                            // Mostrar el texto en el elemento <pre>
+                            const blob = new Blob([text], { type: 'text/plain' });
+                            const url = window.URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.href = url;
+                            a.download = "fileUnifiedBackup.txt"; // Nombre del archivo de descarga
+                            a.click();
+                            window.URL.revokeObjectURL(url);
+                        }
+                    });
+                });
+            }
+        });
+    };
+    fileReader.readAsArrayBuffer(fileBackup);
+  }
 }
 
 // CODIGO PARA DESCARGAR UN ARCHIVO
