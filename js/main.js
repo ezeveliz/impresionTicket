@@ -254,7 +254,7 @@ async function imprimirZebra(){
     // const a = document.createElement('a');
     // a.href = url;
     // a.download = "fileUnifiedBackup";
-    // a.click();
+    // a.click();   
     // window.URL.revokeObjectURL(url);
     selected_device.sendFile(zplArchive, finishCallback, errorCallback);
   //}
@@ -272,9 +272,9 @@ async function pdfToZpl(file) {
   //topPosition - scale
   //En initial position entre mas grande sea el numero constante, mas alineado a la izquierda estara, en otro caso, mas pequeño a la derecha
   // Obtener la página
-  let content = '';
+  let content = '^XA~TA000~JSN^LT0^MNN^MTT^PON^PMN^LH0,0^JMA^PR5,5~SD15^JUS^LRN^CI0^XZ';
   for(let pageNumber = 1 ; pageNumber <= PDFContent.numPages ; pageNumber++){
-    content += '^XA~TA000~JSN^LT0^MNN^MTT^PON^PMN^LH0,0^JMA^PR5,5~SD15^JUS^LRN^CI0^XZ^XA^MMT^PW400^LL582^LH0,0^LS0';
+    content += '^XA^MMT^PW400^LL582^LH0,0^LS0';
     const page = await PDFContent.getPage(pageNumber);
     // Obtener el contenido de texto
     const pdf = await page.getTextContent();
@@ -304,7 +304,8 @@ async function pdfToZpl(file) {
                   ${(item.str.normalize('NFD').replace(/[\u0300-\u036f]/g, ''))}
                   ^FS`;
     })
-    content += '^PQ1,0,1,Y^XZ';
+    //content += '^PQ1,0,1,Y^XZ';
+    content += '^XZ';
   }
   contenidoZebra=content;
   console.log("****")
