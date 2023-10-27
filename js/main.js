@@ -292,7 +292,7 @@ async function pdfToZpl(file) {
     if(pageNumber!=PDFContent.numPages){
       content += '^XA^MMT^PW400^LL590^LH0,0^LS0';
     }else{
-      content += '^XA^MMT^PW400^LL'+(590-scale)+'^LH0,0^LS0';
+      content += '^XA^MMT^PW400^LL'+(590-scale+15)+'^LH0,0^LS0';
     }
     if(pageNumber!=PDFContent.numPages){
       pdf.items.forEach(item => {
