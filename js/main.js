@@ -274,7 +274,7 @@ async function pdfToZpl(file) {
   // Obtener la página
   let content = '^XA~TA000~JSN^LT0^MNN^MTT^PON^PMN^LH0,0^JMA^PR5,5~SD15^JUS^LRN^CI0^XZ';
   for(let pageNumber = 1 ; pageNumber <= PDFContent.numPages ; pageNumber++){
-    content += '^XA^MMT^PW400^LL582^LH0,0^LS0';
+    content += '^XA^MMT^PW400^LL590^LH0,0^LS0';
     const page = await PDFContent.getPage(pageNumber);
     // Obtener el contenido de texto
     const pdf = await page.getTextContent();
