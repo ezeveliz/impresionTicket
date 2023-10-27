@@ -274,7 +274,6 @@ async function pdfToZpl(file) {
   // Obtener la página
   let content = '^XA~TA000~JSN^LT0^MNN^MTT^PON^PMN^LH0,0^JMA^PR5,5~SD15^JUS^LRN^CI0^XZ';
   for(let pageNumber = 1 ; pageNumber <= PDFContent.numPages ; pageNumber++){
-    content += '^XA^MMT^PW400^LL590^LH0,0^LS0';
     const page = await PDFContent.getPage(pageNumber);
     // Obtener el contenido de texto
     const pdf = await page.getTextContent();
@@ -290,6 +289,11 @@ async function pdfToZpl(file) {
     }).reduce((transform, nextTransform) => 
       Math.min(transform, nextTransform)
     );
+    if(pageNumber!=PDFContent.numPages){
+      content += '^XA^MMT^PW400^LL590^LH0,0^LS0';
+    }else{
+      content += '^XA^MMT^PW400^LL'+(590-scale)+'^LH0,0^LS0';
+    }
     if(pageNumber!=PDFContent.numPages){
       pdf.items.forEach(item => {
         const [fontSize, , , fontWeight, initialPosition, topPosition] = item.transform;
@@ -310,7 +314,7 @@ async function pdfToZpl(file) {
         const [fontSize, , , fontWeight, initialPosition, topPosition] = item.transform;
         content += `^FT
                     ${390-initialPosition},
-                    ${topPosition}
+                    ${topPosition-scale}
                     ^A0I,
                     ${fontSize*(1.4)},
                     ${fontWeight}
