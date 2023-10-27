@@ -250,12 +250,12 @@ async function imprimirZebra(){
   //for(let pageNumber = 1 ; pageNumber <= PDFContent.numPages ; pageNumber++){
     var zpl=await pdfToZpl(fileBackupZpl);
     const zplArchive = new Blob([zpl], { type: 'text/plain' });
-    const url = window.URL.createObjectURL(zplArchive);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = "fileUnifiedBackup";
-    a.click();
-    window.URL.revokeObjectURL(url);
+    // const url = window.URL.createObjectURL(zplArchive);
+    // const a = document.createElement('a');
+    // a.href = url;
+    // a.download = "fileUnifiedBackup";
+    // a.click();
+    // window.URL.revokeObjectURL(url);
     selected_device.sendFile(zplArchive, finishCallback, errorCallback);
   //}
 }
@@ -274,11 +274,7 @@ async function pdfToZpl(file) {
   // Obtener la página
   let content = '';
   for(let pageNumber = 1 ; pageNumber <= PDFContent.numPages ; pageNumber++){
-    if(pageNumber==1){
-      content += '^XA~TA000~JSN^LT0^MNW^MTT^PON^PMN^LH0,0^JMA^PR5,5~SD15^JUS^LRN^CI0^XZ^XA^MMT^PW400^LLN^LH0,0^LS0';
-    }else{
-      content += '^XA~TA000~JSN^LT0^MNW^MTT^PON^PMN^LH0,0^JMA^PR5,5~SD15^JUS^LRN^CI0^XZ^XA^MMT^PW400^LL0j800^LH0,0^LS0';
-    }
+    content += '^XA~TA000~JSN^LT0^MNN^MTT^PON^PMN^LH0,0^JMA^PR5,5~SD15^JUS^LRN^CI0^XZ^XA^MMT^PW400^LL582^LH0,0^LS0';
     const page = await PDFContent.getPage(pageNumber);
     // Obtener el contenido de texto
     const pdf = await page.getTextContent();
@@ -308,8 +304,6 @@ async function pdfToZpl(file) {
                   ${(item.str.normalize('NFD').replace(/[\u0300-\u036f]/g, ''))}
                   ^FS`;
     })
-    // add finish content
-    //content += '^PQ'+pageNumber+',0,1,Y^XZ';
     content += '^PQ1,0,1,Y^XZ';
   }
   contenidoZebra=content;
