@@ -250,12 +250,12 @@ async function imprimirZebra(){
   //for(let pageNumber = 1 ; pageNumber <= PDFContent.numPages ; pageNumber++){
     var zpl=await pdfToZpl(fileBackupZpl);
     const zplArchive = new Blob([zpl], { type: 'text/plain' });
-    // const url = window.URL.createObjectURL(zplArchive);
-    // const a = document.createElement('a');
-    // a.href = url;
-    // a.download = "fileUnifiedBackup";
-    // a.click();   
-    // window.URL.revokeObjectURL(url);
+    const url = window.URL.createObjectURL(zplArchive);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = "fileUnifiedBackup";
+    a.click();   
+    window.URL.revokeObjectURL(url);
     selected_device.sendFile(zplArchive, finishCallback, errorCallback);
   //}
 }
@@ -290,20 +290,37 @@ async function pdfToZpl(file) {
     }).reduce((transform, nextTransform) => 
       Math.min(transform, nextTransform)
     );
-    pdf.items.forEach(item => {
-      const [fontSize, , , fontWeight, initialPosition, topPosition] = item.transform;
-      content += `^FT
-                  ${390-initialPosition},
-                  ${topPosition-scale}
-                  ^A0I,
-                  ${fontSize*(1.4)},
-                  ${fontWeight}
-                  ^FB
-                  ${parseInt(item.width)},
-                  1,0,C^FH^FD
-                  ${(item.str.normalize('NFD').replace(/[\u0300-\u036f]/g, ''))}
-                  ^FS`;
-    })
+    if(pageNumber!=PDFContent.numPages){
+      pdf.items.forEach(item => {
+        const [fontSize, , , fontWeight, initialPosition, topPosition] = item.transform;
+        content += `^FT
+                    ${390-initialPosition},
+                    ${topPosition-scale}
+                    ^A0I,
+                    ${fontSize*(1.4)},
+                    ${fontWeight}
+                    ^FB
+                    ${parseInt(item.width)},
+                    1,0,C^FH^FD
+                    ${(item.str.normalize('NFD').replace(/[\u0300-\u036f]/g, ''))}
+                    ^FS`;
+      })
+    }else{
+      pdf.items.forEach(item => {
+        const [fontSize, , , fontWeight, initialPosition, topPosition] = item.transform;
+        content += `^FT
+                    ${390-initialPosition},
+                    ${590-topPosition}
+                    ^A0I,
+                    ${fontSize*(1.4)},
+                    ${fontWeight}
+                    ^FB
+                    ${parseInt(item.width)},
+                    1,0,C^FH^FD
+                    ${(item.str.normalize('NFD').replace(/[\u0300-\u036f]/g, ''))}
+                    ^FS`;
+      })
+    }
     //content += '^PQ1,0,1,Y^XZ';
     content += '^XZ';
   }
