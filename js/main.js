@@ -170,22 +170,15 @@ var errorCallback = function(errorMessage){
 }
 
 async function imprimirZebra(){
-  const pdfUrl = URL.createObjectURL(fileBackupZpl);
-  // Obtener el PDF y crear una instancia de pdfJsLib
-  const loadPdf = await pdfjsLib.getDocument(pdfUrl);
-  // Deserializar el PDF
-  const PDFContent = await loadPdf.promise;
-  //for(let pageNumber = 1 ; pageNumber <= PDFContent.numPages ; pageNumber++){
-    var zpl=await pdfToZpl(fileBackupZpl);
-    const zplArchive = new Blob([zpl], { type: 'text/plain' });
-    const url = window.URL.createObjectURL(zplArchive);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = "fileUnifiedBackup";
-    a.click();   
-    window.URL.revokeObjectURL(url);
-    selected_device.sendFile(zplArchive, finishCallback, errorCallback);
-  //}
+  var zpl=await pdfToZpl(fileBackupZpl);
+  const zplArchive = new Blob([zpl], { type: 'text/plain' });
+  // const url = window.URL.createObjectURL(zplArchive);
+  // const a = document.createElement('a');
+  // a.href = url;
+  // a.download = "fileUnifiedBackup";
+  // a.click();   
+  // window.URL.revokeObjectURL(url);
+  selected_device.sendFile(zplArchive, finishCallback, errorCallback);
 }
 
 async function pdfToZpl(file) {
