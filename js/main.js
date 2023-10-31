@@ -357,42 +357,126 @@ async function combineAllPDFPages() {
   return new File([blob], "file", { type: 'application/pdf' });
 }
 /**********************************************************************/
+function txtInventaryReport(textContent){
+  let caracteresLineaMax = 0;
+  let arriveDescription = false;
+  const finalReportNamePosition = 9;
+  const positionExistences = 42;
+  let codeProductRead = 0;
+  let text = '! U1 JOURNAL\n! U1 SETLP 7 0 24\n           ';
+  let actualContent;
+  for (let content = 0 ; content < textContent.items.length-1 ; content++) {
+    actualContent = textContent.items[content].str;
+    //console.log('LOS ITEMS: ' + actualContent + ' °°°°°° ' + textContent.items[content].hasEOL + ' |||||| ' + textContent.items[content+1].hasEOL);
+    if (content == finalReportNamePosition){
+      text += '\n\n';
+    } else if (actualContent.toLowerCase().includes('ruta:')) {
+      text += '\n\n';
+      text += actualContent;
+    } else if (actualContent.toLowerCase().includes('vendedor:')) {
+      text += '\n\n';
+      text += actualContent;
+    } else if (actualContent.toLowerCase().includes('código')) {
+      text += '\n\n\n';
+      text += actualContent;
+      text += '                              '
+    } else if (actualContent.toLowerCase().includes('descripción')) {
+      arriveDescription = true;
+      text += '\n\n';
+      text += actualContent;
+      text += '\n\n\n';
+      content++;
+    } else if (arriveDescription) {
+      if (codeProductRead == 0) { //Se el primer item del producto
+        codeProductRead = 1;
+        text += actualContent;
+        caracteresLineaMax = caracteresLineaMax + actualContent.length;
+      } else if (codeProductRead == 1 && /^\d+$/.test(actualContent) && textContent.items[content+1].hasEOL) { //Si el codigo de producto tiene un enter despues, siga con el siguiente producto
+        for (let spaces = 0 ; spaces < positionExistences-caracteresLineaMax ; spaces++) {
+          text += ' ';
+        }
+        text += actualContent;
+        caracteresLineaMax = 0;
+        codeProductRead = 0;
+        text += '\n';
+      } else if (codeProductRead == 1 && /^\d+$/.test(actualContent) && textContent.items[content+1].str == '') { //Si el codigo de producto tiene un contenido vacio despues, siga con el siguiente producto
+        for (let spaces = 0 ; spaces < positionExistences-caracteresLineaMax ; spaces++) {
+          text += ' ';
+        }
+        text += actualContent;
+        caracteresLineaMax = 0;
+        codeProductRead = 0;
+        text += '\n';
+      } else if (codeProductRead == 1 && /^\d+$/.test(actualContent) && textContent.items[content+1].str != ' ' ) { //Si el codigo de producto esta al final de una pagina del pdf, verifique que haya algo en la siguiente pagina y siga
+        for (let spaces = 0 ; spaces < positionExistences-caracteresLineaMax ; spaces++) {
+          text += ' ';
+        }
+        text += actualContent;
+        text += '\n';
+        caracteresLineaMax = 0;
+        codeProductRead = 0;
+      } else if (codeProductRead == 1 && textContent.items[content+1].hasEOL && /^\d+$/.test(textContent.items[content+2].str)) {
+        text += actualContent;
+        caracteresLineaMax = caracteresLineaMax + actualContent.length;
+      } else if (codeProductRead == 1 && textContent.items[content+1].hasEOL) {
+        caracteresLineaMax = 0;
+        text += actualContent;
+        text += '\n';
+      } else if (codeProductRead == 1) {
+        text += actualContent;
+        caracteresLineaMax = caracteresLineaMax + actualContent.length;
+      }
+    } else {
+      text += actualContent;
+    }
+  }
+  for (let spaces = 0 ; spaces < positionExistences-caracteresLineaMax ; spaces++) {
+    text += ' ';
+  }
+  text += textContent.items[textContent.items.length-1].str;
+  return text += '\n\n\n';
+}
+
+//textContent.items[content].hasEOL
+
 async function processPDF() {
   if (fileBackup) {
     const fileReader = new FileReader();
     fileReader.onload = function() {
-        const arrayBuffer = this.result;
-
-        // Cargar el archivo PDF
-        pdfjsLib.getDocument(arrayBuffer).promise.then(function(pdfDoc) {
-            let text = '';
-            const numPages = pdfDoc.numPages;
-
-            for (let pageNum = 1; pageNum <= numPages; pageNum++) {
-                pdfDoc.getPage(pageNum).then(function(page) {
-                    page.getTextContent().then(function(textContent) {
-                        textContent.items.forEach(function (textItem) {
-                            text += textItem.str + ' ';
-                        });
-                        text += '\n';
-                        if (pageNum === numPages) {
-                            // Mostrar el texto en el elemento <pre>
-                            const blob = new Blob([text], { type: 'text/plain' });
-                            const url = window.URL.createObjectURL(blob);
-                            const a = document.createElement('a');
-                            a.href = url;
-                            a.download = "fileUnifiedBackup.txt"; // Nombre del archivo de descarga
-                            a.click();
-                            window.URL.revokeObjectURL(url);
-                        }
-                    });
-                });
-            }
-        });
+      const arrayBuffer = this.result;
+      // Cargar el archivo PDF
+      pdfjsLib.getDocument(arrayBuffer).promise.then(function(pdfDoc) {
+        let text = '';
+        const numPages = pdfDoc.numPages;
+        for (let pageNum = 1; pageNum <= numPages; pageNum++) {
+          pdfDoc.getPage(pageNum).then(function(page) {
+            page.getTextContent().then(function(textContent) {
+              textContent.items.forEach(function (textItem) {
+                if(textItem.str.toLowerCase().includes('inventario')){
+                  text=txtInventaryReport(textContent);
+                }
+              });
+              if (pageNum === numPages) {
+                // Mostrar el texto en el elemento <pre>
+                const blob = new Blob([text], { type: 'text/plain' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = "fileUnifiedBackup.txt"; // Nombre del archivo de descarga
+                a.click();
+                window.URL.revokeObjectURL(url);
+              }
+            });
+          });
+        }
+      });
     };
     fileReader.readAsArrayBuffer(fileBackup);
   }
 }
+
+
+
 
 // CODIGO PARA DESCARGAR UN ARCHIVO
 // const url = window.URL.createObjectURL(fileBackup);
