@@ -634,7 +634,7 @@ function txtPurchase(textContent) {
       text += '\n \n';
       totalAppear = true
     } else if (actualContent.toLowerCase().includes('sub-')) {
-      text += '\n'
+      text += ' \n'
       for (let spaces = 0; spaces<centerPage-Math.round((actualContent.length+textContent.items[content+1].str.length+textContent.items[content+2].str.length+textContent.items[content+3].str.length+textContent.items[content+4].str.length+textContent.items[content+5].str.length)/2) ; spaces++){
         text += ' '
       }
