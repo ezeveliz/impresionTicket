@@ -838,13 +838,24 @@ async function createTxtFromPdf(fileBackup) {
 async function imprimirZebraTxt() {
   const txt = await createTxtFromPdf(fileBackup);
   const txtArchive = new Blob([txt], { type: 'text/plain' });
+  // const url = window.URL.createObjectURL(txtArchive);
+  // const a = document.createElement('a');
+  // a.href = url;
+  // a.download = "fileUnifiedBackup";
+  // a.click();
+  // window.URL.revokeObjectURL(url);
+  selected_device.sendFile(txtArchive, finishCallback, errorCallback);
+}
+
+async function descargarZebraTxt() {
+  const txt = await createTxtFromPdf(fileBackup);
+  const txtArchive = new Blob([txt], { type: 'text/plain' });
   const url = window.URL.createObjectURL(txtArchive);
   const a = document.createElement('a');
   a.href = url;
   a.download = "fileUnifiedBackup";
   a.click();
   window.URL.revokeObjectURL(url);
-  selected_device.sendFile(txtArchive, finishCallback, errorCallback);
 }
 /**********************************************************************/
 
