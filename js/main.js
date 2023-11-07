@@ -76,7 +76,7 @@ function toggleElements(selectedPrinter) {
   const zebraElements = document.querySelectorAll('.header select, .header p');
   const starElements = document.querySelector('.header select, .header p');
   const buscandoDisp = document.getElementById("BuscandoDisp");
-  if (selectedPrinter === "Zebra") {
+  if (selectedPrinter === "Zebra iMZ220" || selectedPrinter === "Zebra ZQ220") {
       zebraElements.forEach(element => element.style.display = 'block');
       starElements.forEach(element => element.style.display = 'none');
       buscandoDisp.style.display = 'block';
@@ -98,7 +98,7 @@ function searchPrinters(){
     selected_device = device;
     zebraPrinter = new Zebra.Printer(selected_device);
     zebraPrinter.getInfo(function(info){
-        console.log(info)
+        console.log(info) //"iMZ220-200dpi"
       }, function(error){
         console.log(error)
       }
@@ -151,31 +151,38 @@ function imprimir() {
   // Obtener el valor seleccionado en el elemento select
   var selectedPrinter = document.getElementById("printerSelect").value;
   // Realizar acciones según la opción seleccionada
-  if(fileBackup && fileBackup.size > 0){
-    if (selectedPrinter === "Zebra") {
+  if (fileBackup && fileBackup.size > 0) {
+    if (selectedPrinter === "Zebra iMZ220") {
       try{
-        alert("Imprimiendo en impresora zebra...");
-        imprimirZebra();
+        alert("Imprimiendo en impresora zebra iMZ220...");
+        imprimirZebraZpl();
       }catch(error){
         alert("¡Falla al imprimir! Revise la impresora y el tipo de impresora al que se encuentra conectado");
       }
-    }else if(selectedPrinter === "Star"){
+    } else if (selectedPrinter === "Zebra ZQ220") {
+      try{
+        alert("Imprimiendo en impresora zebra ZQ220...");
+        imprimirZebraTxt();
+      }catch(error){
+        alert("¡Falla al imprimir! Revise la impresora y el tipo de impresora al que se encuentra conectado");
+      }
+    } else if(selectedPrinter === "Star") {
       try{
         alert("Imprimiendo en impresora star...");
         imprimirStar();
       }catch(error){
         alert("¡Falla al imprimir! Revise la impresora y el tipo de impresora al que se encuentra conectado");
       }
-    }else{
+    } else {
         alert("Selecciona una impresora válida (Zebra o Star).");
     }
-  }else{
+  } else {
     alert("No hay un archivo cargado para imprimir");
   }
 }
 /**********************************************************************/
 
-/**********************FUNCIONES PARA IMPRESORA ZEBRA******************/
+/*****************FUNCIONES PARA IMPRESORA ZEBRA iMZ220****************/
 var finishCallback = function(){
 	alert("Proceso finalizado");	
 }
@@ -184,7 +191,7 @@ var errorCallback = function(errorMessage){
 	alert("Error: " + errorMessage);	
 }
 
-async function imprimirZebra(){
+async function imprimirZebraZpl(){
   var zpl=await pdfToZpl(fileBackupZpl);
   const zplArchive = new Blob([zpl], { type: 'text/plain' });
   // const url = window.URL.createObjectURL(zplArchive);
@@ -372,6 +379,8 @@ async function combineAllPDFPages() {
   return new File([blob], "file", { type: 'application/pdf' });
 }
 /**********************************************************************/
+
+/*****************FUNCIONES PARA IMPRESORA ZEBRA ZQZ220****************/
 function txtInventaryReport(textContent){
   let caracteresLineaMax = 0;
   let arriveDescription = false;
@@ -467,6 +476,8 @@ function txtRetailSales(textContent){
   let productAppear = false;
   for (let content = 0 ; content < textContent.items.length-2 ; content++) {
     actualContent = textContent.items[content].str;
+    console.log('Palabra actual: '+actualContent+' Tiene espacio: '+textContent.items[content].hasEOL );
+      debugger
     if (actualContent.toLowerCase().includes('detalle')){
       text += actualContent;
     } else if (actualContent.toLowerCase().includes('reporte')) {
@@ -558,8 +569,6 @@ function txtRetailSales(textContent){
         caracteresLineaMax = caracteresLineaMax + actualContent.length;
       }
     } else if (totalAppear) {
-      console.log('Palabra actual: '+actualContent+' Tiene espacio: '+textContent.items[content].hasEOL );
-      debugger
       if(actualContent.toLowerCase().includes('total:')){
         text += '\n \n';
         for(let spaces = 0 ; spaces < centerTotalsFinal-Math.round((actualContent.length+textContent.items[textContent.items.length-1].str.length)/2) ; spaces++) {
@@ -689,29 +698,27 @@ function txtPurchase(textContent) {
       caracteresLineaMax = caracteresLineaMax + actualContent.length;
       if (caracteresLineaMax <= totalPage){
         text += actualContent;
+      } else if (actualContent == ' ' && caracteresLineaMax == 1) {
+        caracteresLineaMax = caracteresLineaMax - actualContent.length;
       } else {
-        if( actualContent != ' '){
-          caracteresLineaMax = 0;
-          text += '\n';
-          text += actualContent;
-          caracteresLineaMax = caracteresLineaMax + actualContent.length;
-        }
+        caracteresLineaMax = 0;
+        text += '\n ';
+        text += actualContent;
+        caracteresLineaMax = caracteresLineaMax + actualContent.length;
       }
     } else if(caseBuyLine) {
       caracteresLineaMax = caracteresLineaMax + actualContent.length;
       if (caracteresLineaMax <= totalPage){
         text += actualContent;
+      } else if (actualContent == ' ' && caracteresLineaMax == 1) {
+        caracteresLineaMax = caracteresLineaMax - actualContent.length;
       } else {
-        if( actualContent != ' '){
-          caracteresLineaMax = 0;
-          text += '\n ';
-          text += actualContent;
-          caracteresLineaMax = caracteresLineaMax + actualContent.length;
-        }
+        caracteresLineaMax = 0;
+        text += '\n';
+        text += actualContent;
+        caracteresLineaMax = caracteresLineaMax + actualContent.length;
       }
     } else if (totalAppear && !subTotal) {
-      console.log('TEXT: '+text)
-      debugger
       if (codeProductRead == 0 && actualContent != '' && actualContent != ' ') { //Se el primer item del producto
         codeProductRead = 1;
         text += actualContent;
@@ -785,48 +792,61 @@ function txtPurchase(textContent) {
   return text += '\n \n \n';
 }
 
-async function processPDF() {
-  if (fileBackup) {
+async function createTxtFromPdf(fileBackup) {
+  if (!fileBackup) {
+    return ''; // Devuelve una cadena vacía si no hay archivo
+  }
+  return new Promise((resolve, reject) => {
     const fileReader = new FileReader();
+
     fileReader.onload = function() {
       const arrayBuffer = this.result;
-      // Cargar el archivo PDF
-      pdfjsLib.getDocument(arrayBuffer).promise.then(function(pdfDoc) {
+
+      pdfjsLib.getDocument(arrayBuffer).promise.then(async function(pdfDoc) {
         let text = '';
         const numPages = pdfDoc.numPages;
+
         for (let pageNum = 1; pageNum <= numPages; pageNum++) {
-          pdfDoc.getPage(pageNum).then(function(page) {
-            page.getTextContent().then(function(textContent) {
-              textContent.items.forEach(function (textItem) {
-                if (textItem.str.toLowerCase().includes('inventario')) {
-                  text = txtInventaryReport(textContent);
-                  
-                } else if (textItem.str.toLowerCase().includes('ticket')) {
-                  text = txtPurchase(textContent);
-                } else if (textItem.str.toLowerCase().includes('liquidación')) {
-                  text = txtRetailSales(textContent);
-                }
-              });
-              if (pageNum === numPages) {
-                // Mostrar el texto en el elemento <pre>
-                const blob = new Blob([text], { type: 'text/plain' });
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = "fileUnifiedBackup.txt"; // Nombre del archivo de descarga
-                a.click();
-                window.URL.revokeObjectURL(url);
-              }
-            });
-          });
+          const page = await pdfDoc.getPage(pageNum);
+          const textContent = await page.getTextContent();
+
+          for (const textItem of textContent.items) {
+            if (textItem.str.toLowerCase().includes('inventario')) {
+              text = txtInventaryReport(textContent);
+              resolve(text);
+              return;
+            } else if (textItem.str.toLowerCase().includes('ticket')) {
+              text = txtPurchase(textContent);
+              resolve(text);
+              return;
+            } else if (textItem.str.toLowerCase().includes('liquidación')) {
+              text = txtRetailSales(textContent);
+              resolve(text);
+              return;
+            }
+          }
+          if (pageNum === numPages) {
+            resolve(text);
+          }
         }
       });
     };
     fileReader.readAsArrayBuffer(fileBackup);
-  }
+  });
 }
 
-
+async function imprimirZebraTxt() {
+  const txt = await createTxtFromPdf(fileBackup);
+  const txtArchive = new Blob([txt], { type: 'text/plain' });
+  const url = window.URL.createObjectURL(txtArchive);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = "fileUnifiedBackup";
+  a.click();
+  window.URL.revokeObjectURL(url);
+  selected_device.sendFile(txtArchive, finishCallback, errorCallback);
+}
+/**********************************************************************/
 
 
 // CODIGO PARA DESCARGAR UN ARCHIVO
