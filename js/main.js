@@ -60,13 +60,13 @@ function onDeviceSelected(selected){
 	for(var i = 0; i < devices.length; ++i){
 		if(selected.value == devices[i].uid){
 			selected_device = devices[i];
-      zebraPrinter = new Zebra.Printer(selected_device);
-      zebraPrinter.getInfo(function(info){
-        console.log(info)
-      }, function(error){
-        console.log(error)
-      }
-    );
+      // zebraPrinter = new Zebra.Printer(selected_device);
+      // zebraPrinter.getInfo(function(info){
+      //   console.log(info)
+      // }, function(error){
+      //   console.log(error)
+      // }
+      // );
 			return;
 		}
 	}
@@ -96,13 +96,13 @@ function searchPrinters(){
   BrowserPrint.getDefaultDevice("printer", function(device){
     //Add device to list of devices and to html select element
     selected_device = device;
-    zebraPrinter = new Zebra.Printer(selected_device);
-    zebraPrinter.getInfo(function(info){
-        console.log(info) //"iMZ220-200dpi"
-      }, function(error){
-        console.log(error)
-      }
-    );
+    // zebraPrinter = new Zebra.Printer(selected_device);
+    // zebraPrinter.getInfo(function(info){
+    //     console.log(info) //"iMZ220-200dpi"
+    //   }, function(error){
+    //     console.log(error)
+    //   }
+    // );
     devices.push(device);
     var html_select = document.getElementById("selected_device");
     var option = document.createElement("option");
@@ -838,12 +838,13 @@ async function createTxtFromPdf(fileBackup) {
 async function imprimirZebraTxt() {
   const txt = await createTxtFromPdf(fileBackup);
   const txtArchive = new Blob([txt], { type: 'text/plain' });
-  const url = window.URL.createObjectURL(txtArchive);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = "fileUnifiedBackup";
-  a.click();
-  window.URL.revokeObjectURL(url);
+  // const url = window.URL.createObjectURL(txtArchive);
+  // const a = document.createElement('a');
+  // a.href = url;
+  // a.download = "fileUnifiedBackup";
+  // a.click();
+  // window.URL.revokeObjectURL(url);
+  // selected_device.
   selected_device.sendFile(txtArchive, finishCallback, errorCallback);
 }
 /**********************************************************************/
