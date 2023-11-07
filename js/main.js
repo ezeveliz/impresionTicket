@@ -249,7 +249,7 @@ async function pdfToZpl(file) {
                     ${(item.str.normalize('NFD').replace(/[\u0300-\u036f]/g, ''))}
                     ^FS`;
       })
-    }else{
+    } else {
       pdf.items.forEach(item => {
         const [fontSize, , , fontWeight, initialPosition, topPosition] = item.transform;
         content += `^FT
@@ -838,14 +838,13 @@ async function createTxtFromPdf(fileBackup) {
 async function imprimirZebraTxt() {
   const txt = await createTxtFromPdf(fileBackup);
   const txtArchive = new Blob([txt], { type: 'text/plain' });
-  // const url = window.URL.createObjectURL(txtArchive);
+  const url = window.URL.createObjectURL(txtArchive);
   // const a = document.createElement('a');
   // a.href = url;
   // a.download = "fileUnifiedBackup";
   // a.click();
   // window.URL.revokeObjectURL(url);
-  // selected_device.
-  selected_device.sendFile(txtArchive, finishCallback, errorCallback);
+  selected_device.sendFile(url, finishCallback, errorCallback);
 }
 /**********************************************************************/
 
