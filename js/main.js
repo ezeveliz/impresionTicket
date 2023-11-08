@@ -617,31 +617,31 @@ function txtPurchase(textContent) {
       text += '                  ';
       text += actualContent;
     } else if (actualContent.toLowerCase().includes('cliente:')) {
-      text += '\n \n';
+      text += '\nLB\nLB';
       text += actualContent;
       afterClient = true;
     } else if (afterClient && textContent.items[content].hasEOL) {
-      text += '\n \n';
+      text += '\nLB\nLB';
       text += actualContent;
       afterClient = false;
     } else if (actualContent.toLowerCase().includes('dirección:')) {
-      text += '\n \n';
+      text += '\nLB\nLB';
       text += actualContent;
     } else if (actualContent.toLowerCase().includes('fecha')) {
-      text += '\n \n';
+      text += '\nLB\nLB';
       text += actualContent;
       caseBuyLine = false;
     } else if (actualContent.toLowerCase().includes('orden')) {
-      text += '\n \n';
+      text += '\nLB\nLB';
       text += actualContent;
     } else if (actualContent.toLowerCase().includes('condición')) {
-      text += '\n \n';
+      text += '\nLB\nLB';
       text += actualContent;
     } else if (actualContent.toLowerCase().includes('elaboró:')) {
-      text += '\n \n';
+      text += '\nLB\nLB';
       text += actualContent;
     } else if (actualContent.toLowerCase().includes('descripción')) {
-      text += '\n \n \n';
+      text += '\nLB\nLB\nLB';
       text += actualContent;
       text += '        ';
       productAppear = true;
@@ -655,17 +655,17 @@ function txtPurchase(textContent) {
       text += '   '
     } else if (actualContent.toLowerCase().includes('total')  && !totalAppear) {
       text += actualContent;
-      text += '\n \n';
+      text += '\nLB\nLB';
       totalAppear = true
     } else if (actualContent.toLowerCase().includes('sub-')) {
-      text += ' \n'
+      text += ' \nLB'
       for (let spaces = 0; spaces<centerPage-Math.round((actualContent.length+textContent.items[content+1].str.length+textContent.items[content+2].str.length+textContent.items[content+3].str.length+textContent.items[content+4].str.length+textContent.items[content+5].str.length)/2) ; spaces++){
         text += ' '
       }
       text += actualContent;
       subTotal = true;
     } else if (actualContent.toLowerCase().includes('descuento:') || actualContent.toLowerCase().includes('impuesto:')) {
-      text += '\n \n'
+      text += '\nLB\nLB'
       for (let spaces = 0; spaces<centerPage-Math.round((actualContent.length+textContent.items[content+1].str.length+textContent.items[content+2].str.length+textContent.items[content+3].str.length+textContent.items[content+4].str.length)/2) ; spaces++){
         text += ' '
       }
@@ -673,24 +673,24 @@ function txtPurchase(textContent) {
     } else if (actualContent.toLowerCase().includes('total')  && textContent.items[content-1].str.toLowerCase().includes('sub-')) {
       text += actualContent;
     } else if (actualContent.toLowerCase().includes('total:') && totalAppear) {
-      text += '\n \n'
+      text += '\nLB\nLB'
       for (let spaces = 0; spaces<centerPage-Math.round((actualContent.length+textContent.items[content+1].str.length+textContent.items[content+2].str.length+textContent.items[content+3].str.length+textContent.items[content+4].str.length)/2) ; spaces++){
         text += ' '
       }
       text += actualContent;
     } else if(actualContent.toLowerCase().includes('importe')) {
       caracteresLineaMax = 0;
-      text += '\n \n';
+      text += '\nLB\nLB';
       text += actualContent;
       caracteresLineaMax = caracteresLineaMax + actualContent.length;
       importLine = true;
     } else if(actualContent.toLowerCase().includes('***copia***')) {
-      text += '\n \n';
+      text += '\nLB\nLB';
       for (let spaces = 0; spaces<centerPage-Math.round(actualContent.length/2) ; spaces++){
         text += ' '
       }
       text += actualContent;
-      text += '\n \n';
+      text += '\nLB\nLB';
       caracteresLineaMax = 0;
       importLine = false;
       caseBuyLine = true;
@@ -702,7 +702,7 @@ function txtPurchase(textContent) {
         caracteresLineaMax = caracteresLineaMax - actualContent.length;
       } else {
         caracteresLineaMax = 0;
-        text += '\n ';
+        text += '\nLB';
         text += actualContent;
         caracteresLineaMax = caracteresLineaMax + actualContent.length;
       }
@@ -714,7 +714,7 @@ function txtPurchase(textContent) {
         caracteresLineaMax = caracteresLineaMax - actualContent.length;
       } else {
         caracteresLineaMax = 0;
-        text += '\n';
+        text += '\nLB';
         text += actualContent;
         caracteresLineaMax = caracteresLineaMax + actualContent.length;
       }
@@ -736,9 +736,9 @@ function txtPurchase(textContent) {
         } else {
           if(actualContent == ' '){
             content++;
-            text += '\n';
+            text += '\nLB';
           } else {
-            text += '\n';
+            text += '\nLB';
           }
           count = 0;
           caracteresLineaMax = 0;
@@ -780,7 +780,7 @@ function txtPurchase(textContent) {
       } else if (codeProductRead == 1 && textContent.items[content+1].hasEOL) {
         caracteresLineaMax = 0;
         text += actualContent;
-        text += '\n';
+        text += '\nLB';
       } else if (codeProductRead == 1) {
         text += actualContent;
         caracteresLineaMax = caracteresLineaMax + actualContent.length;
@@ -789,7 +789,7 @@ function txtPurchase(textContent) {
       text += actualContent;
     }
   }
-  return text += '\n \n \n';
+  return text += '\nLB\nLB\nLB';
 }
 
 async function createTxtFromPdf(fileBackup) {
