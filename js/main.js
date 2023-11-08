@@ -387,7 +387,7 @@ function txtInventaryReport(textContent){
   const finalReportNamePosition = 9;
   const positionExistences = 42;
   let codeProductRead = 0;
-  let text = '! U1 JOURNAL\n! U1 SETLP 7 0 24\n           ';
+  let text = '! U1 JOURNAL\n! U1 SETLP 7 0 24\n! UTILITIES LT LF PRINT\n           ';
   let actualContent;
   for (let content = 0 ; content < textContent.items.length-1 ; content++) {
     actualContent = textContent.items[content].str;
@@ -617,31 +617,31 @@ function txtPurchase(textContent) {
       text += '                  ';
       text += actualContent;
     } else if (actualContent.toLowerCase().includes('cliente:')) {
-      text += '\nLB\nLB';
+      text += '\n \n';
       text += actualContent;
       afterClient = true;
     } else if (afterClient && textContent.items[content].hasEOL) {
-      text += '\nLB\nLB';
+      text += '\n \n';
       text += actualContent;
       afterClient = false;
     } else if (actualContent.toLowerCase().includes('dirección:')) {
-      text += '\nLB\nLB';
+      text += '\n \n';
       text += actualContent;
     } else if (actualContent.toLowerCase().includes('fecha')) {
-      text += '\nLB\nLB';
+      text += '\n \n';
       text += actualContent;
       caseBuyLine = false;
     } else if (actualContent.toLowerCase().includes('orden')) {
-      text += '\nLB\nLB';
+      text += '\n \n';
       text += actualContent;
     } else if (actualContent.toLowerCase().includes('condición')) {
-      text += '\nLB\nLB';
+      text += '\n \n';
       text += actualContent;
     } else if (actualContent.toLowerCase().includes('elaboró:')) {
-      text += '\nLB\nLB';
+      text += '\n \n';
       text += actualContent;
     } else if (actualContent.toLowerCase().includes('descripción')) {
-      text += '\nLB\nLB\nLB';
+      text += '\n \n \n';
       text += actualContent;
       text += '        ';
       productAppear = true;
@@ -655,17 +655,17 @@ function txtPurchase(textContent) {
       text += '   '
     } else if (actualContent.toLowerCase().includes('total')  && !totalAppear) {
       text += actualContent;
-      text += '\nLB\nLB';
+      text += '\n \n';
       totalAppear = true
     } else if (actualContent.toLowerCase().includes('sub-')) {
-      text += ' \nLB'
+      text += ' \n'
       for (let spaces = 0; spaces<centerPage-Math.round((actualContent.length+textContent.items[content+1].str.length+textContent.items[content+2].str.length+textContent.items[content+3].str.length+textContent.items[content+4].str.length+textContent.items[content+5].str.length)/2) ; spaces++){
         text += ' '
       }
       text += actualContent;
       subTotal = true;
     } else if (actualContent.toLowerCase().includes('descuento:') || actualContent.toLowerCase().includes('impuesto:')) {
-      text += '\nLB\nLB'
+      text += '\n \n'
       for (let spaces = 0; spaces<centerPage-Math.round((actualContent.length+textContent.items[content+1].str.length+textContent.items[content+2].str.length+textContent.items[content+3].str.length+textContent.items[content+4].str.length)/2) ; spaces++){
         text += ' '
       }
@@ -673,24 +673,24 @@ function txtPurchase(textContent) {
     } else if (actualContent.toLowerCase().includes('total')  && textContent.items[content-1].str.toLowerCase().includes('sub-')) {
       text += actualContent;
     } else if (actualContent.toLowerCase().includes('total:') && totalAppear) {
-      text += '\nLB\nLB'
+      text += '\n \n'
       for (let spaces = 0; spaces<centerPage-Math.round((actualContent.length+textContent.items[content+1].str.length+textContent.items[content+2].str.length+textContent.items[content+3].str.length+textContent.items[content+4].str.length)/2) ; spaces++){
         text += ' '
       }
       text += actualContent;
     } else if(actualContent.toLowerCase().includes('importe')) {
       caracteresLineaMax = 0;
-      text += '\nLB\nLB';
+      text += '\n \n';
       text += actualContent;
       caracteresLineaMax = caracteresLineaMax + actualContent.length;
       importLine = true;
     } else if(actualContent.toLowerCase().includes('***copia***')) {
-      text += '\nLB\nLB';
+      text += '\n \n';
       for (let spaces = 0; spaces<centerPage-Math.round(actualContent.length/2) ; spaces++){
         text += ' '
       }
       text += actualContent;
-      text += '\nLB\nLB';
+      text += '\n \n';
       caracteresLineaMax = 0;
       importLine = false;
       caseBuyLine = true;
@@ -702,7 +702,7 @@ function txtPurchase(textContent) {
         caracteresLineaMax = caracteresLineaMax - actualContent.length;
       } else {
         caracteresLineaMax = 0;
-        text += '\nLB';
+        text += '\n ';
         text += actualContent;
         caracteresLineaMax = caracteresLineaMax + actualContent.length;
       }
@@ -714,7 +714,7 @@ function txtPurchase(textContent) {
         caracteresLineaMax = caracteresLineaMax - actualContent.length;
       } else {
         caracteresLineaMax = 0;
-        text += '\nLB';
+        text += '\n';
         text += actualContent;
         caracteresLineaMax = caracteresLineaMax + actualContent.length;
       }
@@ -736,9 +736,9 @@ function txtPurchase(textContent) {
         } else {
           if(actualContent == ' '){
             content++;
-            text += '\nLB';
+            text += '\n';
           } else {
-            text += '\nLB';
+            text += '\n';
           }
           count = 0;
           caracteresLineaMax = 0;
@@ -780,7 +780,7 @@ function txtPurchase(textContent) {
       } else if (codeProductRead == 1 && textContent.items[content+1].hasEOL) {
         caracteresLineaMax = 0;
         text += actualContent;
-        text += '\nLB';
+        text += '\n';
       } else if (codeProductRead == 1) {
         text += actualContent;
         caracteresLineaMax = caracteresLineaMax + actualContent.length;
@@ -789,7 +789,7 @@ function txtPurchase(textContent) {
       text += actualContent;
     }
   }
-  return text += '\nLB\nLB\nLB';
+  return text += '\n \n \n';
 }
 
 async function createTxtFromPdf(fileBackup) {
