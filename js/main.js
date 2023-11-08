@@ -387,18 +387,18 @@ function txtInventaryReport(textContent){
   const finalReportNamePosition = 9;
   const positionExistences = 42;
   let codeProductRead = 0;
-  let text = '! U1 JOURNAL\n! U1 SETLP 7 0 24\n! UTILITIES LT LF PRINT\n           ';
+  let text = '! U1 JOURNAL\r\n! U1 SETLP 7 0 24\r\n! UTILITIES LT CR-X-LF PRINT\r\n           ';
   let actualContent;
   for (let content = 0 ; content < textContent.items.length-1 ; content++) {
     actualContent = textContent.items[content].str;
     //console.log('LOS ITEMS: ' + actualContent + ' °°°°°° ' + textContent.items[content].hasEOL + ' |||||| ' + textContent.items[content+1].hasEOL);
     if (content == finalReportNamePosition){
-      text += '\n \n';
+      text += '\r\n \r\n';
     } else if (actualContent.toLowerCase().includes('ruta:')) {
-      text += '\n \n';
+      text += '\r\n \r\n';
       text += actualContent;
     } else if (actualContent.toLowerCase().includes('vendedor:')) {
-      text += '\n \n';
+      text += '\r\n \r\n';
       text += actualContent;
     } else if (actualContent.includes('PRODUCTO')) {
       text += '\n \n \n';
