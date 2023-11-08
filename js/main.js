@@ -387,27 +387,27 @@ function txtInventaryReport(textContent){
   const finalReportNamePosition = 9;
   const positionExistences = 42;
   let codeProductRead = 0;
-  let text = '! U1 JOURNAL\n! U1 SETLP 7 0 24\n           ';
+  let text = '! U1 JOURNAL\r\n! U1 SETLP 7 0 24\r\n! UTILITIES LT CR-X-LF PRINT\r\n           ';
   let actualContent;
   for (let content = 0 ; content < textContent.items.length-1 ; content++) {
     actualContent = textContent.items[content].str;
     //console.log('LOS ITEMS: ' + actualContent + ' °°°°°° ' + textContent.items[content].hasEOL + ' |||||| ' + textContent.items[content+1].hasEOL);
     if (content == finalReportNamePosition){
-      text += '\n \n';
+      text += '\r\n \r\n';
     } else if (actualContent.toLowerCase().includes('ruta:')) {
-      text += '\n \n';
+      text += '\r\n \r\n';
       text += actualContent;
     } else if (actualContent.toLowerCase().includes('vendedor:')) {
-      text += '\n \n';
+      text += '\r\n \r\n';
       text += actualContent;
     } else if (actualContent.includes('PRODUCTO')) {
-      text += '\n \n \n';
+      text += '\r\n \r\n \r\n';
       text += actualContent;
       text += '                            '
     } else if (actualContent.toLowerCase().includes('existencias')) {
       arriveDescription = true;
       text += actualContent;
-      text += '\n \n \n';
+      text += '\r\n \r\n \r\n';
       content++;
     } else if (arriveDescription) {
       if (codeProductRead == 0) { //Se el primer item del producto
@@ -421,7 +421,7 @@ function txtInventaryReport(textContent){
         text += actualContent;
         caracteresLineaMax = 0;
         codeProductRead = 0;
-        text += '\n';
+        text += '\r\n';
       } else if (codeProductRead == 1 && /^\d+$/.test(actualContent) && textContent.items[content+1].str == '') { //Si el codigo de producto tiene un contenido vacio despues, siga con el siguiente producto
         for (let spaces = 0 ; spaces < positionExistences-caracteresLineaMax ; spaces++) {
           text += ' ';
@@ -429,13 +429,13 @@ function txtInventaryReport(textContent){
         text += actualContent;
         caracteresLineaMax = 0;
         codeProductRead = 0;
-        text += '\n';
+        text += '\r\n';
       } else if (codeProductRead == 1 && /^\d+$/.test(actualContent) && textContent.items[content+1].str != ' ' ) { //Si el codigo de producto esta al final de una pagina del pdf, verifique que haya algo en la siguiente pagina y siga
         for (let spaces = 0 ; spaces < positionExistences-caracteresLineaMax ; spaces++) {
           text += ' ';
         }
         text += actualContent;
-        text += '\n';
+        text += '\r\n';
         caracteresLineaMax = 0;
         codeProductRead = 0;
       } else if (codeProductRead == 1 && textContent.items[content+1].hasEOL && /^\d+$/.test(textContent.items[content+2].str)) {
@@ -444,7 +444,7 @@ function txtInventaryReport(textContent){
       } else if (codeProductRead == 1 && textContent.items[content+1].hasEOL) {
         caracteresLineaMax = 0;
         text += actualContent;
-        text += '\n';
+        text += '\r\n';
       } else if (codeProductRead == 1) {
         text += actualContent;
         caracteresLineaMax = caracteresLineaMax + actualContent.length;
@@ -457,14 +457,14 @@ function txtInventaryReport(textContent){
     text += ' ';
   }
   text += textContent.items[textContent.items.length-1].str;
-  return text += '\n\n\n';
+  return text += '\r\n \r\n \r\n';
 }
 
 function txtRetailSales(textContent){
   let caracteresLineaMax = 0;
   let countInv = 1;
   let invInicialFinal = false;
-  let text = '! U1 JOURNAL\n! U1 SETLP 7 0 24\n                ';
+  let text = '! U1 JOURNAL\r\n! U1 SETLP 7 0 24\r\n! UTILITIES LT CR-X-LF PRINT\r\n                ';
   let actualContent;
   let codeProductRead = 0;
   const positionCantidadInvFinal = 34;
@@ -481,18 +481,18 @@ function txtRetailSales(textContent){
     if (actualContent.toLowerCase().includes('detalle')){
       text += actualContent;
     } else if (actualContent.toLowerCase().includes('reporte')) {
-      text += '\n \n         ';
+      text += '\r\n \r\n         ';
       text += actualContent;
     } else if (actualContent.toLowerCase().includes('fecha')) {
       text += actualContent;
     } else if (actualContent.toLowerCase().includes('ruta:')) {
-      text += '\n \n';
+      text += '\r\n \r\n';
       text += actualContent;
     } else if (actualContent.toLowerCase().includes('vendedor:')) {
-      text += '\n \n';
+      text += '\r\n \r\n';
       text += actualContent;
     } else if (actualContent.toLowerCase().includes('producto') && !productAppear) {
-      text += '\n \n \n';
+      text += '\r\n \r\n \r\n';
       text += actualContent;
       text += '                     '
       productAppear = true;
@@ -501,7 +501,7 @@ function txtRetailSales(textContent){
       text += '    '
     } else if (actualContent.toLowerCase().includes('total') && !totalAppear) {
       text += actualContent;
-      text += '\n \n';
+      text += '\r\n \r\n';
     } else if (actualContent.toLowerCase().includes('Inv.')) {
       text += actualContent;
       countInv++;
@@ -511,7 +511,7 @@ function txtRetailSales(textContent){
     } else if (actualContent.toLowerCase().includes('final')) {
       invInicialFinal = true;
       text += actualContent;
-      text += '\n \n \n';
+      text += '\r\n \r\n \r\n';
       content++;
     } else if (invInicialFinal) {
       if (codeProductRead == 0 && actualContent != '' && actualContent != ' ') { //Se el primer item del producto
@@ -524,12 +524,12 @@ function txtRetailSales(textContent){
         caracteresLineaMax = 0;
         if(textContent.items[content + 1].str == ' '){
           content++;
-          text += '\n \n';
+          text += '\r\n \r\n';
         } else if (textContent.items[content + 2].str.toLowerCase().includes('total')){
           totalAppear = true;
           invInicialFinal = false;
         } else {
-          text += '\n \n';
+          text += '\r\n \r\n';
         }
       } else if (codeProductRead == 4 && /^\d+(\.\d+)?$/.test(actualContent)){
         text += actualContent;
@@ -543,7 +543,7 @@ function txtRetailSales(textContent){
         codeProductRead = 4;
         caracteresLineaMax = 0;
         content++;
-        text += '\n';
+        text += '\r\n';
       }else if (codeProductRead == 2 && /^\d+(\.\d+)?$/.test(actualContent)) {
         text += actualContent;
         codeProductRead = 3;
@@ -563,14 +563,14 @@ function txtRetailSales(textContent){
       } else if (codeProductRead == 1 && textContent.items[content+1].hasEOL) {
         caracteresLineaMax = 0;
         text += actualContent;
-        text += '\n';
+        text += '\r\n';
       } else if (codeProductRead == 1) {
         text += actualContent;
         caracteresLineaMax = caracteresLineaMax + actualContent.length;
       }
     } else if (totalAppear) {
       if(actualContent.toLowerCase().includes('total:')){
-        text += '\n \n';
+        text += '\r\n \r\n';
         for(let spaces = 0 ; spaces < centerTotalsFinal-Math.round((actualContent.length+textContent.items[textContent.items.length-1].str.length)/2) ; spaces++) {
           text += ' ';
         }
@@ -578,7 +578,7 @@ function txtRetailSales(textContent){
         text += ' ' + textContent.items[textContent.items.length-1].str;
       } else if (actualContent.toLowerCase().includes('total')) {
         if (totalRepeats == 0){
-          text += '\n \n';
+          text += '\r\n \r\n';
           for (let spaces = 0 ; spaces < centerTotalsFinal-Math.round((actualContent.length+textContent.items[content+1].str.length+textContent.items[content+2].str.length+textContent.items[content+3].str.length+textContent.items[content+4].str.length)/2) ; spaces++) {
             text += ' ';
           }
@@ -591,7 +591,7 @@ function txtRetailSales(textContent){
       text += actualContent;
     }
   }
-  return text += '\n \n \n';
+  return text += '\r\n \r\n \r\n';
 }
 
 function txtPurchase(textContent) {
