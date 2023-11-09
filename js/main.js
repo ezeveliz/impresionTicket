@@ -595,7 +595,7 @@ function txtRetailSales(textContent){
 }
 
 function txtPurchase(textContent) {
-  let text = '! U1 JOURNAL \r\n! U1 SETLP 7 0 24 \r\n! UTILITIES LT CR-X-LF PRINT \r\n! COUNTRY LATIN9                ';
+  let text = '! U1 JOURNAL \r\n! U1 SETLP 7 0 24 \r\n! UTILITIES LT CR-X-LF PRINT \r\n! U1 COUNTRY LATIN9                ';
   let actualContent;
   let afterClient = true;
   let caracteresLineaMax = 0;
