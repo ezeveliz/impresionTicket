@@ -363,14 +363,14 @@ async function combineAllPDFPages() {
   preambleDims = originalPage.scale(1.0);
   const preambleProbe = originalPage.scale(2.0);
   totalNumPagesTam = 8.3*fileBackupPdf.getPages().length*100;
-  const page = pdfDoc.addPage([preambleDims.width*2,preambleDims.height*fileBackupPdf.getPages().length*2]);
+  const page = pdfDoc.addPage([preambleDims.width,preambleDims.height*fileBackupPdf.getPages().length]);
   for(paginaActual=0 ; paginaActual<fileBackupPdf.getPages().length ; paginaActual++){
     originalPage = await pdfDoc.embedPage(fileBackupPdf.getPages()[paginaActual]);
     preambleDims = originalPage.scale(1.0);
     page.drawPage(originalPage, {
-      ...preambleProbe,
+      ...preambleDims,
       x: page.getWidth() / preambleDims.width,
-      y: (page.getHeight() / preambleDims.height)+(preambleDims.height*(fileBackupPdf.getPages().length-(paginaActual+1))*2),
+      y: (page.getHeight() / preambleDims.height)+(preambleDims.height*(fileBackupPdf.getPages().length-(paginaActual+1))),
     });
   }
   const mergedPdfBytes = await pdfDoc.save();
