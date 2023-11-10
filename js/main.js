@@ -836,30 +836,26 @@ async function createTxtFromPdf(fileBackup) {
 }
 
 async function imprimirZebraTxt() {
-  const txt = await createTxtFromPdf(fileBackup);
-  const encoder = new TextEncoder('utf-16le');
-  const utf16leBuffer = encoder.encode(txt);
-  const txtArchive = new Blob([utf16leBuffer], { type: 'text/plain' });
-  // const url = window.URL.createObjectURL(txtArchive);
-  // const a = document.createElement('a');
-  // a.href = url;
-  // a.download = "fileUnifiedBackup";
-  // a.click();
-  // window.URL.revokeObjectURL(url);
+  const txtArchive = await createTxtUtf16le();
   selected_device.sendFile(txtArchive, finishCallback, errorCallback);
 }
 
 async function descargarZebraTxt() {
-  const txt = await createTxtFromPdf(fileBackup);
-  const encoder = new TextEncoder('utf-16le');
-  const utf16leBuffer = encoder.encode(txt);
-  const txtArchive = new Blob([utf16leBuffer], { type: 'text/plain' });
+  const txtArchive = await createTxtUtf16le();
   const url = window.URL.createObjectURL(txtArchive);
   const a = document.createElement('a');
   a.href = url;
   a.download = "fileUnifiedBackup";
   a.click();
   window.URL.revokeObjectURL(url);
+}
+
+async function createTxtUtf16le(){
+  const txt = await createTxtFromPdf(fileBackup);
+  const encoder = new TextEncoder('utf-16le');
+  const utf16leBuffer = encoder.encode(txt);
+  const txtArchive = new Blob([utf16leBuffer], { type: 'text/plain;charset=utf-16le' });
+  return txtArchive;
 }
 /**********************************************************************/
 
