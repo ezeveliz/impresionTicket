@@ -60,13 +60,7 @@ function onDeviceSelected(selected){
 	for(var i = 0; i < devices.length; ++i){
 		if(selected.value == devices[i].uid){
 			selected_device = devices[i];
-      // zebraPrinter = new Zebra.Printer(selected_device);
-      // zebraPrinter.getInfo(function(info){
-      //   console.log(info)
-      // }, function(error){
-      //   console.log(error)
-      // }
-      // );
+      localStorage.setItem('lastDevice', JSON.stringify(selected_device));
 			return;
 		}
 	}
@@ -96,6 +90,7 @@ function searchPrinters(){
   BrowserPrint.getDefaultDevice("printer", function(device){
     //Add device to list of devices and to html select element
     selected_device = device;
+    localStorage.setItem('lastDevice', JSON.stringify(selected_device));
     // zebraPrinter = new Zebra.Printer(selected_device);
     // zebraPrinter.getInfo(function(info){
     //     console.log(info) //"iMZ220-200dpi"
@@ -121,7 +116,6 @@ function searchPrinters(){
           html_select.add(option);
         }
       }
-      localStorage.setItem('devices', JSON.stringify(devices));
       clearInterval(nIntervId);
       nIntervId = null;
       nuevoParrafo.textContent = "Dispositivos encontrados"
@@ -140,6 +134,10 @@ function searchPrinters(){
 window.addEventListener('load', () => {
   registerServiceWorker()
   sPrinter = document.getElementById("printerSelect").value;
+  if(localStorage.length != 0){
+    const objetoJSONRecuperado = localStorage.getItem("lastDevice");
+    selected_device = JSON.parse(objetoJSONRecuperado);
+  }
   searchPrinters()
   fileInput = document.getElementById('fileInput');
   inputFileLoad()
@@ -363,15 +361,16 @@ async function combineAllPDFPages() {
   const fileBackupPdf = await PDFLib.PDFDocument.load(pdfBytes);
   originalPage = await pdfDoc.embedPage(fileBackupPdf.getPages()[0]);
   preambleDims = originalPage.scale(1.0);
+  const preambleProbe = originalPage.scale(2.0);
   totalNumPagesTam = 8.3*fileBackupPdf.getPages().length*100;
-  const page = pdfDoc.addPage([preambleDims.width,preambleDims.height*fileBackupPdf.getPages().length]);
+  const page = pdfDoc.addPage([preambleDims.width*2,preambleDims.height*fileBackupPdf.getPages().length*2]);
   for(paginaActual=0 ; paginaActual<fileBackupPdf.getPages().length ; paginaActual++){
     originalPage = await pdfDoc.embedPage(fileBackupPdf.getPages()[paginaActual]);
     preambleDims = originalPage.scale(1.0);
     page.drawPage(originalPage, {
-      ...preambleDims,
+      ...preambleProbe,
       x: page.getWidth() / preambleDims.width,
-      y: (page.getHeight() / preambleDims.height)+(preambleDims.height*(fileBackupPdf.getPages().length-(paginaActual+1))),
+      y: (page.getHeight() / preambleDims.height)+(preambleDims.height*(fileBackupPdf.getPages().length-(paginaActual+1))*2),
     });
   }
   const mergedPdfBytes = await pdfDoc.save();
@@ -845,8 +844,14 @@ async function imprimirZebraTxt() {
 }
 
 async function descargarZebraTxt() {
-  const txtArchive = await createTxtUtf16le();
-  const url = window.URL.createObjectURL(txtArchive);
+  // const txtArchive = await createTxtUtf16le();
+  // const url = window.URL.createObjectURL(txtArchive);
+  // const a = document.createElement('a');
+  // a.href = url;
+  // a.download = "fileUnifiedBackup";
+  // a.click();
+  // window.URL.revokeObjectURL(url);
+  const url = window.URL.createObjectURL(fileBackup);
   const a = document.createElement('a');
   a.href = url;
   a.download = "fileUnifiedBackup";
