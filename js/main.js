@@ -698,7 +698,7 @@ function txtPurchase(textContent) {
       caracteresLineaMax = caracteresLineaMax + actualContent.length;
       if (caracteresLineaMax <= totalPage){
         text += actualContent;
-      } else if (actualContent == ' ' && caracteresLineaMax == 1) {
+      } else if (actualContent == ' ' && caracteresLineaMax == 0) {
         caracteresLineaMax = caracteresLineaMax - actualContent.length;
       } else {
         caracteresLineaMax = 0;
@@ -710,6 +710,9 @@ function txtPurchase(textContent) {
       caracteresLineaMax = caracteresLineaMax + actualContent.length;
       if (caracteresLineaMax <= totalPage){
         text += actualContent;
+        if (actualContent == 'SU') {
+          text += actualContent + ' ';
+        }
       } else if (actualContent == ' ' && caracteresLineaMax == 1) {
         caracteresLineaMax = caracteresLineaMax - actualContent.length;
       } else {
@@ -836,8 +839,10 @@ async function createTxtFromPdf(fileBackup) {
 }
 
 async function imprimirZebraTxt() {
-  const txtArchive = await createTxtUtf16le();
-  selected_device.sendFile(txtArchive, finishCallback, errorCallback);
+  const txt = await createTxtFromPdf(fileBackup);
+  const encoder = new TextEncoder('utf-16le');
+  const utf16leBuffer = encoder.encode(txt);
+  selected_device.send(utf16leBuffer, finishCallback, errorCallback);
 }
 
 async function descargarZebraTxt() {
