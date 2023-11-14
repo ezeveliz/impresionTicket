@@ -153,7 +153,7 @@ function imprimir() {
     if (selectedPrinter === "Zebra iMZ220") {
       try{
         alert("Imprimiendo en impresora zebra iMZ220...");
-        imprimirZebraZpl();
+        imprimirZebraTxt();
       }catch(error){
         alert("¡Falla al imprimir! Revise la impresora y el tipo de impresora al que se encuentra conectado");
       }
