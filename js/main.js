@@ -692,6 +692,7 @@ function txtPurchase(textContent) {
   let caracteresLineaMax = 0;
   let importLine = false;
   let totalAppear = false;
+  let totalAppearCount = 0;
   let caseBuyLine = false;
   let subTotal = false;
   let totalPage = 48;
@@ -701,6 +702,9 @@ function txtPurchase(textContent) {
   let centerPriceUnit = 33;
   let spacesToFinal = 0;
   let count = 0;
+  let countProducts = 0;
+  const spaceProductsWithoutProm = 10;
+  const spaceProductsWithProm = 13;
   for (let content = 0 ; content < textContent.items.length-1 ; content++) {
     actualContent = textContent.items[content].str;
     console.log('LOS ITEMS: ' + actualContent);
@@ -732,7 +736,7 @@ function txtPurchase(textContent) {
       text += '\r\n \r\n';
       text += actualContent;
     } else if (actualContent.toLowerCase().includes('descripción')) {
-      text += '\r\n \r\n \r\n';
+      text += '\r\n';
       text += actualContent;
       text += '        ';
       productAppear = true;
@@ -745,9 +749,16 @@ function txtPurchase(textContent) {
       text += actualContent;
       text += '   '
     } else if (actualContent.toLowerCase().includes('total')  && !totalAppear) {
-      text += actualContent;
-      text += '\r\n \r\n';
-      totalAppear = true
+      if (totalAppearCount == 0) {
+        text += actualContent;
+        text += '\r\n \r\n';
+        totalAppearCount++;
+      } else {
+        text += actualContent;
+        text += '\r\n \r\n';
+        totalAppear = true;
+        totalAppearCount++;
+      }
     } else if (actualContent.toLowerCase().includes('sub-')) {
       text += ' \r\n'
       for (let spaces = 0; spaces<centerPage-Math.round((actualContent.length+textContent.items[content+1].str.length+textContent.items[content+2].str.length+textContent.items[content+3].str.length+textContent.items[content+4].str.length+textContent.items[content+5].str.length)/2) ; spaces++){
@@ -787,33 +798,51 @@ function txtPurchase(textContent) {
       caseBuyLine = true;
     } else if(importLine) {
       caracteresLineaMax = caracteresLineaMax + actualContent.length;
-      if (caracteresLineaMax <= totalPage){
-        text += actualContent;
-      } else if (actualContent == ' ' && caracteresLineaMax == 0) {
-        caracteresLineaMax = caracteresLineaMax - actualContent.length;
+      if (caracteresLineaMax < totalPage){
+        if (actualContent != '') {
+          text += actualContent;
+        } else {
+          text += ' ';
+        } 
       } else {
         caracteresLineaMax = 0;
-        text += '\r\n ';
-        text += actualContent;
+        text += '\r\n';
+        if (actualContent != ' ') {
+          text += actualContent;
+        } 
         caracteresLineaMax = caracteresLineaMax + actualContent.length;
       }
     } else if(caseBuyLine) {
       caracteresLineaMax = caracteresLineaMax + actualContent.length;
-      if (caracteresLineaMax <= totalPage){
+      if (caracteresLineaMax < totalPage){
         if (actualContent == 'SU') {
           text += actualContent + ' ';
         } else {
           text += actualContent;
         }
-      } else if (actualContent == ' ' && caracteresLineaMax == 1) {
-        caracteresLineaMax = caracteresLineaMax - actualContent.length;
       } else {
         caracteresLineaMax = 0;
         text += '\r\n';
-        text += actualContent;
+        if (actualContent != ' ') {
+          text += actualContent;
+        } 
         caracteresLineaMax = caracteresLineaMax + actualContent.length;
       }
-    } else if (totalAppear && !subTotal) {
+    } else if (actualContent.toLowerCase().includes('productos') && countProducts == 0 ) {
+      text += '\r\n \r\n'
+      for (let spaces = 0; spaces < spaceProductsWithoutProm ; spaces++){
+        text += ' '
+      }
+      text += actualContent;
+      countProducts++;
+    } else if (actualContent.toLowerCase().includes('productos') && countProducts == 1 ) {
+      text += '\r\n \r\n'
+      for (let spaces = 0; spaces < spaceProductsWithProm ; spaces++){
+        text += ' '
+      }
+      text += actualContent + ' ';
+      countProducts++;
+    } else if (totalAppear && !subTotal || totalAppearCount == 1) {
       if (codeProductRead == 0 && actualContent != '' && actualContent != ' ') { //Se el primer item del producto
         codeProductRead = 1;
         text += actualContent;
