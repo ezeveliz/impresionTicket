@@ -274,17 +274,30 @@ async function pdfToZpl(file) {
 /**********************************************************************/
 
 /******************FUNCIONES PARA IMPRESORA STAR***********************/
+// function createURL() {
+// 	changeHref = 'starpassprnt://v1/print/nopreview?';
+//   //back
+// 	changeHref = changeHref + "&back=" + encodeURIComponent(window.location.href);
+//   //size
+//   changeHref = changeHref + "&size=" + "2w7";
+//   //pdf
+// 	changeHref = changeHref + "&pdf=" + encodeURIComponent(pdfText);
+//   //document.getElementById("send_data").value = changeHref;
+//   console.log("****")
+//   console.log(changeHref)
+// }
+
 function createURL() {
-	changeHref = 'starpassprnt://v1/print/nopreview?';
-  //back
-	changeHref = changeHref + "&back=" + encodeURIComponent(window.location.href);
-  //size
-  changeHref = changeHref + "&size=" + "2w7";
-  //pdf
-	changeHref = changeHref + "&pdf=" + encodeURIComponent(pdfText);
-  //document.getElementById("send_data").value = changeHref;
-  console.log("****")
-  console.log(changeHref)
+  	changeHref = 'starpassprnt://v1/print/nopreview?';
+    //back
+  	changeHref = changeHref + "&back=" + encodeURIComponent(window.location.href);
+    //size
+    changeHref = changeHref + "&size=" + "2w7";
+    //pdf
+  	changeHref = changeHref + "&html=" + encodeURIComponent('<html><head><title>Mi Página</title></head><body><h1>Hola, mundo!</h1></body></html>');
+    //document.getElementById("send_data").value = changeHref;
+    console.log("****")
+    console.log(changeHref)
 }
 
 function getPdf(callback) {
