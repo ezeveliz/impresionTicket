@@ -394,12 +394,17 @@ async function combineAllPDFPages() {
 
 /*****************FUNCIONES PARA IMPRESORA ZEBRA ZQZ220****************/
 function txtInventaryReport(textContent){
+  let text = '';
+  if (selectedPrinter === "Zebra iMZ220") {
+    text = '! U1 JOURNAL\r\n! U1 SETLP 0 2 18\r\n! UTILITIES LT CR-X-LF PRINT\r\n           ';
+  } else if (selectedPrinter === "Zebra ZQ220") {
+    text = '! U1 JOURNAL\r\n! U1 SETLP 7 0 24\r\n! UTILITIES LT CR-X-LF PRINT\r\n           ';
+  }
   let caracteresLineaMax = 0;
   let arriveDescription = false;
   const finalReportNamePosition = 9;
   const positionExistences = 42;
   let codeProductRead = 0;
-  let text = '! U1 JOURNAL\r\n! U1 SETLP 7 0 24\r\n! UTILITIES LT CR-X-LF PRINT\r\n           ';
   let actualContent;
   for (let content = 0 ; content < textContent.items.length-1 ; content++) {
     actualContent = textContent.items[content].str;
@@ -473,10 +478,16 @@ function txtInventaryReport(textContent){
 }
 
 function txtRetailSales(textContent){
+  var selectedPrinter = document.getElementById("printerSelect").value;
+  let text = '';
+  if (selectedPrinter === "Zebra iMZ220") {
+    text = '! U1 JOURNAL\r\n! U1 SETLP 0 2 18\r\n! UTILITIES LT CR-X-LF PRINT\r\n                ';
+  } else if (selectedPrinter === "Zebra ZQ220") {
+    text = '! U1 JOURNAL\r\n! U1 SETLP 7 0 24\r\n! UTILITIES LT CR-X-LF PRINT\r\n                ';
+  }
   let caracteresLineaMax = 0;
   let countInv = 1;
   let invInicialFinal = false;
-  let text = '! U1 JOURNAL\r\n! U1 SETLP 7 0 24\r\n! UTILITIES LT CR-X-LF PRINT\r\n                ';
   let actualContent;
   let codeProductRead = 0;
   const positionCantidadInvFinal = 34;
@@ -607,7 +618,13 @@ function txtRetailSales(textContent){
 }
 
 function txtPurchase(textContent) {
-  let text = '! U1 JOURNAL \r\n! U1 SETLP 7 0 24 \r\n! UTILITIES LT CR-X-LF PRINT \r\n! U1 COUNTRY LATIN9 \r\n                ';
+  var selectedPrinter = document.getElementById("printerSelect").value;
+  let text = '';
+  if (selectedPrinter === "Zebra iMZ220") {
+    text = '! U1 JOURNAL \r\n! U1 SETLP 0 2 18 \r\n! UTILITIES LT CR-X-LF PRINT \r\n! U1 COUNTRY LATIN9 \r\n                ';
+  } else if (selectedPrinter === "Zebra ZQ220") {
+    text = '! U1 JOURNAL \r\n! U1 SETLP 7 0 24 \r\n! UTILITIES LT CR-X-LF PRINT \r\n! U1 COUNTRY LATIN9 \r\n                ';
+  }
   let actualContent;
   let afterClient = true;
   let caracteresLineaMax = 0;
@@ -874,9 +891,9 @@ async function descargarZebraTxt() {
 
 async function createTxtUtf16le(){
   const txt = await createTxtFromPdf(fileBackup);
-  const encoder = new TextEncoder('utf-16le');
-  const utf16leBuffer = encoder.encode(txt);
-  const txtArchive = new Blob([utf16leBuffer], { type: 'text/plain;charset=utf-16le' });
+  // const encoder = new TextEncoder('utf-16le');
+  // const utf16leBuffer = encoder.encode(txt);
+  const txtArchive = new Blob([txt], { type: 'text/plain;charset=utf-16le' });
   return txtArchive;
 }
 /**********************************************************************/
