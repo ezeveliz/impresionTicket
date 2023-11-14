@@ -294,7 +294,33 @@ function createURL() {
     //size
     changeHref = changeHref + "&size=" + "2w7";
     //pdf
-  	changeHref = changeHref + "&html=" + encodeURIComponent('<html><head><title>Mi Página</title></head><body><h1>123456789012345678901234567890123456789901234567890</h1><h2>123456789012345678901234567890123456789901234567890</h2><h3>123456789012345678901234567890123456789901234567890</h3><p>123456789012345678901234567890123456789901234567890</p></body></html>');
+  	changeHref = changeHref + "&html=" + encodeURIComponent('<html><head><title>Mi Página</title></head><body>'
+    + '<p>H1</p>'
+    + '<h1>123456789012345678901234567890123456789901234567890</h1>' 
+    + '<h1><b>123456789012345678901234567890123456789901234567890</b></h1>'
+    + '<h1><span style="font-weight:bold;">123456789012345678901234567890123456789901234567890</span></h1>'
+    + '<h1><strong>123456789012345678901234567890123456789901234567890</strong></h1>'
+    + '<p>H2</p>'
+    + '<h2>123456789012345678901234567890123456789901234567890</h2>' 
+    + '<h2><b>123456789012345678901234567890123456789901234567890</b></h2>'
+    + '<h2><span style="font-weight:bold;">123456789012345678901234567890123456789901234567890</span></h2>'
+    + '<h2><strong>123456789012345678901234567890123456789901234567890</strong></h2>'
+    + '<p>H3</p>'
+    + '<h3>123456789012345678901234567890123456789901234567890</h3>' 
+    + '<h3><b>123456789012345678901234567890123456789901234567890</b></h3>'
+    + '<h3><span style="font-weight:bold;">123456789012345678901234567890123456789901234567890</span></h3>'
+    + '<h3><strong>123456789012345678901234567890123456789901234567890</strong></h3>'
+    + '<p>H4</p>'
+    + '<h4>123456789012345678901234567890123456789901234567890</h4>' 
+    + '<h4><b>123456789012345678901234567890123456789901234567890</b></h4>'
+    + '<h4><span style="font-weight:bold;">123456789012345678901234567890123456789901234567890</span></h4>'
+    + '<h4><strong>123456789012345678901234567890123456789901234567890</strong></h4>'
+    + '<p>P</p>'
+    + '<p>123456789012345678901234567890123456789901234567890</p>' 
+    + '<p><b>123456789012345678901234567890123456789901234567890</b></p>'
+    + '<p><span style="font-weight:bold;">123456789012345678901234567890123456789901234567890</span></p>'
+    + '<p><strong>123456789012345678901234567890123456789901234567890</strong></p>'
+    + '</body></html>')
     //document.getElementById("send_data").value = changeHref;
     console.log("****")
     console.log(changeHref)
@@ -869,19 +895,13 @@ async function createTxtFromPdf(fileBackup) {
 }
 
 async function imprimirZebraTxt() {
-  const txt = await createTxtFromPdf(fileBackup);
-  selected_device.send(txt, finishCallback, errorCallback);
+  const txtArchive = await createTxtUtf16le();
+  selected_device.sendFile(txtArchive, finishCallback, errorCallback);
 }
 
 async function descargarZebraTxt() {
-  // const txtArchive = await createTxtUtf16le();
-  // const url = window.URL.createObjectURL(txtArchive);
-  // const a = document.createElement('a');
-  // a.href = url;
-  // a.download = "fileUnifiedBackup";
-  // a.click();
-  // window.URL.revokeObjectURL(url);
-  const url = window.URL.createObjectURL(fileBackup);
+  const txtArchive = await createTxtUtf16le();
+  const url = window.URL.createObjectURL(txtArchive);
   const a = document.createElement('a');
   a.href = url;
   a.download = "fileUnifiedBackup";
@@ -891,9 +911,9 @@ async function descargarZebraTxt() {
 
 async function createTxtUtf16le(){
   const txt = await createTxtFromPdf(fileBackup);
-  // const encoder = new TextEncoder('utf-16le');
-  // const utf16leBuffer = encoder.encode(txt);
-  const txtArchive = new Blob([txt], { type: 'text/plain;charset=utf-16le' });
+  const encoder = new TextEncoder('utf-16le');
+  const utf16leBuffer = encoder.encode(txt);
+  const txtArchive = new Blob([utf16leBuffer], { type: 'text/plain;charset=utf-16le' });
   return txtArchive;
 }
 /**********************************************************************/
