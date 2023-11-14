@@ -294,7 +294,7 @@ function createURL() {
     //size
     changeHref = changeHref + "&size=" + "2w7";
     //pdf
-  	changeHref = changeHref + "&html=" + encodeURIComponent('<html><head><title>Mi Página</title></head><body><h1>Hola, mundo!</h1><h2>Hola, mundo!</h2><h3>Hola, mundo!</h3></body></html>');
+  	changeHref = changeHref + "&html=" + encodeURIComponent('<html><head><title>Mi Página</title></head><body><h1>Hola, mundo!</h1><h2>Hola, mundo!</h2><h3>Hola, mundo!</h3><p>Hola mundo!</p></body></html>');
     //document.getElementById("send_data").value = changeHref;
     console.log("****")
     console.log(changeHref)
