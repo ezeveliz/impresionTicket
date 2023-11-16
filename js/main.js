@@ -168,7 +168,7 @@ function imprimir() {
       try{
         alert("Imprimiendo en impresora star...");
         //imprimirStar();
-        imprimirStar();
+        createHtmlFromPdf();
       }catch(error){
         alert("¡Falla al imprimir! Revise la impresora y el tipo de impresora al que se encuentra conectado");
       }
@@ -1104,235 +1104,258 @@ function htmlPurchase(textContent) {
   let lineCount = 0;
   for (let content = 0 ; content < textContent.items.length-1 ; content++) {
     actualContent = textContent.items[content].str;
+    actualContentEnter = textContent.items[content].hasEOL;
     if (line == 1) {
-      if (actualContent.toLowerCase().includes('detalle')){
+      if (actualContentEnter){
         text += actualContent + '</p><p>&nbsp;</p><p>';
         line++;
       } else {
         text += actualContent;
       }
     } else if (line == 2) {
-      if (actualContent.toLowerCase().includes('venta')){
+      if (actualContentEnter){
         text += actualContent + '</p><p>&nbsp;</p></div><p style="font-size: 15px">';
         line++;
       } else {
         text += actualContent;
       } 
-    } else if (line == 3) {
-      if (actualContent.toLowerCase().includes('venta')){
-        text += actualContent + '</p><p>&nbsp;</p></div><p style="font-size: 15px">';
+    } else if (line == 3 || line == 4 || line == 5 || line == 6 || line == 7 || line == 8) {
+      if (actualContentEnter){
+        text += actualContent + '</p><p style="font-size: 15px">';
         line++;
       } else {
         text += actualContent;
       } 
-    }
-
-    if (actualContent.toLowerCase().includes('ticket')){
-      text += '                  ';
-      text += actualContent;
-    } else if (actualContent.toLowerCase().includes('cliente:')) {
-      text += '\r\n \r\n';
-      text += actualContent;
-      afterClient = true;
-    } else if (afterClient && textContent.items[content].hasEOL) {
-      text += '\r\n \r\n';
-      text += actualContent;
-      afterClient = false;
-    } else if (actualContent.toLowerCase().includes('dirección:')) {
-      text += '\r\n \r\n';
-      text += actualContent;
-    } else if (actualContent.toLowerCase().includes('fecha')) {
-      text += '\r\n \r\n';
-      text += actualContent;
-      caseBuyLine = false;
-    } else if (actualContent.toLowerCase().includes('orden')) {
-      text += '\r\n \r\n';
-      text += actualContent;
-    } else if (actualContent.toLowerCase().includes('condición')) {
-      text += '\r\n \r\n';
-      text += actualContent;
-    } else if (actualContent.toLowerCase().includes('elaboró:')) {
-      text += '\r\n \r\n';
-      text += actualContent;
-    } else if (actualContent.toLowerCase().includes('descripción')) {
-      text += '\r\n';
-      text += actualContent;
-      text += '        ';
-      productAppear = true;
-    } else if (actualContent.toLowerCase().includes('cant.')) {
-      text += actualContent;
-      text += ' '
-    } else if (actualContent.toLowerCase().includes('precio')) {
-      text += actualContent;
-    } else if (actualContent.toLowerCase().includes('unit.')) {
-      text += actualContent;
-      text += '   '
-    } else if (actualContent.toLowerCase().includes('total')  && !totalAppear) {
-      if (totalAppearCount == 0) {
-        text += actualContent;
-        text += '\r\n \r\n';
-        totalAppearCount++;
+    } else if (line == 9) {
+      if (actualContentEnter){
+        text += actualContent + '</p><p>&nbsp;</p><div align="center" style="font-size: 15px"><p>';
+        line++;
       } else {
         text += actualContent;
-        text += '\r\n \r\n';
-        totalAppear = true;
-        totalAppearCount++;
-      }
-    } else if (actualContent.toLowerCase().includes('sub-')) {
-      text += ' \r\n'
-      for (let spaces = 0; spaces<centerPage-Math.round((actualContent.length+textContent.items[content+1].str.length+textContent.items[content+2].str.length+textContent.items[content+3].str.length+textContent.items[content+4].str.length+textContent.items[content+5].str.length)/2) ; spaces++){
-        text += ' '
-      }
-      text += actualContent;
-      subTotal = true;
-    } else if (actualContent.toLowerCase().includes('descuento:') || actualContent.toLowerCase().includes('impuesto:')) {
-      text += '\r\n \r\n'
-      for (let spaces = 0; spaces<centerPage-Math.round((actualContent.length+textContent.items[content+1].str.length+textContent.items[content+2].str.length+textContent.items[content+3].str.length+textContent.items[content+4].str.length)/2) ; spaces++){
-        text += ' '
-      }
-      text += actualContent;
-    } else if (actualContent.toLowerCase().includes('total')  && textContent.items[content-1].str.toLowerCase().includes('sub-')) {
-      text += actualContent;
-    } else if (actualContent.toLowerCase().includes('total:') && totalAppear) {
-      text += '\r\n \r\n'
-      for (let spaces = 0; spaces<centerPage-Math.round((actualContent.length+textContent.items[content+1].str.length+textContent.items[content+2].str.length+textContent.items[content+3].str.length+textContent.items[content+4].str.length)/2) ; spaces++){
-        text += ' '
-      }
-      text += actualContent;
-    } else if(actualContent.toLowerCase().includes('importe')) {
-      caracteresLineaMax = 0;
-      text += '\r\n \r\n';
-      text += actualContent;
-      caracteresLineaMax = caracteresLineaMax + actualContent.length;
-      importLine = true;
-    } else if(actualContent.toLowerCase().includes('***copia***')) {
-      text += '\r\n \r\n';
-      for (let spaces = 0; spaces<centerPage-Math.round(actualContent.length/2) ; spaces++){
-        text += ' '
-      }
-      text += actualContent;
-      text += '\r\n \r\n';
-      caracteresLineaMax = 0;
-      importLine = false;
-      caseBuyLine = true;
-    } else if(importLine) {
-      caracteresLineaMax = caracteresLineaMax + actualContent.length;
-      if (caracteresLineaMax < totalPage){
-        if (actualContent != '') {
-          text += actualContent;
-        } else {
-          text += ' ';
-        } 
+      } 
+    } else if (line == 10) {
+      if (actualContentEnter){
+        text += actualContent + '</p></div><table style="font-size: 15px;"><tbody><tr><td>';
+        line++;
       } else {
-        caracteresLineaMax = 0;
-        text += '\r\n';
-        if (actualContent != ' ') {
-          text += actualContent;
-        } 
-        caracteresLineaMax = caracteresLineaMax + actualContent.length;
-      }
-    } else if(caseBuyLine) {
-      caracteresLineaMax = caracteresLineaMax + actualContent.length;
-      if (caracteresLineaMax < totalPage){
-        if (actualContent == 'SU') {
-          text += actualContent + ' ';
-        } else {
-          text += actualContent;
-        }
+        text += actualContent;
+      } 
+    } else if (line == 11){
+      if(actualContent == ' '){
+        text += '</td><td>';
+      } else if (actualContentEnter) {
+        text += '</td></tr><tr><td>&nbsp;</td><td>&nbsp;</td></tr></tbody></table><table style="font-size: 15px;"><tbody><tr><td>';
       } else {
-        caracteresLineaMax = 0;
-        text += '\r\n';
-        if (actualContent != ' ') {
-          text += actualContent;
-        } 
-        caracteresLineaMax = caracteresLineaMax + actualContent.length;
+        text += actualContent;
       }
-    } else if (actualContent.toLowerCase().includes('productos') && countProducts == 0 ) {
-      text += '\r\n \r\n'
-      for (let spaces = 0; spaces < spaceProductsWithoutProm ; spaces++){
-        text += ' '
-      }
-      text += actualContent;
-      countProducts++;
-    } else if (actualContent.toLowerCase().includes('productos') && countProducts == 1 ) {
-      text += '\r\n \r\n'
-      for (let spaces = 0; spaces < spaceProductsWithProm ; spaces++){
-        text += ' '
-      }
-      text += actualContent + ' ';
-      countProducts++;
-    } else if (totalAppear && !subTotal || totalAppearCount == 1) {
-      if (codeProductRead == 0 && actualContent != '' && actualContent != ' ') { //Se el primer item del producto
-        codeProductRead = 1;
-        text += actualContent;
-        caracteresLineaMax = caracteresLineaMax + actualContent.length;
-      } else if (codeProductRead == 4){
-        if (count == 0) {
-          text += actualContent;
-          count = 1;
-        } else if (count == 1) {
-          text += actualContent;
-          count = 2;
-        } else if (count == 2) {
-          text += actualContent;
-          count = 3;
-        } else {
-          if(actualContent == ' '){
-            content++;
-            text += '\r\n';
-          } else {
-            text += '\r\n';
-          }
-          count = 0;
-          caracteresLineaMax = 0;
-          codeProductRead = 0;
-        }
-      } else if (codeProductRead == 3) {
-        if(textContent.items[content+2].str == '$'){
-          text += actualContent;
-          codeProductRead = 4;
-          caracteresLineaMax = caracteresLineaMax + actualContent.length + spacesToFinal;
-          for (let spaces = 0 ; spaces < totalPage-caracteresLineaMax-(textContent.items[content + 2].str.length+textContent.items[content + 3].str.length+textContent.items[content + 4].str.length) ; spaces++) {
-            text += ' ';
-          }
-          spacesToFinal = 0;
-          content++;
-        } else{
-          text += actualContent;
-          caracteresLineaMax = caracteresLineaMax + actualContent.length;
-        }
-      }else if (codeProductRead == 2) {
-        text += actualContent;
-        codeProductRead = 3;
-        caracteresLineaMax = caracteresLineaMax + actualContent.length + spacesToFinal;
-        spacesToFinal = 0;
-        for (let spaces = 0 ; spaces < centerPriceUnit-caracteresLineaMax-Math.round((textContent.items[content + 2].str.length+textContent.items[content + 3].str.length+textContent.items[content + 4].str.length)/2) ; spaces++) {
-          text += ' ';
-          spacesToFinal++;
-        }
-        content++;
-      } else if (codeProductRead == 1 && textContent.items[content + 4].str == '$') {
-        text += actualContent;
-        caracteresLineaMax = caracteresLineaMax + actualContent.length;
-        for (let spaces = 0 ; spaces < centerQuantity-caracteresLineaMax-Math.round(textContent.items[content + 2].str.length/2) ; spaces++) {
-          text += ' ';
-          spacesToFinal++;
-        }
-        content++;
-        codeProductRead = 2;
-      } else if (codeProductRead == 1 && textContent.items[content+1].hasEOL) {
-        caracteresLineaMax = 0;
-        text += actualContent;
-        text += '\r\n';
-      } else if (codeProductRead == 1) {
-        text += actualContent;
-        caracteresLineaMax = caracteresLineaMax + actualContent.length;
-      }
-    } else {
-      text += actualContent;
     }
   }
-  return text += '\r\n \r\n \r\n';
+  //   if (actualContent.toLowerCase().includes('ticket')){
+  //     text += '                  ';
+  //     text += actualContent;
+  //   } else if (actualContent.toLowerCase().includes('cliente:')) {
+  //     text += '\r\n \r\n';
+  //     text += actualContent;
+  //     afterClient = true;
+  //   } else if (afterClient && textContent.items[content].hasEOL) {
+  //     text += '\r\n \r\n';
+  //     text += actualContent;
+  //     afterClient = false;
+  //   } else if (actualContent.toLowerCase().includes('dirección:')) {
+  //     text += '\r\n \r\n';
+  //     text += actualContent;
+  //   } else if (actualContent.toLowerCase().includes('fecha')) {
+  //     text += '\r\n \r\n';
+  //     text += actualContent;
+  //     caseBuyLine = false;
+  //   } else if (actualContent.toLowerCase().includes('orden')) {
+  //     text += '\r\n \r\n';
+  //     text += actualContent;
+  //   } else if (actualContent.toLowerCase().includes('condición')) {
+  //     text += '\r\n \r\n';
+  //     text += actualContent;
+  //   } else if (actualContent.toLowerCase().includes('elaboró:')) {
+  //     text += '\r\n \r\n';
+  //     text += actualContent;
+  //   } else if (actualContent.toLowerCase().includes('descripción')) {
+  //     text += '\r\n';
+  //     text += actualContent;
+  //     text += '        ';
+  //     productAppear = true;
+  //   } else if (actualContent.toLowerCase().includes('cant.')) {
+  //     text += actualContent;
+  //     text += ' '
+  //   } else if (actualContent.toLowerCase().includes('precio')) {
+  //     text += actualContent;
+  //   } else if (actualContent.toLowerCase().includes('unit.')) {
+  //     text += actualContent;
+  //     text += '   '
+  //   } else if (actualContent.toLowerCase().includes('total')  && !totalAppear) {
+  //     if (totalAppearCount == 0) {
+  //       text += actualContent;
+  //       text += '\r\n \r\n';
+  //       totalAppearCount++;
+  //     } else {
+  //       text += actualContent;
+  //       text += '\r\n \r\n';
+  //       totalAppear = true;
+  //       totalAppearCount++;
+  //     }
+  //   } else if (actualContent.toLowerCase().includes('sub-')) {
+  //     text += ' \r\n'
+  //     for (let spaces = 0; spaces<centerPage-Math.round((actualContent.length+textContent.items[content+1].str.length+textContent.items[content+2].str.length+textContent.items[content+3].str.length+textContent.items[content+4].str.length+textContent.items[content+5].str.length)/2) ; spaces++){
+  //       text += ' '
+  //     }
+  //     text += actualContent;
+  //     subTotal = true;
+  //   } else if (actualContent.toLowerCase().includes('descuento:') || actualContent.toLowerCase().includes('impuesto:')) {
+  //     text += '\r\n \r\n'
+  //     for (let spaces = 0; spaces<centerPage-Math.round((actualContent.length+textContent.items[content+1].str.length+textContent.items[content+2].str.length+textContent.items[content+3].str.length+textContent.items[content+4].str.length)/2) ; spaces++){
+  //       text += ' '
+  //     }
+  //     text += actualContent;
+  //   } else if (actualContent.toLowerCase().includes('total')  && textContent.items[content-1].str.toLowerCase().includes('sub-')) {
+  //     text += actualContent;
+  //   } else if (actualContent.toLowerCase().includes('total:') && totalAppear) {
+  //     text += '\r\n \r\n'
+  //     for (let spaces = 0; spaces<centerPage-Math.round((actualContent.length+textContent.items[content+1].str.length+textContent.items[content+2].str.length+textContent.items[content+3].str.length+textContent.items[content+4].str.length)/2) ; spaces++){
+  //       text += ' '
+  //     }
+  //     text += actualContent;
+  //   } else if(actualContent.toLowerCase().includes('importe')) {
+  //     caracteresLineaMax = 0;
+  //     text += '\r\n \r\n';
+  //     text += actualContent;
+  //     caracteresLineaMax = caracteresLineaMax + actualContent.length;
+  //     importLine = true;
+  //   } else if(actualContent.toLowerCase().includes('***copia***')) {
+  //     text += '\r\n \r\n';
+  //     for (let spaces = 0; spaces<centerPage-Math.round(actualContent.length/2) ; spaces++){
+  //       text += ' '
+  //     }
+  //     text += actualContent;
+  //     text += '\r\n \r\n';
+  //     caracteresLineaMax = 0;
+  //     importLine = false;
+  //     caseBuyLine = true;
+  //   } else if(importLine) {
+  //     caracteresLineaMax = caracteresLineaMax + actualContent.length;
+  //     if (caracteresLineaMax < totalPage){
+  //       if (actualContent != '') {
+  //         text += actualContent;
+  //       } else {
+  //         text += ' ';
+  //       } 
+  //     } else {
+  //       caracteresLineaMax = 0;
+  //       text += '\r\n';
+  //       if (actualContent != ' ') {
+  //         text += actualContent;
+  //       } 
+  //       caracteresLineaMax = caracteresLineaMax + actualContent.length;
+  //     }
+  //   } else if(caseBuyLine) {
+  //     caracteresLineaMax = caracteresLineaMax + actualContent.length;
+  //     if (caracteresLineaMax < totalPage){
+  //       if (actualContent == 'SU') {
+  //         text += actualContent + ' ';
+  //       } else {
+  //         text += actualContent;
+  //       }
+  //     } else {
+  //       caracteresLineaMax = 0;
+  //       text += '\r\n';
+  //       if (actualContent != ' ') {
+  //         text += actualContent;
+  //       } 
+  //       caracteresLineaMax = caracteresLineaMax + actualContent.length;
+  //     }
+  //   } else if (actualContent.toLowerCase().includes('productos') && countProducts == 0 ) {
+  //     text += '\r\n \r\n'
+  //     for (let spaces = 0; spaces < spaceProductsWithoutProm ; spaces++){
+  //       text += ' '
+  //     }
+  //     text += actualContent;
+  //     countProducts++;
+  //   } else if (actualContent.toLowerCase().includes('productos') && countProducts == 1 ) {
+  //     text += '\r\n \r\n'
+  //     for (let spaces = 0; spaces < spaceProductsWithProm ; spaces++){
+  //       text += ' '
+  //     }
+  //     text += actualContent + ' ';
+  //     countProducts++;
+  //   } else if (totalAppear && !subTotal || totalAppearCount == 1) {
+  //     if (codeProductRead == 0 && actualContent != '' && actualContent != ' ') { //Se el primer item del producto
+  //       codeProductRead = 1;
+  //       text += actualContent;
+  //       caracteresLineaMax = caracteresLineaMax + actualContent.length;
+  //     } else if (codeProductRead == 4){
+  //       if (count == 0) {
+  //         text += actualContent;
+  //         count = 1;
+  //       } else if (count == 1) {
+  //         text += actualContent;
+  //         count = 2;
+  //       } else if (count == 2) {
+  //         text += actualContent;
+  //         count = 3;
+  //       } else {
+  //         if(actualContent == ' '){
+  //           content++;
+  //           text += '\r\n';
+  //         } else {
+  //           text += '\r\n';
+  //         }
+  //         count = 0;
+  //         caracteresLineaMax = 0;
+  //         codeProductRead = 0;
+  //       }
+  //     } else if (codeProductRead == 3) {
+  //       if(textContent.items[content+2].str == '$'){
+  //         text += actualContent;
+  //         codeProductRead = 4;
+  //         caracteresLineaMax = caracteresLineaMax + actualContent.length + spacesToFinal;
+  //         for (let spaces = 0 ; spaces < totalPage-caracteresLineaMax-(textContent.items[content + 2].str.length+textContent.items[content + 3].str.length+textContent.items[content + 4].str.length) ; spaces++) {
+  //           text += ' ';
+  //         }
+  //         spacesToFinal = 0;
+  //         content++;
+  //       } else{
+  //         text += actualContent;
+  //         caracteresLineaMax = caracteresLineaMax + actualContent.length;
+  //       }
+  //     }else if (codeProductRead == 2) {
+  //       text += actualContent;
+  //       codeProductRead = 3;
+  //       caracteresLineaMax = caracteresLineaMax + actualContent.length + spacesToFinal;
+  //       spacesToFinal = 0;
+  //       for (let spaces = 0 ; spaces < centerPriceUnit-caracteresLineaMax-Math.round((textContent.items[content + 2].str.length+textContent.items[content + 3].str.length+textContent.items[content + 4].str.length)/2) ; spaces++) {
+  //         text += ' ';
+  //         spacesToFinal++;
+  //       }
+  //       content++;
+  //     } else if (codeProductRead == 1 && textContent.items[content + 4].str == '$') {
+  //       text += actualContent;
+  //       caracteresLineaMax = caracteresLineaMax + actualContent.length;
+  //       for (let spaces = 0 ; spaces < centerQuantity-caracteresLineaMax-Math.round(textContent.items[content + 2].str.length/2) ; spaces++) {
+  //         text += ' ';
+  //         spacesToFinal++;
+  //       }
+  //       content++;
+  //       codeProductRead = 2;
+  //     } else if (codeProductRead == 1 && textContent.items[content+1].hasEOL) {
+  //       caracteresLineaMax = 0;
+  //       text += actualContent;
+  //       text += '\r\n';
+  //     } else if (codeProductRead == 1) {
+  //       text += actualContent;
+  //       caracteresLineaMax = caracteresLineaMax + actualContent.length;
+  //     }
+  //   } else {
+  //     text += actualContent;
+  //   }
+  // }
+  // return text += '\r\n \r\n \r\n';
 }
   
 async function createHtmlFromPdf() {
