@@ -167,8 +167,7 @@ function imprimir() {
     } else if(selectedPrinter === "Star") {
       try{
         alert("Imprimiendo en impresora star...");
-        //imprimirStar();
-        createHtmlFromPdf();
+        imprimirStar();
       }catch(error){
         alert("¡Falla al imprimir! Revise la impresora y el tipo de impresora al que se encuentra conectado");
       }
@@ -983,7 +982,6 @@ function htmlInventaryReport(textContent){
         text += '<p style="font-size: 18px">' + actualContent;
         count++;
       }
-      <p style="font-size: 18px">Fecha/Hora: 2023-10-31 19:50:08</p>
     }
 
     if (content == finalReportNamePosition){
