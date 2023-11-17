@@ -1181,7 +1181,7 @@ function htmlPurchase(textContent) {
   +    '<style>'
   +        'table {'
   +            'border-collapse: collapse;'
-  +            'width: 100%;'
+  +            'width: 90%;'
   +        '}'
   +        'td:nth-child(1), th:nth-child(1) {'
   +            'width: 35%;'
@@ -1201,7 +1201,7 @@ function htmlPurchase(textContent) {
   +    '</style>'
   +'</head>'
   +'<body>'
-  +    '<div align="center" style="font-size: 15px">'
+  +    '<div align="center" style="font-size: 15px;font-weight: bold">'
   + '<p>';
   let actualContent;
   let codeProductRead = 0;
@@ -1220,28 +1220,28 @@ function htmlPurchase(textContent) {
       }
     } else if (line == 2) {
       if (actualContentEnter){
-        text += actualContent + '</p><p>&nbsp;</p></div><p style="font-size: 15px">';
+        text += actualContent + '</p><p>&nbsp;</p></div><p style="font-size: 15px;font-weight: bold">';
         line++;
       } else {
         text += actualContent;
       } 
     } else if (line == 3 || line == 4 || line == 5 || line == 6 || line == 7 || line == 8) {
       if (actualContentEnter){
-        text += actualContent + '</p><p style="font-size: 15px">';
+        text += actualContent + '</p><p style="font-size: 15px;font-weight: bold">';
         line++;
       } else {
         text += actualContent;
       } 
     } else if (line == 9) {
       if (actualContentEnter){
-        text += actualContent + '</p><p>&nbsp;</p><div align="center" style="font-size: 15px"><p>';
+        text += actualContent + '</p><p>&nbsp;</p><div align="center" style="font-size: 15px;font-weight: bold"><p>';
         line++;
       } else {
         text += actualContent;
       } 
     } else if (line == 10) {
       if (actualContentEnter){
-        text += actualContent + '</p></div><table style="font-size: 15px;"><tbody><tr><td>';
+        text += actualContent + '</p></div><table style="font-size: 15px;font-weight: bold;"><tbody><tr><td>';
         line++;
       } else {
         text += actualContent;
@@ -1252,7 +1252,7 @@ function htmlPurchase(textContent) {
       } else if(actualContent == ' '){
         text += '</td><td>';
       } else if (actualContentEnter || textContent.items[content+1].str != ' ') {
-        text += actualContent + '</td></tr><tr><td>&nbsp;</td><td>&nbsp;</td></tr></tbody></table><table style="font-size: 15px;"><tbody>';
+        text += actualContent + '</td></tr><tr><td>&nbsp;</td><td>&nbsp;</td></tr></tbody></table><table style="font-size: 15px;font-weight: bold"><tbody>';
         line++;
       } else {
         text += actualContent;
@@ -1272,12 +1272,12 @@ function htmlPurchase(textContent) {
           text += actualContent;
           count = 3;
         } else if (textContent.items[content+1].str.toLowerCase().includes('productos') || textContent.items[content+2].str.toLowerCase().includes('productos')) {
-          text += actualContent + '</td></tr></tbody></table><p>&nbsp;</p><div align="center" style="font-size: 15px"><p>';
+          text += actualContent + '</td></tr></tbody></table><p>&nbsp;</p><div align="center" style="font-size: 15px;font-weight: bold"><p>';
           line++;
           count = 0;
           codeProductRead = 0;
         } else if (textContent.items[content+1].str.toLowerCase().includes('sub') || textContent.items[content+2].str.toLowerCase().includes('sub')) {
-          text += actualContent + '</td></tr></tbody></table><p>&nbsp;</p><div align="center" style="font-size: 15px"><p>';
+          text += actualContent + '</td></tr></tbody></table><p>&nbsp;</p><div align="center" style="font-size: 15px;font-weight: bold"><p>';
           line++;
           count = 0;
           codeProductRead = 0;
@@ -1316,7 +1316,7 @@ function htmlPurchase(textContent) {
       }
     } else if (line == 13) {
       if (actualContentEnter) {
-        text += '</p></div><table style="font-size: 15px;"><tbody><tr><td>';
+        text += '</p></div><table style="font-size: 15px;font-weight: bold"><tbody><tr><td>';
         line++;
       } else {
         text += actualContent;
@@ -1330,14 +1330,14 @@ function htmlPurchase(textContent) {
       }
     } else if (line == 19) {
       if (actualContentEnter) {
-        text += '</p></div><p style="font-size: 15px">';
+        text += '</p></div><p style="font-size: 15px;font-weight: bold">';
         line++;
       } else {
         text += actualContent;
       }
     } else if (line == 20) {
       if (textContent.items[content+1].str.toLowerCase().includes('***')) {
-        text += '</p><div align="center" style="font-size: 15px"><p>';
+        text += '</p><div align="center" style="font-size: 15px;font-weight: bold"><p>';
         line++;
       } else if (textContent.items[content+1].str.length == 0) {
         text += actualContent + ' ';
@@ -1345,11 +1345,11 @@ function htmlPurchase(textContent) {
         text += actualContent;
       }
     } else if (line == 21) {
-      text += actualContent + '</p></div><p style="font-size: 15px">';
+      text += actualContent + '</p></div><p style="font-size: 15px;font-weight: bold">';
       line++;
     } else if (line == 22) {
       if (textContent.items[content+1].str.toLowerCase().includes('fecha')) {
-        text += '</p><p style="font-size: 15px">';
+        text += '</p><p style="font-size: 15px;font-weight: bold">';
         line++;
       } else if (textContent.items[content+1].str.length == 0) {
         text += actualContent + ' ';
