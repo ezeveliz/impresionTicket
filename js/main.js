@@ -132,24 +132,24 @@ function searchPrinters(){
 
 window.addEventListener('load', () => {
   registerServiceWorker()
-  var printerSelect = document.getElementById('printerSelect');
+  // var printerSelect = document.getElementById('printerSelect');
 
-  // Obtener el valor almacenado en localStorage
-  var storedPrinter = localStorage.getItem('selectedPrinter');
+  // // Obtener el valor almacenado en localStorage
+  // var storedPrinter = localStorage.getItem('selectedPrinter');
 
-  // Establecer la selección del selector desde el localStorage
-  if (storedPrinter) {
-    printerSelect.value = storedPrinter;
-  }
+  // // Establecer la selección del selector desde el localStorage
+  // if (storedPrinter) {
+  //   printerSelect.value = storedPrinter;
+  // }
 
-  // Agregar un evento de cambio al selector
-  printerSelect.addEventListener('change', function() {
-    // Almacenar la selección actual en localStorage
-    localStorage.setItem('selectedPrinter', printerSelect.value);
+  // // Agregar un evento de cambio al selector
+  // printerSelect.addEventListener('change', function() {
+  //   // Almacenar la selección actual en localStorage
+  //   localStorage.setItem('selectedPrinter', printerSelect.value);
 
-    // Realizar otras acciones según sea necesario
-    toggleElements(printerSelect.value);
-  });
+  //   // Realizar otras acciones según sea necesario
+  //   toggleElements(printerSelect.value);
+  // });
   searchPrinters()
   fileInput = document.getElementById('fileInput');
   inputFileLoad()
