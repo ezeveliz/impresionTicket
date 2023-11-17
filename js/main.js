@@ -60,7 +60,6 @@ function onDeviceSelected(selected){
 	for(var i = 0; i < devices.length; ++i){
 		if(selected.value == devices[i].uid){
 			selected_device = devices[i];
-      localStorage.setItem('lastDevice', JSON.stringify(selected_device));
 			return;
 		}
 	}
@@ -134,11 +133,24 @@ function searchPrinters(){
 
 window.addEventListener('load', () => {
   registerServiceWorker()
-  sPrinter = document.getElementById("printerSelect").value;
-  if(localStorage.length != 0){
-    const objetoJSONRecuperado = localStorage.getItem("lastDevice");
-    selected_device = JSON.parse(objetoJSONRecuperado);
-  }
+  // var printerSelect = document.getElementById('printerSelect');
+
+  // // Obtener el valor almacenado en localStorage
+  // var storedPrinter = localStorage.getItem('selectedPrinter');
+
+  // // Establecer la selección del selector desde el localStorage
+  // if (storedPrinter) {
+  //   printerSelect.value = storedPrinter;
+  // }
+
+  // // Agregar un evento de cambio al selector
+  // printerSelect.addEventListener('change', function() {
+  //   // Almacenar la selección actual en localStorage
+  //   localStorage.setItem('selectedPrinter', printerSelect.value);
+
+  //   // Realizar otras acciones según sea necesario
+  //   toggleElements(printerSelect.value);
+  // });
   searchPrinters()
   fileInput = document.getElementById('fileInput');
   inputFileLoad()
@@ -1423,8 +1435,8 @@ async function getPdf(){
   createURL();
 }
 
-// async function createHtmlToDownload(){
-//   const txt = await createHtmlFromPdf(fileBackup);
-//   const txtArchive = new Blob([txt], { type: 'text/plain;' });
-//   return txtArchive;
-// }
+async function createHtmlToDownload(){
+  const txt = await createHtmlFromPdf(fileBackup);
+  const txtArchive = new Blob([txt], { type: 'text/plain;' });
+  return txtArchive;
+}
