@@ -947,7 +947,7 @@ function htmlInventaryReport(textContent) {
   +    '<style>'
   +        'table {'
   +            'border-collapse: collapse;'
-  +            'width: 100%;'
+  +            'width: 95%;'
   +        '}'
   +        'td:nth-child(1), th:nth-child(1) {'
   +            'width: 70%;'
@@ -959,7 +959,7 @@ function htmlInventaryReport(textContent) {
   +    '</style>'
   +'</head>'
   +'<body>'
-  +    '<div align="center" style="font-size: 15px">'
+  +    '<div align="center" style="font-size: 15px;font-weight: bold">'
   + '<p>';
   let actualContent;
   let codeProductRead = 0;
@@ -971,21 +971,21 @@ function htmlInventaryReport(textContent) {
     console.log(actualContent);
     if (line == 1) {
       if (actualContentEnter){
-        text += actualContent + '</p><p>&nbsp;</p></div><p style="font-size: 15px">';
+        text += actualContent + '</p><p>&nbsp;</p></div><p style="font-size: 15px;font-weight: bold">';
         line++;
       } else {
         text += actualContent;
       }
     } else if (line == 2 || line == 3) {
       if (actualContentEnter){
-        text += actualContent + '</p><p style="font-size: 15px">';
+        text += actualContent + '</p><p style="font-size: 15px;font-weight: bold">';
         line++;
       } else {
         text += actualContent;
       } 
     } else if (line == 4){
       if (actualContentEnter){
-        text += actualContent + '</p><p>&nbsp;</p><table style="font-size: 15px;"><tbody><tr><td>';
+        text += actualContent + '</p><p>&nbsp;</p><table style="font-size: 15px;font-weight: bold"><tbody><tr><td>';
         line++;
       } else {
         text += actualContent;
@@ -994,7 +994,7 @@ function htmlInventaryReport(textContent) {
       if(actualContent == ' '){
         text += '</td><td>';
       } else if (actualContentEnter || textContent.items[content+1].str != ' ') {
-        text += actualContent + '</td></tr><tr><td>&nbsp;</td><td>&nbsp;</td></tr></tbody></table><table style="font-size: 15px;"><tbody>';
+        text += actualContent + '</td></tr><tr><td>&nbsp;</td><td>&nbsp;</td></tr></tbody></table><table style="font-size: 15px;font-weight: bold"><tbody>';
         line++;
       } else {
         text += actualContent;
@@ -1033,7 +1033,7 @@ function htmlRetailSales(textContent) {
   +    '<style>'
   +        'table {'
   +            'border-collapse: collapse;'
-  +            'width: 100%;'
+  +            'width: 95%;'
   +        '}'
   +        'td:nth-child(1), th:nth-child(1) {'
   +            'width: 50%;'
@@ -1068,21 +1068,21 @@ function htmlRetailSales(textContent) {
       }
     } else if (line == 2) {
       if (actualContentEnter){
-        text += actualContent + '</p><p>&nbsp;</p></div><p style="font-size: 15px">';
+        text += actualContent + '</p><p>&nbsp;</p></div><p style="font-size: 15px;font-weight: bold">';
         line++;
       } else {
         text += actualContent;
       }
     } else if (line == 3 || line == 4) {
       if (actualContentEnter){
-        text += actualContent + '</p><p style="font-size: 15px">';
+        text += actualContent + '</p><p style="font-size: 15px;font-weight: bold">';
         line++;
       } else {
         text += actualContent;
       } 
     } else if (line == 5){
       if (actualContentEnter){
-        text += actualContent + '</p><p>&nbsp;</p><table style="font-size: 15px;"><tbody><tr><td>';
+        text += actualContent + '</p><p>&nbsp;</p><table style="font-size: 15px;font-weight: bold"><tbody><tr><td>';
         line++;
       } else {
         text += actualContent;
@@ -1100,7 +1100,7 @@ function htmlRetailSales(textContent) {
       if (actualContent.toLowerCase().includes('inicial')){
           text += actualContent + '</td><td>';
       } else if (actualContentEnter) {
-        text += actualContent + '</td></tr><tr><td>&nbsp;</td><td>&nbsp;</td></tr></tbody></table><table style="font-size: 15px;"><tbody>';
+        text += actualContent + '</td></tr><tr><td>&nbsp;</td><td>&nbsp;</td></tr></tbody></table><table style="font-size: 15px;font-weight: bold"><tbody>';
         line++;
       } else {
         text += actualContent;
@@ -1114,7 +1114,7 @@ function htmlRetailSales(textContent) {
           text += actualContent;
           count = 1;
         } else if (textContent.items[content+1].str.toLowerCase().includes('total') || textContent.items[content+2].str.toLowerCase().includes('total')) {
-          text += actualContent + '</td></tr></tbody></table><p>&nbsp;</p><div align="center" style="font-size: 15px"><p>';
+          text += actualContent + '</td></tr></tbody></table><p>&nbsp;</p><div align="center" style="font-size: 15px;font-weight: bold"><p>';
           line++;
           count = 0;
           codeProductRead = 0;
@@ -1345,7 +1345,7 @@ function htmlPurchase(textContent) {
         text += actualContent;
       }
     } else if (line == 21) {
-      text += actualContent + '</p></div><p style="font-size: 15px;font-weight: bold">';
+      text += actualContent + '</p></div><p style="font-size: 15px;font-weight: bold;width: 95%">';
       line++;
     } else if (line == 22) {
       if (textContent.items[content+1].str.toLowerCase().includes('fecha')) {
