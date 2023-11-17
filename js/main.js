@@ -43,7 +43,6 @@ var fileBackupZpl;
 var changeHref;
 var pdfText = "";
 var totalNumPagesTam;
-var sPrinter;
 var zebraPrinter;
 
 /********************FUNCIONES PARA BUSCAR IMPRESORAS*******************/
@@ -60,25 +59,9 @@ function onDeviceSelected(selected){
 	for(var i = 0; i < devices.length; ++i){
 		if(selected.value == devices[i].uid){
 			selected_device = devices[i];
-      localStorage.setItem('lastDevice', JSON.stringify(selected_device));
 			return;
 		}
 	}
-}
-
-function toggleElements(selectedPrinter) {
-  const zebraElements = document.querySelectorAll('.header select, .header p');
-  const starElements = document.querySelector('.header select, .header p');
-  const buscandoDisp = document.getElementById("BuscandoDisp");
-  if (selectedPrinter === "Zebra iMZ220" || selectedPrinter === "Zebra ZQ220") {
-      zebraElements.forEach(element => element.style.display = 'block');
-      starElements.forEach(element => element.style.display = 'none');
-      buscandoDisp.style.display = 'block';
-  } else {
-      zebraElements.forEach(element => element.style.display = 'none');
-      starElements.forEach(element => element.style.display = 'block');
-      buscandoDisp.style.display = 'none';
-  }
 }
 
 function searchPrinters(){
@@ -91,13 +74,6 @@ function searchPrinters(){
     //Add device to list of devices and to html select element
     selected_device = device;
     localStorage.setItem('lastDevice', JSON.stringify(selected_device));
-    // zebraPrinter = new Zebra.Printer(selected_device);
-    // zebraPrinter.getInfo(function(info){
-    //     console.log(info) //"iMZ220-200dpi"
-    //   }, function(error){
-    //     console.log(error)
-    //   }
-    // );
     devices.push(device);
     var html_select = document.getElementById("selected_device");
     var option = document.createElement("option");
@@ -133,16 +109,36 @@ function searchPrinters(){
 
 window.addEventListener('load', () => {
   registerServiceWorker()
-  sPrinter = document.getElementById("printerSelect").value;
-  if(localStorage.length != 0){
-    const objetoJSONRecuperado = localStorage.getItem("lastDevice");
-    selected_device = JSON.parse(objetoJSONRecuperado);
+  let sPrinter = document.getElementById("printerSelect");
+  sPrinter.addEventListener('change', function() {
+    reloadValuePrinter(sPrinter);
+  });
+  let seleccionSaved = localStorage.getItem('typePrinterSelect');
+  if (seleccionSaved){
+    sPrinter.value = seleccionSaved;
+    reloadValuePrinter(sPrinter);
   }
   searchPrinters()
   fileInput = document.getElementById('fileInput');
   inputFileLoad()
   createURL()
 });
+
+function reloadValuePrinter (sPrinter) {
+  localStorage.setItem('typePrinterSelect' , sPrinter.value);
+  const textDev = document.getElementById('text_devices');
+  const selectDev = document.getElementById('selected_device');
+  const buscandoDisp = document.getElementById('BuscandoDisp');
+  if (sPrinter.value === 'Zebra iMZ220' || sPrinter.value === 'Zebra ZQ220') {
+      textDev.style.display = 'block';
+      selectDev.style.display = 'block';
+      buscandoDisp.style.display = 'block';
+  } else {
+      textDev.style.display = 'none';
+      selectDev.style.display = 'none';
+      buscandoDisp.style.display = 'none';
+  }
+}
 
 /************FUNCION PARA IMPRIMIR SEGUN TIPO DE IMPRESORA*************/
 function imprimir() {
@@ -1330,14 +1326,14 @@ function htmlPurchase(textContent) {
       }
     } else if (line == 19) {
       if (actualContentEnter) {
-        text += '</p></div><p style="font-size: 15px;font-weight: bold">';
+        text += '</p></div><p style="font-size: 15px;font-weight: bold;width: 95%">';
         line++;
       } else {
         text += actualContent;
       }
     } else if (line == 20) {
       if (textContent.items[content+1].str.toLowerCase().includes('***')) {
-        text += '</p><div align="center" style="font-size: 15px;font-weight: bold;width: 95%"><p>';
+        text += '</p><div align="center" style="font-size: 15px;font-weight: bold"><p>';
         line++;
       } else if (textContent.items[content+1].str.length == 0) {
         text += actualContent + ' ';
