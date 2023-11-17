@@ -294,31 +294,31 @@ function createURL() {
     //size
     changeHref = changeHref + "&size=" + "2w7";
     //pdf
-  	changeHref = changeHref + "&pdf=" + encodeURIComponent(pdfText)
-    //document.getElementById("send_data").value = changeHref;
-    console.log("****")
+  	// changeHref = changeHref + "&pdf=" + encodeURIComponent(pdfText)
+    changeHref = changeHref + "&html=" + encodeURIComponent(pdfText)
+    // console.log("****")
     console.log(changeHref)
 }
 
-function getPdf(callback) {
-  if (!fileInput.files[0]) {
-    pdfText = "";
-  } else {
-    fileBackup.arrayBuffer().then(resp => {
+// function getPdf(callback) {
+//   if (!fileInput.files[0]) {
+//     pdfText = "";
+//   } else {
+//     fileBackup.arrayBuffer().then(resp => {
 					
-      let binary = new Uint8Array(resp);
-      var binaryString = "";
-      for (var i=0; i<binary.byteLength; i++) {
-        binaryString += String.fromCharCode(binary[i]);
-      }
+//       let binary = new Uint8Array(resp);
+//       var binaryString = "";
+//       for (var i=0; i<binary.byteLength; i++) {
+//         binaryString += String.fromCharCode(binary[i]);
+//       }
 
-      // base64 encoding
-      pdfText = window.btoa(binaryString);
-      createURL()
-    })
-  }
-  createURL();
-}
+//       // base64 encoding
+//       pdfText = window.btoa(binaryString);
+//       createURL()
+//     })
+//   }
+//   createURL();
+// }
 
 function imprimirStar(){
   location.href=changeHref;
@@ -939,10 +939,10 @@ async function createTxtUtf16le(){
 
 
 /***************************IMPRESORA STAR***************************/
-function htmlInventaryReport(textContent){
+function htmlInventaryReport(textContent) {
   let text = '<!DOCTYPE html>'
-  + '<html>'
-  + '<head>'
+  +'<html>'
+  +'<head>'
   +    '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">'
   +    '<style>'
   +        'table {'
@@ -957,99 +957,220 @@ function htmlInventaryReport(textContent){
   +            'text-align: center;'
   +        '}'
   +    '</style>'
-  + '</head>'
-  + '<body>';
-  let arriveDescription = false;
-  let codeProductRead = 0;
+  +'</head>'
+  +'<body>'
+  +    '<div align="center" style="font-size: 15px">'
+  + '<p>';
   let actualContent;
-  let line = 1;
+  let codeProductRead = 0;
   let count = 0;
+  let line = 1;
+  for (let content = 0 ; content < textContent.items.length-2 ; content++) {
+    actualContent = textContent.items[content].str;
+    actualContentEnter = textContent.items[content].hasEOL;
+    console.log(actualContent);
+    if (line == 1) {
+      if (actualContentEnter){
+        text += actualContent + '</p><p>&nbsp;</p></div><p style="font-size: 15px">';
+        line++;
+      } else {
+        text += actualContent;
+      }
+    } else if (line == 2 || line == 3) {
+      if (actualContentEnter){
+        text += actualContent + '</p><p style="font-size: 15px">';
+        line++;
+      } else {
+        text += actualContent;
+      } 
+    } else if (line == 4){
+      if (actualContentEnter){
+        text += actualContent + '</p><p>&nbsp;</p><table style="font-size: 15px;"><tbody><tr><td>';
+        line++;
+      } else {
+        text += actualContent;
+      } 
+    } else if (line == 5){
+      if(actualContent == ' '){
+        text += '</td><td>';
+      } else if (actualContentEnter || textContent.items[content+1].str != ' ') {
+        text += actualContent + '</td></tr><tr><td>&nbsp;</td><td>&nbsp;</td></tr></tbody></table><table style="font-size: 15px;"><tbody>';
+        line++;
+      } else {
+        text += actualContent;
+      }
+    } else if (line == 6){
+      if (codeProductRead == 0 && actualContent != '' && actualContent != ' ') {
+        codeProductRead = 1;
+        text += '<tr><td>' + actualContent;
+      } else if (codeProductRead == 1 && /^\d+$/.test(actualContent) && textContent.items[content+1].hasEOL) {
+        text += '</td><td>' + actualContent + '</td></tr>';
+        codeProductRead = 0;
+      } else if (codeProductRead == 1 && /^\d+$/.test(actualContent) && textContent.items[content+1].str == '') {
+        text += '</td><td>' + actualContent + '</td></tr>';
+        codeProductRead = 0;
+      } else if (codeProductRead == 1 && /^\d+$/.test(actualContent) && textContent.items[content+1].str != ' ' ) {
+        text += '</td><td>' + actualContent + '</td></tr>';
+        codeProductRead = 0;
+      } else if (codeProductRead == 1) {
+        if (!textContent.items[content].hasEOL){
+          text += actualContent;
+        } else {
+          text += ' ';
+        }
+      }
+    } 
+  }
+  text += '</td><td>' + textContent.items[textContent.items.length-1].str + '</td></tr></tbody></table></body></html>';
+  return text;
+}
+
+function htmlRetailSales(textContent) {
+  let text = '<!DOCTYPE html>'
+  +'<html>'
+  +'<head>'
+  +    '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">'
+  +    '<style>'
+  +        'table {'
+  +            'border-collapse: collapse;'
+  +            'width: 100%;'
+  +        '}'
+  +        'td:nth-child(1), th:nth-child(1) {'
+  +            'width: 50%;'
+  +        '}'
+  +        'td:nth-child(2), th:nth-child(2) {'
+  +            'width: 25%;'
+  +            'text-align: center;'
+  +        '}'
+  +        'td:nth-child(3), th:nth-child(3) {'
+  +            'width: 25%;'
+  +            'text-align: center;'
+  +        '}'
+  +    '</style>'
+  +'</head>'
+  +'<body>'
+  +    '<div align="center" style="font-size: 15px">'
+  + '<p>';
+  let actualContent;
+  let codeProductRead = 0;
+  let count = 0;
+  let line = 1;
   for (let content = 0 ; content < textContent.items.length-1 ; content++) {
     actualContent = textContent.items[content].str;
-    if (line == 1){
-      if (actualContent == '-' && count == 0){
-        text += '<div align="center" style="font-size: 20px"><p>' + actualContent;
-        count++;
-      } else if (actualContent == '-' && count == 1) {
-        text += actualContent + '</p><p>&nbsp;</p></div>';
-        count = 0;
+    actualContentEnter = textContent.items[content].hasEOL;
+    console.log(actualContent);
+    if (line == 1) {
+      if (actualContentEnter){
+        text += actualContent + '</p><p>&nbsp;</p><p>';
         line++;
       } else {
         text += actualContent;
       }
     } else if (line == 2) {
-      if(actualContent.toLowerCase().includes('fecha')){
-        text += '<p style="font-size: 18px">' + actualContent;
-        count++;
+      if (actualContentEnter){
+        text += actualContent + '</p><p>&nbsp;</p></div><p style="font-size: 15px">';
+        line++;
+      } else {
+        text += actualContent;
       }
-    }
-
-    if (content == finalReportNamePosition){
-      text += '\r\n \r\n';
-    } else if (actualContent.toLowerCase().includes('ruta:')) {
-      text += '\r\n \r\n';
-      text += actualContent;
-    } else if (actualContent.toLowerCase().includes('vendedor:')) {
-      text += '\r\n \r\n';
-      text += actualContent;
-    } else if (actualContent.includes('PRODUCTO')) {
-      text += '\r\n \r\n \r\n';
-      text += actualContent;
-      text += '                            '
-    } else if (actualContent.toLowerCase().includes('existencias')) {
-      arriveDescription = true;
-      text += actualContent;
-      text += '\r\n \r\n \r\n';
-      content++;
-    } else if (arriveDescription) {
-      if (codeProductRead == 0) { //Se el primer item del producto
+    } else if (line == 3 || line == 4) {
+      if (actualContentEnter){
+        text += actualContent + '</p><p style="font-size: 15px">';
+        line++;
+      } else {
+        text += actualContent;
+      } 
+    } else if (line == 5){
+      if (actualContentEnter){
+        text += actualContent + '</p><p>&nbsp;</p><table style="font-size: 15px;"><tbody><tr><td>';
+        line++;
+      } else {
+        text += actualContent;
+      } 
+    } else if (line == 6){
+      if(actualContent == ' '){
+        text += '</td><td>';
+      } else if (actualContentEnter) {
+        text += actualContent + '</td></tr><tr><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td>';
+        line++;
+      } else {
+        text += actualContent;
+      }
+    } else if (line == 7){
+      if (actualContent.toLowerCase().includes('inicial')){
+          text += actualContent + '</td><td>';
+      } else if (actualContentEnter) {
+        text += actualContent + '</td></tr><tr><td>&nbsp;</td><td>&nbsp;</td></tr></tbody></table><table style="font-size: 15px;"><tbody>';
+        line++;
+      } else {
+        text += actualContent;
+      }
+    } else if (line == 8){
+      if (codeProductRead == 0 && actualContent != '' && actualContent != ' ') {
         codeProductRead = 1;
-        text += actualContent;
-        caracteresLineaMax = caracteresLineaMax + actualContent.length;
-      } else if (codeProductRead == 1 && /^\d+$/.test(actualContent) && textContent.items[content+1].hasEOL) { //Si el codigo de producto tiene un enter despues, siga con el siguiente producto
-        for (let spaces = 0 ; spaces < positionExistences-caracteresLineaMax ; spaces++) {
-          text += ' ';
+        text += '<tr><td>' + actualContent;
+      } else if (codeProductRead == 5) {
+        if (count == 0) {
+          text += actualContent;
+          count = 1;
+        } else if (textContent.items[content+1].str.toLowerCase().includes('total') || textContent.items[content+2].str.toLowerCase().includes('total')) {
+          text += actualContent + '</td></tr></tbody></table><p>&nbsp;</p><div align="center" style="font-size: 15px"><p>';
+          line++;
+          count = 0;
+          codeProductRead = 0;
+        } else {
+          if(actualContent == ' '){
+            content++;
+            text += '</td></tr>';
+          } else {
+            text += '</td></tr>';
+          }
+          count = 0;
+          codeProductRead = 0;
         }
-        text += actualContent;
-        caracteresLineaMax = 0;
-        codeProductRead = 0;
-        text += '\r\n';
-      } else if (codeProductRead == 1 && /^\d+$/.test(actualContent) && textContent.items[content+1].str == '') { //Si el codigo de producto tiene un contenido vacio despues, siga con el siguiente producto
-        for (let spaces = 0 ; spaces < positionExistences-caracteresLineaMax ; spaces++) {
-          text += ' ';
+      } else if (codeProductRead == 4) {
+        text += actualContent + '</td><td>';
+        codeProductRead = 5;
+        content++;
+      } else if (codeProductRead == 3) {
+        if (count == 0) {
+          text += actualContent;
+          count = 1;
+        } else {
+          if(actualContent == ' '){
+            content++;
+            text += '</td></tr><tr><td>';
+          } else {
+            text += '</td></tr><tr><td>';
+          }
+          count = 0;
+          codeProductRead = 4;
         }
-        text += actualContent;
-        caracteresLineaMax = 0;
-        codeProductRead = 0;
-        text += '\r\n';
-      } else if (codeProductRead == 1 && /^\d+$/.test(actualContent) && textContent.items[content+1].str != ' ' ) { //Si el codigo de producto esta al final de una pagina del pdf, verifique que haya algo en la siguiente pagina y siga
-        for (let spaces = 0 ; spaces < positionExistences-caracteresLineaMax ; spaces++) {
-          text += ' ';
-        }
-        text += actualContent;
-        text += '\r\n';
-        caracteresLineaMax = 0;
-        codeProductRead = 0;
-      } else if (codeProductRead == 1 && textContent.items[content+1].hasEOL && /^\d+$/.test(textContent.items[content+2].str)) {
-        text += actualContent;
-        caracteresLineaMax = caracteresLineaMax + actualContent.length;
-      } else if (codeProductRead == 1 && textContent.items[content+1].hasEOL) {
-        caracteresLineaMax = 0;
-        text += actualContent;
-        text += '\r\n';
+      } else if (codeProductRead == 2) {
+        text += actualContent + '</td><td>';
+        codeProductRead = 3;
+        content++;
+      } else if (codeProductRead == 1 && /^\$\d+(\.\d+)?$/.test(textContent.items[content + 3].str)) {
+        text += '</td><td>';
+        codeProductRead = 2;
       } else if (codeProductRead == 1) {
-        text += actualContent;
-        caracteresLineaMax = caracteresLineaMax + actualContent.length;
+        if (!textContent.items[content].hasEOL){
+          text += actualContent;
+        } else {
+          text += ' ';
+        }
       }
-    } else {
-      text += actualContent;
+    } else if (line == 9 || line == 10 || line == 11 || line == 12) {
+      if (textContent.items[content+1].str.toLowerCase().includes('total')){
+        text += actualContent + '</p><p>';
+        line++;
+      } else {
+        text += actualContent;
+      }
     }
   }
-  for (let spaces = 0 ; spaces < positionExistences-caracteresLineaMax ; spaces++) {
-    text += ' ';
-  }
-  text += textContent.items[textContent.items.length-1].str;
-  return text += '\r\n \r\n \r\n';
+  text += textContent.items[textContent.items.length-1].str + '</p></div></body></html>';
+  return text;
 }
 
 function htmlPurchase(textContent) {
@@ -1083,26 +1204,13 @@ function htmlPurchase(textContent) {
   +    '<div align="center" style="font-size: 15px">'
   + '<p>';
   let actualContent;
-  let afterClient = true;
-  let caracteresLineaMax = 0;
-  let importLine = false;
-  let totalAppear = false;
-  let totalAppearCount = 0;
-  let caseBuyLine = false;
-  let subTotal = false;
-  let totalPage = 48;
-  const centerPage = 24;
   let codeProductRead = 0;
-  let centerQuantity = 23;
-  let centerPriceUnit = 33;
-  let spacesToFinal = 0;
   let count = 0;
-  let countProducts = 0;
   let line = 1;
-  let lineCount = 0;
   for (let content = 0 ; content < textContent.items.length-1 ; content++) {
     actualContent = textContent.items[content].str;
     actualContentEnter = textContent.items[content].hasEOL;
+    console.log(actualContent);
     if (line == 1) {
       if (actualContentEnter){
         text += actualContent + '</p><p>&nbsp;</p><p>';
@@ -1138,222 +1246,122 @@ function htmlPurchase(textContent) {
       } else {
         text += actualContent;
       } 
-    } else if (line == 11){
-      if(actualContent == ' '){
+    } else if (line == 11 || line == 14){
+      if (actualContent == ' ' && textContent.items[content+1].str.toLowerCase().includes('unit')) {
+        text += actualContent;
+      } else if(actualContent == ' '){
         text += '</td><td>';
-      } else if (actualContentEnter) {
-        text += '</td></tr><tr><td>&nbsp;</td><td>&nbsp;</td></tr></tbody></table><table style="font-size: 15px;"><tbody><tr><td>';
+      } else if (actualContentEnter || textContent.items[content+1].str != ' ') {
+        text += actualContent + '</td></tr><tr><td>&nbsp;</td><td>&nbsp;</td></tr></tbody></table><table style="font-size: 15px;"><tbody>';
+        line++;
       } else {
         text += actualContent;
       }
+    } else if (line == 12 || line == 15){
+      if (codeProductRead == 0 && actualContent != '' && actualContent != ' ') { //Se el primer item del producto
+        codeProductRead = 1;
+        text += '<tr><td>' + actualContent;
+      } else if (codeProductRead == 4){
+        if (count == 0) {
+          text += actualContent;
+          count = 1;
+        } else if (count == 1) {
+          text += actualContent;
+          count = 2;
+        } else if (count == 2) {
+          text += actualContent;
+          count = 3;
+        } else if (textContent.items[content+1].str.toLowerCase().includes('productos') || textContent.items[content+2].str.toLowerCase().includes('productos')) {
+          text += actualContent + '</td></tr></tbody></table><p>&nbsp;</p><div align="center" style="font-size: 15px"><p>';
+          line++;
+          count = 0;
+          codeProductRead = 0;
+        } else if (textContent.items[content+1].str.toLowerCase().includes('sub') || textContent.items[content+2].str.toLowerCase().includes('sub')) {
+          text += actualContent + '</td></tr></tbody></table><p>&nbsp;</p><div align="center" style="font-size: 15px"><p>';
+          line++;
+          count = 0;
+          codeProductRead = 0;
+        } else {
+          if(actualContent == ' '){
+            content++;
+            text += '</td></tr>';
+          } else {
+            text += '</td></tr>';
+          }
+          count = 0;
+          codeProductRead = 0;
+        }
+      } else if (codeProductRead == 3) {
+        if(textContent.items[content+1].str == '$'){
+          debugger
+          text += '</td><td>';
+          codeProductRead = 4;
+        } else{
+          debugger
+          text += actualContent;
+        }
+      }else if (codeProductRead == 2) {
+        text += actualContent + '</td><td>';
+        codeProductRead = 3;
+        content++;
+      } else if (codeProductRead == 1 && textContent.items[content + 3].str == '$') {
+        text += '</td><td>';
+        codeProductRead = 2;
+      } else if (codeProductRead == 1) {
+        if (!textContent.items[content].hasEOL){
+          text += actualContent;
+        } else {
+          text += ' ';
+        }
+      }
+    } else if (line == 13) {
+      if (actualContentEnter) {
+        text += '</p></div><table style="font-size: 15px;"><tbody><tr><td>';
+        line++;
+      } else {
+        text += actualContent;
+      }
+    } else if (line == 16 || line == 17 || line == 18) {
+      if (actualContentEnter) {
+        text += '</p><p>';
+        line++;
+      } else {
+        text += actualContent;
+      }
+    } else if (line == 19) {
+      if (actualContentEnter) {
+        text += '</p></div><p style="font-size: 15px">';
+        line++;
+      } else {
+        text += actualContent;
+      }
+    } else if (line == 20) {
+      if (textContent.items[content+1].str.toLowerCase().includes('***')) {
+        text += '</p><div align="center" style="font-size: 15px"><p>';
+        line++;
+      } else if (textContent.items[content+1].str.length == 0) {
+        text += actualContent + ' ';
+      } else {
+        text += actualContent;
+      }
+    } else if (line == 21) {
+      text += actualContent + '</p></div><p style="font-size: 15px">';
+      line++;
+    } else if (line == 22) {
+      if (textContent.items[content+1].str.toLowerCase().includes('fecha')) {
+        text += '</p><p style="font-size: 15px">';
+        line++;
+      } else if (textContent.items[content+1].str.length == 0) {
+        text += actualContent + ' ';
+      } else {
+        text += actualContent;
+      }
+    } else if (line == 23) {
+      text += actualContent;
     }
   }
-  //   if (actualContent.toLowerCase().includes('ticket')){
-  //     text += '                  ';
-  //     text += actualContent;
-  //   } else if (actualContent.toLowerCase().includes('cliente:')) {
-  //     text += '\r\n \r\n';
-  //     text += actualContent;
-  //     afterClient = true;
-  //   } else if (afterClient && textContent.items[content].hasEOL) {
-  //     text += '\r\n \r\n';
-  //     text += actualContent;
-  //     afterClient = false;
-  //   } else if (actualContent.toLowerCase().includes('dirección:')) {
-  //     text += '\r\n \r\n';
-  //     text += actualContent;
-  //   } else if (actualContent.toLowerCase().includes('fecha')) {
-  //     text += '\r\n \r\n';
-  //     text += actualContent;
-  //     caseBuyLine = false;
-  //   } else if (actualContent.toLowerCase().includes('orden')) {
-  //     text += '\r\n \r\n';
-  //     text += actualContent;
-  //   } else if (actualContent.toLowerCase().includes('condición')) {
-  //     text += '\r\n \r\n';
-  //     text += actualContent;
-  //   } else if (actualContent.toLowerCase().includes('elaboró:')) {
-  //     text += '\r\n \r\n';
-  //     text += actualContent;
-  //   } else if (actualContent.toLowerCase().includes('descripción')) {
-  //     text += '\r\n';
-  //     text += actualContent;
-  //     text += '        ';
-  //     productAppear = true;
-  //   } else if (actualContent.toLowerCase().includes('cant.')) {
-  //     text += actualContent;
-  //     text += ' '
-  //   } else if (actualContent.toLowerCase().includes('precio')) {
-  //     text += actualContent;
-  //   } else if (actualContent.toLowerCase().includes('unit.')) {
-  //     text += actualContent;
-  //     text += '   '
-  //   } else if (actualContent.toLowerCase().includes('total')  && !totalAppear) {
-  //     if (totalAppearCount == 0) {
-  //       text += actualContent;
-  //       text += '\r\n \r\n';
-  //       totalAppearCount++;
-  //     } else {
-  //       text += actualContent;
-  //       text += '\r\n \r\n';
-  //       totalAppear = true;
-  //       totalAppearCount++;
-  //     }
-  //   } else if (actualContent.toLowerCase().includes('sub-')) {
-  //     text += ' \r\n'
-  //     for (let spaces = 0; spaces<centerPage-Math.round((actualContent.length+textContent.items[content+1].str.length+textContent.items[content+2].str.length+textContent.items[content+3].str.length+textContent.items[content+4].str.length+textContent.items[content+5].str.length)/2) ; spaces++){
-  //       text += ' '
-  //     }
-  //     text += actualContent;
-  //     subTotal = true;
-  //   } else if (actualContent.toLowerCase().includes('descuento:') || actualContent.toLowerCase().includes('impuesto:')) {
-  //     text += '\r\n \r\n'
-  //     for (let spaces = 0; spaces<centerPage-Math.round((actualContent.length+textContent.items[content+1].str.length+textContent.items[content+2].str.length+textContent.items[content+3].str.length+textContent.items[content+4].str.length)/2) ; spaces++){
-  //       text += ' '
-  //     }
-  //     text += actualContent;
-  //   } else if (actualContent.toLowerCase().includes('total')  && textContent.items[content-1].str.toLowerCase().includes('sub-')) {
-  //     text += actualContent;
-  //   } else if (actualContent.toLowerCase().includes('total:') && totalAppear) {
-  //     text += '\r\n \r\n'
-  //     for (let spaces = 0; spaces<centerPage-Math.round((actualContent.length+textContent.items[content+1].str.length+textContent.items[content+2].str.length+textContent.items[content+3].str.length+textContent.items[content+4].str.length)/2) ; spaces++){
-  //       text += ' '
-  //     }
-  //     text += actualContent;
-  //   } else if(actualContent.toLowerCase().includes('importe')) {
-  //     caracteresLineaMax = 0;
-  //     text += '\r\n \r\n';
-  //     text += actualContent;
-  //     caracteresLineaMax = caracteresLineaMax + actualContent.length;
-  //     importLine = true;
-  //   } else if(actualContent.toLowerCase().includes('***copia***')) {
-  //     text += '\r\n \r\n';
-  //     for (let spaces = 0; spaces<centerPage-Math.round(actualContent.length/2) ; spaces++){
-  //       text += ' '
-  //     }
-  //     text += actualContent;
-  //     text += '\r\n \r\n';
-  //     caracteresLineaMax = 0;
-  //     importLine = false;
-  //     caseBuyLine = true;
-  //   } else if(importLine) {
-  //     caracteresLineaMax = caracteresLineaMax + actualContent.length;
-  //     if (caracteresLineaMax < totalPage){
-  //       if (actualContent != '') {
-  //         text += actualContent;
-  //       } else {
-  //         text += ' ';
-  //       } 
-  //     } else {
-  //       caracteresLineaMax = 0;
-  //       text += '\r\n';
-  //       if (actualContent != ' ') {
-  //         text += actualContent;
-  //       } 
-  //       caracteresLineaMax = caracteresLineaMax + actualContent.length;
-  //     }
-  //   } else if(caseBuyLine) {
-  //     caracteresLineaMax = caracteresLineaMax + actualContent.length;
-  //     if (caracteresLineaMax < totalPage){
-  //       if (actualContent == 'SU') {
-  //         text += actualContent + ' ';
-  //       } else {
-  //         text += actualContent;
-  //       }
-  //     } else {
-  //       caracteresLineaMax = 0;
-  //       text += '\r\n';
-  //       if (actualContent != ' ') {
-  //         text += actualContent;
-  //       } 
-  //       caracteresLineaMax = caracteresLineaMax + actualContent.length;
-  //     }
-  //   } else if (actualContent.toLowerCase().includes('productos') && countProducts == 0 ) {
-  //     text += '\r\n \r\n'
-  //     for (let spaces = 0; spaces < spaceProductsWithoutProm ; spaces++){
-  //       text += ' '
-  //     }
-  //     text += actualContent;
-  //     countProducts++;
-  //   } else if (actualContent.toLowerCase().includes('productos') && countProducts == 1 ) {
-  //     text += '\r\n \r\n'
-  //     for (let spaces = 0; spaces < spaceProductsWithProm ; spaces++){
-  //       text += ' '
-  //     }
-  //     text += actualContent + ' ';
-  //     countProducts++;
-  //   } else if (totalAppear && !subTotal || totalAppearCount == 1) {
-  //     if (codeProductRead == 0 && actualContent != '' && actualContent != ' ') { //Se el primer item del producto
-  //       codeProductRead = 1;
-  //       text += actualContent;
-  //       caracteresLineaMax = caracteresLineaMax + actualContent.length;
-  //     } else if (codeProductRead == 4){
-  //       if (count == 0) {
-  //         text += actualContent;
-  //         count = 1;
-  //       } else if (count == 1) {
-  //         text += actualContent;
-  //         count = 2;
-  //       } else if (count == 2) {
-  //         text += actualContent;
-  //         count = 3;
-  //       } else {
-  //         if(actualContent == ' '){
-  //           content++;
-  //           text += '\r\n';
-  //         } else {
-  //           text += '\r\n';
-  //         }
-  //         count = 0;
-  //         caracteresLineaMax = 0;
-  //         codeProductRead = 0;
-  //       }
-  //     } else if (codeProductRead == 3) {
-  //       if(textContent.items[content+2].str == '$'){
-  //         text += actualContent;
-  //         codeProductRead = 4;
-  //         caracteresLineaMax = caracteresLineaMax + actualContent.length + spacesToFinal;
-  //         for (let spaces = 0 ; spaces < totalPage-caracteresLineaMax-(textContent.items[content + 2].str.length+textContent.items[content + 3].str.length+textContent.items[content + 4].str.length) ; spaces++) {
-  //           text += ' ';
-  //         }
-  //         spacesToFinal = 0;
-  //         content++;
-  //       } else{
-  //         text += actualContent;
-  //         caracteresLineaMax = caracteresLineaMax + actualContent.length;
-  //       }
-  //     }else if (codeProductRead == 2) {
-  //       text += actualContent;
-  //       codeProductRead = 3;
-  //       caracteresLineaMax = caracteresLineaMax + actualContent.length + spacesToFinal;
-  //       spacesToFinal = 0;
-  //       for (let spaces = 0 ; spaces < centerPriceUnit-caracteresLineaMax-Math.round((textContent.items[content + 2].str.length+textContent.items[content + 3].str.length+textContent.items[content + 4].str.length)/2) ; spaces++) {
-  //         text += ' ';
-  //         spacesToFinal++;
-  //       }
-  //       content++;
-  //     } else if (codeProductRead == 1 && textContent.items[content + 4].str == '$') {
-  //       text += actualContent;
-  //       caracteresLineaMax = caracteresLineaMax + actualContent.length;
-  //       for (let spaces = 0 ; spaces < centerQuantity-caracteresLineaMax-Math.round(textContent.items[content + 2].str.length/2) ; spaces++) {
-  //         text += ' ';
-  //         spacesToFinal++;
-  //       }
-  //       content++;
-  //       codeProductRead = 2;
-  //     } else if (codeProductRead == 1 && textContent.items[content+1].hasEOL) {
-  //       caracteresLineaMax = 0;
-  //       text += actualContent;
-  //       text += '\r\n';
-  //     } else if (codeProductRead == 1) {
-  //       text += actualContent;
-  //       caracteresLineaMax = caracteresLineaMax + actualContent.length;
-  //     }
-  //   } else {
-  //     text += actualContent;
-  //   }
-  // }
-  // return text += '\r\n \r\n \r\n';
+  text += '</p></body></html>';
+  return text;
 }
   
 async function createHtmlFromPdf() {
@@ -1377,32 +1385,17 @@ async function createHtmlFromPdf() {
           for (const textItem of textContent.items) {
             if (textItem.str.toLowerCase().includes('inventario')) {
               text = htmlInventaryReport(textContent);
-              const txtArchive = new Blob([text], { type: 'text/plain' });
-              const url = window.URL.createObjectURL(txtArchive);
-              const a = document.createElement('a');
-              a.href = url;
-              a.download = "fileUnifiedBackup";
-              a.click();
-              window.URL.revokeObjectURL(url);
               resolve(text);
               return;
             } else if (textItem.str.toLowerCase().includes('ticket')) {
               text = htmlPurchase(textContent);
-              const txtArchive = new Blob([text], { type: 'text/plain' });
-              const url = window.URL.createObjectURL(txtArchive);
-              const a = document.createElement('a');
-              a.href = url;
-              a.download = "fileUnifiedBackup";
-              a.click();
-              window.URL.revokeObjectURL(url);
               resolve(text);
               return;
-            } 
-            //else if (textItem.str.toLowerCase().includes('liquidación')) {
-            //   text = txtRetailSales(textContent);
-            //   resolve(text);
-            //   return;
-            // }
+            } else if (textItem.str.toLowerCase().includes('liquidación')) {
+              text = htmlRetailSales(textContent);
+              resolve(text);
+              return;
+            }
           }
           if (pageNum === numPages) {
             resolve(text);
@@ -1413,3 +1406,24 @@ async function createHtmlFromPdf() {
     fileReader.readAsArrayBuffer(fileBackup);
   });
 }
+
+async function downloadHtml() {
+  const txtArchive = await createHtmlToDownload();
+  const url = window.URL.createObjectURL(txtArchive);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = "fileUnifiedBackup";
+  a.click();
+  window.URL.revokeObjectURL(url);
+}
+
+async function getPdf(){
+  pdfText = await createHtmlFromPdf(fileBackup);
+  createURL();
+}
+
+// async function createHtmlToDownload(){
+//   const txt = await createHtmlFromPdf(fileBackup);
+//   const txtArchive = new Blob([txt], { type: 'text/plain;' });
+//   return txtArchive;
+// }
