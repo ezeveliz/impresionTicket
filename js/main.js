@@ -127,6 +127,7 @@ function searchPrinters(){
     },"printer");
   }, function(error){
     //alert(error);
+    //a
   })
 }
 /***********************************************************************/
