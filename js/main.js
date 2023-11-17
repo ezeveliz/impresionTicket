@@ -1049,7 +1049,7 @@ function htmlRetailSales(textContent) {
   +    '</style>'
   +'</head>'
   +'<body>'
-  +    '<div align="center" style="font-size: 15px">'
+  +    '<div align="center" style="font-size: 15px;font-weight: bold">'
   + '<p>';
   let actualContent;
   let codeProductRead = 0;
@@ -1181,7 +1181,7 @@ function htmlPurchase(textContent) {
   +    '<style>'
   +        'table {'
   +            'border-collapse: collapse;'
-  +            'width: 90%;'
+  +            'width: 95%;'
   +        '}'
   +        'td:nth-child(1), th:nth-child(1) {'
   +            'width: 35%;'
