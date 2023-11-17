@@ -1330,14 +1330,14 @@ function htmlPurchase(textContent) {
       }
     } else if (line == 19) {
       if (actualContentEnter) {
-        text += '</p></div><p style="font-size: 15px;font-weight: bold">';
+        text += '</p></div><p style="font-size: 15px;font-weight: bold;width: 95%">';
         line++;
       } else {
         text += actualContent;
       }
     } else if (line == 20) {
       if (textContent.items[content+1].str.toLowerCase().includes('***')) {
-        text += '</p><div align="center" style="font-size: 15px;font-weight: bold;width: 95%"><p>';
+        text += '</p><div align="center" style="font-size: 15px;font-weight: bold"><p>';
         line++;
       } else if (textContent.items[content+1].str.length == 0) {
         text += actualContent + ' ';
