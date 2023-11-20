@@ -908,13 +908,29 @@ async function descargarZebraTxt() {
   window.URL.revokeObjectURL(url);
 }
 
-async function createTxtUtf16le(){
-  const txt = await createTxtFromPdf(fileBackup);
-  const encoder = new TextEncoder('utf-16le');
-  const utf16leBuffer = encoder.encode(txt);
-  const txtArchive = new Blob([utf16leBuffer], { type: 'text/plain;charset=utf-16le' });
-  return txtArchive;
+async function createTxtUtf16le() {
+  try {
+    const txt = await createTxtFromPdf(fileBackup);
+    const txtArchive = new Blob([new Uint8Array([0xEF, 0xBB, 0xBF]), txt], { type: 'text/plain;charset=utf-8' });
+    return txtArchive;
+  } catch (error) {
+    console.error('Error al crear el archivo en formato UTF-8:', error);
+    throw error; // Puedes lanzar el error nuevamente o manejarlo de otra manera según tus necesidades.
+  }
 }
+
+// async function createTxtUtf16le() {
+//   try {
+//     const txt = await createTxtFromPdf(fileBackup);
+//     const encoder = new TextEncoder('utf-16le');
+//     const utf16leBuffer = encoder.encode(txt);
+//     const txtArchive = new Blob([utf16leBuffer], { type: 'text/plain;charset=utf-16le' });
+//     return txtArchive;
+//   } catch (error) {
+//     console.error('Error al crear el archivo en formato UTF-16LE:', error);
+//     throw error;
+//   }
+// }
 /**********************************************************************/
 
 
@@ -1418,8 +1434,12 @@ async function getPdf(){
   createURL();
 }
 
-// async function createHtmlToDownload(){
-//   const txt = await createHtmlFromPdf(fileBackup);
-//   const txtArchive = new Blob([txt], { type: 'text/plain;' });
-//   return txtArchive;
-// }
+async function createHtmlToDownload(){
+  const txt = await createHtmlFromPdf(fileBackup);
+  var encoder = new TextEncoder();
+
+// Convertir el texto a UTF-16
+var utf16Array = encoder.encode(txt);
+  const txtArchive = new Blob([utf16Array], { type: 'text/plain;' });
+  return txtArchive;
+}
