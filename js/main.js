@@ -911,10 +911,13 @@ async function descargarZebraTxt() {
 async function createTxtUtf16le() {
   try {
     const txt = await createTxtFromPdf(fileBackup);
-    const txtArchive = new Blob([new Uint8Array([0xEF, 0xBB, 0xBF]), txt], { type: 'text/plain;charset=utf-8' });
+    const encoder = new TextEncoder('utf-16le');
+    const utf16leBuffer = encoder.encode(txt);
+    const txtArchive = new Blob([utf16leBuffer], { type: 'text/plain;charset=utf-16le' });
     return txtArchive;
   } catch (error) {
-    console.error('Error al crear el archivo en formato UTF-8:', error);
+    // Manejar cualquier error que pueda ocurrir durante la creación del archivo.
+    console.error('Error al crear el archivo en formato UTF-16LE:', error);
     throw error; // Puedes lanzar el error nuevamente o manejarlo de otra manera según tus necesidades.
   }
 }
