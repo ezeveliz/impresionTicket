@@ -1,5 +1,5 @@
 // Para actualizar el SW hay que incrementar la key del cache
-const CACHE_NAME = 'ticket-printer-v1';
+const CACHE_NAME = 'ticket-printer-v1.01';
 const urlsToCache = [
   './',
   './index.html',
