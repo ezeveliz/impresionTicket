@@ -4,8 +4,6 @@
 // Loaded via <script> tag, create shortcut to access PDF.js exports.
 var pdfjsLib = window['pdfjs-dist/build/pdf'];
 
-// The workerSrc property shall be specified.
-
 /**
  * If you need the last version of pdf.worker.js you can get it from:
  * pdfjsLib.GlobalWorkerOptions.workerSrc = '//mozilla.github.io/pdf.js/build/pdf.worker.js';
@@ -16,7 +14,33 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = './lib/pdfWorker.js';
 /**********************SERVICE WORKER******************************/
 function registerServiceWorker() {
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./sw.js?version=4.0')
+
+    let refreshing = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (refreshing) return;
+      window.location.reload();
+      refreshing = true;
+    });
+
+    navigator.serviceWorker.register('/sw.js')
+    .then((registration) => {
+      registration.addEventListener('updatefound', () => {
+        const newWorker = registration.installing;
+        newWorker.addEventListener('statechange', () => {
+          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+            // A new service worker is available, let's notify the user
+            console.log('New content is available; please refresh.');
+            let actualizar = confirm('hay una actualización disponible, presione Aceptar para actualizar.');
+            if (actualizar) {
+              newWorker.postMessage({ type: 'SKIP_WAITING' });
+            }
+          }
+        });
+      });
+    });
+
+    /**
+    navigator.serviceWorker.register('./sw.js')
     .then(registration => {
       //alert('Service Worker registrado con éxito:', registration);
       console.log('Service Worker registrado con éxito:', registration);
@@ -24,7 +48,7 @@ function registerServiceWorker() {
     .catch(error => {
       //alert('Error al registrar el Service Worker:', error);
       console.error('Error al registrar el Service Worker:', error);
-    });
+    }); */
   }
 }
 /**********************************************************************/

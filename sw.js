@@ -1,7 +1,9 @@
-const CACHE_NAME = 'ticket-printer';
+// Para actualizar el SW hay que incrementar la key del cache
+const CACHE_NAME = 'ticket-printer-v1';
 const urlsToCache = [
-  './',
-  './manifest.json',
+  '/',
+  '/index.html',
+  '/manifest.json',
   'lib/BrowserPrint-3.1.250.min.js',
   'lib/BrowserPrint-Zebra-1.1.250.min.js',
   'lib/pdf-lib.js',
@@ -60,7 +62,6 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(
       caches.match(event.request)
       .then(cachedResponse => {
-        console.log('caches:', caches);
         console.log('found cached response: ', cachedResponse);
         return cachedResponse || fetch(event.request);
       })
@@ -93,5 +94,14 @@ self.addEventListener('fetch', (event) => {
       const file = data.get('file');
       client.postMessage({ file });
     }());
+  }
+});
+
+/**
+ * Evento utilizada para actualizar la versión del SW
+ */
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
   }
 });
