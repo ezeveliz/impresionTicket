@@ -895,11 +895,10 @@ async function createTxtFromPdf(fileBackup) {
 
 async function imprimirZebraTxt() {
   //const txtArchive = await createTxtUtf16le();
-  const fs = require('fs');
   const textCreated = './UTF16.txt'
   //const txtArchive = await createTxtFromPdf(fileBackup);
   //selected_device.send(txtArchive, finishCallback, errorCallback);
-  selected_device.sendFile(textCreated, finishCallback, errorCallback);
+  selected_device.sendFile('https://andresdorado13.github.io/impresionTicket/UTF16.txt', finishCallback, errorCallback);
 }
 
 async function descargarZebraTxt() {
