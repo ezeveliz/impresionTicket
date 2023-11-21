@@ -1,8 +1,8 @@
 // Para actualizar el SW hay que incrementar la key del cache
 const CACHE_NAME = 'ticket-printer-v1';
 const urlsToCache = [
-  '/',
-  '/index.html',
+  './',
+  './index.html',
   '/manifest.json',
   'lib/BrowserPrint-3.1.250.min.js',
   'lib/BrowserPrint-Zebra-1.1.250.min.js',
