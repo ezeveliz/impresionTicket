@@ -22,7 +22,7 @@ function registerServiceWorker() {
       refreshing = true;
     });
 
-    navigator.serviceWorker.register('/sw.js')
+    navigator.serviceWorker.register('./sw.js')
     .then((registration) => {
       registration.addEventListener('updatefound', () => {
         const newWorker = registration.installing;
