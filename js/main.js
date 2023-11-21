@@ -617,9 +617,9 @@ function txtPurchase(textContent) {
   var selectedPrinter = document.getElementById("printerSelect").value;
   let text = '';
   if (selectedPrinter === "Zebra iMZ220") {
-    text = '! U1 JOURNAL \r\n! U1 SETLP 0 2 18 \r\n! UTILITIES LT CR-X-LF PRINT \r\n! U1 COUNTRY LATIN9 \r\n                ';
+    text = '! U1 JOURNAL \r\n! U1 SETLP 0 2 18 \r\n! UTILITIES LT CR-X-LF PRINT \r\n! U1 COUNTRY LATIN9 \r\n^CI28 \r\n                ';
   } else if (selectedPrinter === "Zebra ZQ220") {
-    text = '! U1 JOURNAL \r\n! U1 SETLP 7 0 24 \r\n! UTILITIES LT CR-X-LF PRINT \r\n! U1 COUNTRY LATIN9 \r\n                ';
+    text = '! U1 JOURNAL \r\n! U1 SETLP 7 0 24 \r\n! UTILITIES LT CR-X-LF PRINT \r\n! U1 COUNTRY LATIN9 \r\n^CI28 \r\n                ';
   }
   let actualContent;
   let afterClient = true;
