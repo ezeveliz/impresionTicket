@@ -897,19 +897,9 @@ async function imprimirZebraTxt() {
   //const txtArchive = await createTxtUtf16le();
   const fs = require('fs');
   const textCreated = './UTF16.txt'
-  fs.readFile(filePath, 'utf16le', (err, data) => {
-    if (err) {
-        console.error('Error al leer el archivo:', err);
-    } else {
-        // El contenido del archivo está en la variable 'data'
-        console.log('Contenido del archivo:', data);
-        selected_device.send(textCreated, finishCallback, errorCallback);
-        // Puedes realizar operaciones adicionales con 'data' aquí
-    }
-});
-  // const txtArchive = await createTxtFromPdf(fileBackup);
-  // selected_device.send(txtArchive, finishCallback, errorCallback);
-  // //selected_device.sendFile(txtArchive, finishCallback, errorCallback);
+  //const txtArchive = await createTxtFromPdf(fileBackup);
+  //selected_device.send(txtArchive, finishCallback, errorCallback);
+  selected_device.sendFile(textCreated, finishCallback, errorCallback);
 }
 
 async function descargarZebraTxt() {
