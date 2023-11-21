@@ -3,7 +3,7 @@ const CACHE_NAME = 'ticket-printer-v1';
 const urlsToCache = [
   './',
   './index.html',
-  '/manifest.json',
+  './manifest.json',
   'lib/BrowserPrint-3.1.250.min.js',
   'lib/BrowserPrint-Zebra-1.1.250.min.js',
   'lib/pdf-lib.js',
