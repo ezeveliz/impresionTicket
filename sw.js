@@ -76,7 +76,7 @@ self.addEventListener('fetch', (event) => {
      */
   } else if (
     event.request.method === 'POST' && 
-    event.request.url.includes('https://andresdorado13.github.io')) {
+    event.request.url.includes('https://ezeveliz.github.io')) {
 
     console.log("fetch post!", event.request);
     event.respondWith(Response.redirect('./'));
