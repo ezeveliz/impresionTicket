@@ -1,5 +1,6 @@
 // Para actualizar el SW hay que incrementar la key del cache
-const CACHE_NAME = 'ticket-printer-v1.02';
+const CACHE_NAME = 'ticket-printer-v1.41234';
+// Array con assets a cachear para el uso offline
 const urlsToCache = [
   './',
   './index.html',
@@ -21,7 +22,8 @@ const urlsToCache = [
 ];
 
 /**
- * Al instalarse el SW cacheo todos los assets del proyecto
+ * Al instalarse el SW cacheo todos los assets del proyecto definidos en el 
+ * array urlsToCache
  */
 self.addEventListener("install", (event) => {
   const cacheStatic = caches
@@ -31,6 +33,9 @@ self.addEventListener("install", (event) => {
   event.waitUntil(cacheStatic);
 });
 
+/**
+ * Cuando se activa el nuevo SW, elimino el cache del anterior
+ */
 self.addEventListener('activate', (event) => {
   clients.claim();
   event.waitUntil(
@@ -53,8 +58,14 @@ self.addEventListener('activate', (event) => {
  */
 self.addEventListener('fetch', (event) => {
 
+  // URL en la que vive el SW
+  let scriptURL = self.serviceWorker.scriptURL;
+  // URL de la página(sin el sw al final)
+  let baseURL = scriptURL.slice(0, scriptURL.length - '/sw.js'.length);
+
   /**
-   * Intercepto los gets y retorno una version cacheada del assets solicitado(si es que hay una)
+   * Intercepto los gets y retorno una version cacheada del assets solicitado(si 
+   * es que hay una)
    */
   if (event.request.method === 'GET') {
 
@@ -70,14 +81,15 @@ self.addEventListener('fetch', (event) => {
 
     /**
      * Intercepto los posts, se realiza un post sobre el SW para que este pueda 
-     * recibir el pdf desde la shareSheet y luego mandarselo al cliente(la webapp 
+     * recibir el PDF desde la shareSheet y luego mandarselo al cliente(la webapp 
      * ticketPrinter)
      * 
-     * TODO: ver como no dejar hardcodeada la URL
+     * El SDK de Star hace un post contra el controlador, por eso solo intervengo 
+     * los posts realizados contra mi mismo dominio
      */
   } else if (
     event.request.method === 'POST' && 
-    event.request.url.includes('https://ezeveliz.github.io')) {
+    event.request.url.includes(baseURL)) {
 
     console.log("fetch post!", event.request);
     event.respondWith(Response.redirect('./'));
@@ -92,16 +104,21 @@ self.addEventListener('fetch', (event) => {
       const client = await self.clients.get(clientId);
       if(!client) return
       const file = data.get('file');
-      client.postMessage({ file });
+      client.postMessage({ type: 'RECEIVED_FILE', file: file });
     }());
   }
 });
 
 /**
- * Evento utilizada para actualizar la versión del SW
+ * Handler de mensajes enviados por la webapp
  */
 self.addEventListener('message', (event) => {
+  // Este evento salta cuando debo actualizar la app
   if (event.data && event.data.type === 'SKIP_WAITING') {
     self.skipWaiting();
+  }
+  // Este evento retorna la versión actual de la app
+  if (event.data && event.data.type === 'GET_CACHE_VERSION') {
+    event.source.postMessage({ type: 'CACHE_VERSION', version: CACHE_NAME });
   }
 });

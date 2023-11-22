@@ -2,7 +2,7 @@
 //pdfjsLib.GlobalWorkerOptions.workerSrc ='https://github.com/mozilla/pdfjs-dist';
 //import pdfJsLib from "https://example.com/nombreDeLaLibreria.js";
 // Loaded via <script> tag, create shortcut to access PDF.js exports.
-var pdfjsLib = window['pdfjs-dist/build/pdf'];
+var { pdfjsLib } = globalThis;
 
 /**
  * If you need the last version of pdf.worker.js you can get it from:
@@ -12,43 +12,80 @@ var pdfjsLib = window['pdfjs-dist/build/pdf'];
 pdfjsLib.GlobalWorkerOptions.workerSrc = './lib/pdfWorker.js';
 
 /**********************SERVICE WORKER******************************/
+// Para prevenir múltiples recargas de la webapp cuando se encuentra una nueva versión
+let refreshing = false;
 function registerServiceWorker() {
   if ('serviceWorker' in navigator) {
 
-    let refreshing = false;
-    navigator.serviceWorker.addEventListener('controllerchange', () => {
+    /**
+     * Event listener que recarga la ṕagina cuando se detecta un nuevo SW que 
+     * quiera tomar el control
+     */
+    navigator.serviceWorker.addEventListener('controllerchange', (e) => {
+      console.log('controller change', e);
       if (refreshing) return;
+      if (fileBackup) {
+        localStorage.setItem('fileBackup', fileBackup);
+      }
       window.location.reload();
       refreshing = true;
     });
 
+    /**
+     * Listener que maneja mensajes recibidos desde el SW
+     */
+    navigator.serviceWorker.addEventListener('message', (event) => {
+
+      // Obtengo la versión actual para mostrar
+      if (event.data && event.data.type === 'CACHE_VERSION') {
+        
+        let version =  event.data.version;
+
+        if (!version || version.length === 0) return;
+        let shortenedVersion = version.slice('ticket-printer-'.length);
+        console.log('Cache version:', shortenedVersion);
+        let versionContainer = document.getElementById('webapp_version');
+        if (versionContainer) {
+          versionContainer.innerHTML = shortenedVersion;
+        }
+        return;
+      }
+
+      // Recibo un archivo desde el SW mediante la share sheet
+      if (event.data && event.data.type === 'RECEIVED_FILE') {
+
+        const file = event.data.file;
+        var dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file);
+        fileInput.files = dataTransfer.files;
+        displayPdf(file);
+        combineAllPDFPages().then(archive => {
+          fileBackup=archive;
+          getPdf(createURL);
+        });
+      }
+    });
+
+    /**
+     * Registro el SW
+     */
     navigator.serviceWorker.register('./sw.js')
     .then((registration) => {
+      // Solicito la versión definida en el SW para mostrarla
+      if (registration.active) {
+        navigator.serviceWorker.controller.postMessage({ type: 'GET_CACHE_VERSION' });
+      }
+      // Handler que se ejecuta cuando se detecta una nueva versión
       registration.addEventListener('updatefound', () => {
         const newWorker = registration.installing;
         newWorker.addEventListener('statechange', () => {
           if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-            // A new service worker is available, let's notify the user
-            console.log('New content is available; please refresh.');
-            let actualizar = confirm('hay una actualización disponible, presione Aceptar para actualizar.');
-            if (actualizar) {
-              newWorker.postMessage({ type: 'SKIP_WAITING' });
-            }
+            // Actualizo automáticamente
+            newWorker.postMessage({ type: 'SKIP_WAITING' });
           }
         });
       });
     });
-
-    /**
-    navigator.serviceWorker.register('./sw.js')
-    .then(registration => {
-      //alert('Service Worker registrado con éxito:', registration);
-      console.log('Service Worker registrado con éxito:', registration);
-    })
-    .catch(error => {
-      //alert('Error al registrar el Service Worker:', error);
-      console.error('Error al registrar el Service Worker:', error);
-    }); */
   }
 }
 /**********************************************************************/
@@ -145,6 +182,20 @@ window.addEventListener('load', () => {
   searchPrinters()
   fileInput = document.getElementById('fileInput');
   inputFileLoad()
+
+  /**
+   * Esto es para salvar el caso en que se recargue la app luego de una 
+   * actualización si es que había un PDF ya cargado
+   */
+  let savedFile = localStorage.getItem('fileBackup');
+  if (savedFile) {
+    var dataTransfer = new DataTransfer();
+    dataTransfer.items.add(savedFile);
+    fileInput.files = dataTransfer.files;
+    displayPdf(file); 
+    localStorage.removeItem('fileBackup');
+  }
+
   createURL()
 });
 
@@ -374,19 +425,6 @@ function inputFileLoad() {
     }
   });
 }
-
-//Recibe archivos compartidos fuera de la webapp
-navigator.serviceWorker.addEventListener("message", (event) => {
-  const file = event.data.file;
-  var dataTransfer = new DataTransfer();
-  dataTransfer.items.add(file);
-  fileInput.files = dataTransfer.files;
-  displayPdf(file);
-  combineAllPDFPages().then(archive => {
-    fileBackup=archive;
-    getPdf(createURL);
-  });
-});
 
 async function combineAllPDFPages() {
   const pdfBytes = await fetch(URL.createObjectURL(fileBackup)).then((res) => res.arrayBuffer());
