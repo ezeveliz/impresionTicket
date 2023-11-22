@@ -12,21 +12,21 @@ var { pdfjsLib } = globalThis;
 pdfjsLib.GlobalWorkerOptions.workerSrc = './lib/pdfWorker.js';
 
 /**********************SERVICE WORKER******************************/
-// Para prevenir múltiples recargas de la webapp cuando se encuentra una nueva versión
-let refreshing = false;
+
 function registerServiceWorker() {
   if ('serviceWorker' in navigator) {
 
     /**
      * Event listener que recarga la ṕagina cuando se detecta un nuevo SW que 
      * quiera tomar el control
+     * 
+     * Si había un archivo lo guardo en el localStorage para luego restaurarlo 
+     * al recargar, previo a guardarlo tengo que transformarlo a texto
      */
     navigator.serviceWorker.addEventListener('controllerchange', (e) => {
       console.log('controller change', e);
       if (refreshing) return;
-      if (fileBackup) {
-        localStorage.setItem('fileBackup', fileBackup);
-      }
+
       window.location.reload();
       refreshing = true;
     });
@@ -105,6 +105,8 @@ var changeHref;
 var pdfText = "";
 var totalNumPagesTam;
 var zebraPrinter;
+// Para prevenir múltiples recargas de la webapp cuando se encuentra una nueva versión
+let refreshing = false;
 
 /********************FUNCIONES PARA BUSCAR IMPRESORAS*******************/
 function flashText() {
@@ -181,21 +183,7 @@ window.addEventListener('load', () => {
   }
   searchPrinters()
   fileInput = document.getElementById('fileInput');
-  inputFileLoad()
-
-  /**
-   * Esto es para salvar el caso en que se recargue la app luego de una 
-   * actualización si es que había un PDF ya cargado
-   */
-  let savedFile = localStorage.getItem('fileBackup');
-  if (savedFile) {
-    var dataTransfer = new DataTransfer();
-    dataTransfer.items.add(savedFile);
-    fileInput.files = dataTransfer.files;
-    displayPdf(file); 
-    localStorage.removeItem('fileBackup');
-  }
-
+  inputFileLoad();
   createURL()
 });
 
